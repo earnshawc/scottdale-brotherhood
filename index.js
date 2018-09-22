@@ -229,7 +229,7 @@ bot.on('message', async message => {
                     return console.error(`Произошла ошибка. ${err}`)
                 });
                 await msgsen.pin();
-                message.reply(`\`ваш запрос на снятие роли фракции был отправлен модераторам!\``)
+                message.reply(`\`ваш запрос на снятие роли фракции был отправлен модераторам!\``).then(msg => msg.delete(10000))
             })
         }
         return message.delete();
@@ -421,6 +421,7 @@ bot.on('raw', async event => {
                     }else{
                         reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
                     }
+                    return
                 }
             }
             let userto = bot.guilds.find(g => g.id == event_guildid).members.find(m => m.id == requests[event_messageid].whogetrole);
