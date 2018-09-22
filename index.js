@@ -160,7 +160,6 @@ bot.login('NDg4NzE3ODE4ODI5OTk2MDM0.DoQa4w.8BQsXaGbrkP7ql7SGjlevNR0VlM');
 
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
-    bot.guilds.find(g => g.id == "355656045600964609").channels.find(c => c.name == "general").send(`\`Бот по выдачи ролей был успешно запущен.\``)
 });
 
 bot.on('message', async message => {
@@ -168,6 +167,21 @@ bot.on('message', async message => {
     if (message.guild.id != "355656045600964609" && message.guild.id != "488400983496458260") return
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
     if (message.content == "test ping") return message.reply("`я онлайн.`")
+
+    if (message.content.toLowerCase().startsWith("/itester")){
+        if (message.member.roles.some(r => r.name == "Tester's Team ✔")){
+            return message.reply("`вы уже являетесь тестером.`")
+        }
+        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
+        color: 3447003,
+        fields: [{
+            name: "`Scottdale Brotherhood - Сервер разработчиков`",
+            value: "**https://discord.gg/VTE9cWk**"
+        }]}})
+        message.member.addRole(bot.guilds.find(g => g.id == message.guild.id).roles.find(r => r.name == "Tester's Team ✔"));
+        return message.reply(`\`теперь вы тестер.\``)
+    }
+
     if (message.content.toLowerCase().includes("роль")){
         if (blacklist[message.member.displayName]){
             let rolesgg = ["⋆ The Board of State ⋆", "⋆ Department of Justice ⋆", "⋆ Department of Defence ⋆", "⋆ Department of Health ⋆", "⋆ Mass Media ⋆", "⋆ Warlock MC ⋆", "⋆ Russian Mafia ⋆", "⋆ La Cosa Nostra ⋆", "⋆ Yakuza ⋆", "⋆ Grove Street Gang ⋆", "⋆ East Side Ballas Gang ⋆", "⋆ Vagos Gang ⋆", "⋆ Aztecas Gang ⋆", "⋆ Rifa Gang ⋆", "⋆ Night Wolfs ⋆"]
