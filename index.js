@@ -5,7 +5,7 @@ const Logger = require('./objects/logger');
 let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
-let version = "2.1";
+let version = "2.2";
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -163,7 +163,7 @@ bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
     if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`\`\`\`diff
 Вышло обновление версии ${version}:
-- Исправил ошибку с удалением запроса на снятие роли.
+- Исправил ошибку с удалением запроса на снятие роли. х2
 + Ваш разработчик Kory_McGregor.\`\`\``).then(msgdone => {
         msgdone.react(`👍`).then(() => {
             msgdone.react(`👎`)
@@ -345,8 +345,8 @@ bot.on('raw', async event => {
                     });
                     return reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
                 }else{
-                    let usernick = bot.guilds.find(g => g.id == event_guildid).members.find(m => m.id == reqrem[event_messageid].userrem).displayName
-                    reqchannel.send(`\`[DELETED]\` <@${requser.id}> \`удалил запрос от: ${usernick}, с ID: ${requests[event_messageid].userrem}\``)
+                    let usernick = bot.guilds.find(g => g.id == event_guildid).members.find(m => m.id == reqrem[event_messageid].userrem);
+                    reqchannel.send(`\`[DELETED]\` <@${requser.id}> \`удалил запрос от: ${usernick.nickname}, с ID: ${reqrem[event_messageid].userrem}\``)
                     reqrem[event_messageid] = {
                         "status": "deleted",
                     };
