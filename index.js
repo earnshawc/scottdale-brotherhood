@@ -159,7 +159,7 @@ const events = {
 
 bot.login('NDg4NzE3ODE4ODI5OTk2MDM0.DoQa4w.8BQsXaGbrkP7ql7SGjlevNR0VlM');
 
-bot.on('ready', () => {
+bot.on('ready', async () => {
     console.log("Бот был успешно запущен!");
     if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`\`\`\`diff
 Вышло обновление версии ${version}:
