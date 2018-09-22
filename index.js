@@ -5,7 +5,7 @@ const Logger = require('./objects/logger');
 let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
-let version = 2.0;
+let version = "2.0";
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
