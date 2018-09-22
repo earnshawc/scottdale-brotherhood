@@ -5,7 +5,7 @@ const Logger = require('./objects/logger');
 let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
-let version = "2.0";
+let version = "2.1";
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -163,13 +163,7 @@ bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
     if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`\`\`\`diff
 Вышло обновление версии ${version}:
-- Добавлена новая база запосов "./database/requests remove.json", "utf8";
-- Добавлена новая команда /remove [@упоминание] на тестовый сервер;
-    Отправляется запрос на снятие фракционной роли в request-for-roles;
-    В чате появляются цифры с нумерацией ролей;
-    Нажав на которую можно забрать определенную роль;
-    Или снять все роли фракций полностью;
-    Одобряют запрос: Spectator, Helper, Jr.Administrator, Administrator;
+- Исправил ошибку с удалением запроса на снятие роли.
 + Ваш разработчик Kory_McGregor.\`\`\``).then(msgdone => {
         msgdone.react(`👍`).then(() => {
             msgdone.react(`👎`)
@@ -210,7 +204,7 @@ bot.on('message', async message => {
             bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.name == "general").send(`<@${user.id}> \`у вас забрали фракционные роли, так как их количество привышало допустимое значение.\``)
         }else{
             let reqchat = message.guild.channels.find(c => c.name == `requests-for-roles`);
-            let rolerem = user.roles.some(r=>rolesgg.includes(r.name))
+            let rolerem = user.roles.find(r=>rolesgg.includes(r.name))
             const embed = new Discord.RichEmbed()
             .setTitle("`Discord » Снятие ролей участнику`")
             .setColor("#FF0000")
@@ -343,20 +337,20 @@ bot.on('raw', async event => {
             if (reqrem[event_messageid]){
                 if (reqrem[event_messageid].userrem == undefined){
                     reqchannel.send(`\`[DELETED]\` <@${requser.id}> \`удалил багнутый запрос.\``)
-                    requests[event_messageid] = {
+                    reqrem[event_messageid] = {
                         "status": "deleted",
                     };
-                    fs.writeFileSync("./database/requests.json", JSON.stringify(requests), (err) => {
+                    fs.writeFileSync("./database/requests remove.json", JSON.stringify(reqrem), (err) => {
                         return console.error(`Произошла ошибка: ${err}`)
                     });
                     return reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
                 }else{
                     let usernick = bot.guilds.find(g => g.id == event_guildid).members.find(m => m.id == reqrem[event_messageid].userrem).displayName
                     reqchannel.send(`\`[DELETED]\` <@${requser.id}> \`удалил запрос от: ${usernick}, с ID: ${requests[event_messageid].userrem}\``)
-                    requests[event_messageid] = {
+                    reqrem[event_messageid] = {
                         "status": "deleted",
                     };
-                    fs.writeFileSync("./database/requests.json", JSON.stringify(requests), (err) => {
+                    fs.writeFileSync("./database/requests remove.json", JSON.stringify(reqrem), (err) => {
                         return console.error(`Произошла ошибка: ${err}`)
                     });
                     return reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
