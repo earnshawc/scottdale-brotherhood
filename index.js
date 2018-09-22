@@ -157,7 +157,7 @@ const events = {
     MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
 };
 
-bot.login('NDg4NzE3ODE4ODI5OTk2MDM0.DoQa4w.8BQsXaGbrkP7ql7SGjlevNR0VlM');
+bot.login(process.env.token);
 
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
