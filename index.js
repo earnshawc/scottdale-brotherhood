@@ -4,7 +4,7 @@ const fs = require("fs");
 const Logger = require('./objects/logger');
 let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
-let version = 1.1;
+let version = 1.2;
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -162,9 +162,9 @@ bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
     if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`\`\`\`diff
 Вышло обновление версии ${version}:
-- Функция выдачи ролей. Написав в чат: "роль", система отправит ваш никнейм на проверку модераторами.
-- Команда: /itester - выдает роль на тестовом сервере.
-Ваш разработчик Kory_McGregor.\`\`\``)
+- Убрано сообщение "у вас уже есть роль";
+- Добавлена команда /remove [@упоминание] (ИДЕТ РАЗРАБОТКА)
++ Ваш разработчик Kory_McGregor.\`\`\``)
 });
 
 bot.on('message', async message => {
@@ -172,6 +172,20 @@ bot.on('message', async message => {
     if (message.guild.id != "355656045600964609" && message.guild.id != "488400983496458260") return
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
     if (message.content == "test ping") return message.reply("`я онлайн.`")
+
+    if (message.content.toLowerCase().startsWith("/remove")){
+        if (message.guild.id == 355656045600964609) return message.reply(`\`работает только на тестовом сервере!\``, {embed: {
+            color: 3447003,
+            fields: [{
+                name: "`Scottdale Brotherhood - Сервер разработчиков`",
+                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
+            }]}})
+        let user = message.guild.member(message.mentions.users.first());
+        if (!user){
+            message.delete();
+            return message.reply(`\`Вы не указали пользователя! /remove [@упоминание]\``);
+        }
+    }
 
     if (message.content.toLowerCase().startsWith("/itester")){
         if (message.member.roles.some(r => r.name == "Tester's Team ✔")){
@@ -212,7 +226,7 @@ bot.on('message', async message => {
                     message.reply(`\`Ошибка выполнения. Канал requests-for-roles не был найден!\``)
                     return console.error(`Канал requests-for-roles не был найден!`)
                 }
-                if (message.member.roles.some(r => [rolename].includes(r.name))) return message.reply(`\`У вас уже есть роль!\``)
+                if (message.member.roles.some(r => [rolename].includes(r.name))) return
                 let nickname = message.member.displayName
                 const embed = new Discord.RichEmbed()
                 .setTitle("`Discord » Проверка на валидность ник нейма.`")
