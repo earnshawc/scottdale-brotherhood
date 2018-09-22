@@ -182,7 +182,7 @@ bot.on('message', async message => {
     if (message.channel.type == "dm") return // Если в ЛС, то выход.
     if (message.guild.id != "355656045600964609" && message.guild.id != "488400983496458260") return
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
-    if (message.content == "test ping") return message.reply("`я онлайн.`")
+    if (message.content == "test ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
 
     if (message.content.toLowerCase().startsWith("/remove")){
         if (message.guild.id == 355656045600964609) return message.reply(`\`работает только на тестовом сервере!\``, {embed: {
@@ -196,9 +196,12 @@ bot.on('message', async message => {
             message.delete();
             return message.reply(`\`Вы не указали пользователя! /remove [@упоминание]\``);
         }
+        let countroles = 0;
         let rolesgg = ["⋆ The Board of State ⋆", "⋆ Department of Justice ⋆", "⋆ Department of Defence ⋆", "⋆ Department of Health ⋆", "⋆ Mass Media ⋆", "⋆ Warlock MC ⋆", "⋆ Russian Mafia ⋆", "⋆ La Cosa Nostra ⋆", "⋆ Yakuza ⋆", "⋆ Grove Street Gang ⋆", "⋆ East Side Ballas Gang ⋆", "⋆ Vagos Gang ⋆", "⋆ Aztecas Gang ⋆", "⋆ Rifa Gang ⋆", "⋆ Night Wolfs ⋆"]
-        let countroles = user.roles.map(r => r.name.includes(rolesgg))
-        return message.reply(countroles.length);
+        for (i in rolesgg){
+            if(user.roles.some(r=>rolesgg[i].includes(r.name)) ) countroles = countroles + 1;
+        }
+        return message.reply(countroles);
     }
 
     if (message.content.toLowerCase().startsWith("/itester")){
