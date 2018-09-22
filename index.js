@@ -176,7 +176,7 @@ bot.on('message', async message => {
         color: 3447003,
         fields: [{
             name: "`Scottdale Brotherhood - Сервер разработчиков`",
-            value: "**https://discord.gg/VTE9cWk**"
+            value: "**[Сервер тестеров \(нажми\)](https://discord.gg/VTE9cWk)**"
         }]}})
         message.member.addRole(bot.guilds.find(g => g.id == message.guild.id).roles.find(r => r.name == "Tester's Team ✔"));
         return message.reply(`\`теперь вы тестер.\``)
