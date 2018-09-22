@@ -201,7 +201,18 @@ bot.on('message', async message => {
         for (i in rolesgg){
             if(user.roles.some(r=>rolesgg[i].includes(r.name)) ) countroles = countroles + 1;
         }
-        return message.reply(countroles);
+        if (countroles > 1){
+            for (var i in rolesgg){
+                let rolerem = bot.guilds.find(g => g.id == message.guild.id).roles.find(r => r.name == rolesgg[i]);
+                if (user.roles.some(role=>[rolesgg[i]].includes(role.name))){
+                    await user.removeRole(rolerem);
+                }
+            }
+            bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.name == "general").send(`<@${user.id}> \`у вас забрали фракционные роли, так как их количество привышало допустимое значение.\``)
+        }else{
+            
+        }
+        return message.reply(`У пользователя ${countroles} фракционных ролей.`);
     }
 
     if (message.content.toLowerCase().startsWith("/itester")){
