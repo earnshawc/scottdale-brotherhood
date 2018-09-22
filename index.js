@@ -5,7 +5,7 @@ const Logger = require('./objects/logger');
 let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
-let version = "2.2";
+let version = "2.3";
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -163,7 +163,8 @@ bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
     if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`\`\`\`diff
 Вышло обновление версии ${version}:
-- Исправил ошибку с удалением запроса на снятие роли. х2
+- Добавил удаление команды после /remove
+- Команда "/remove" успешно функционирует!
 + Ваш разработчик Kory_McGregor.\`\`\``).then(msgdone => {
         msgdone.react(`👍`).then(() => {
             msgdone.react(`👎`)
@@ -231,7 +232,7 @@ bot.on('message', async message => {
                 message.reply(`\`ваш запрос на снятие роли фракции был отправлен модераторам!\``)
             })
         }
-        return message.reply(`У пользователя ${countroles} фракционных ролей.`);
+        return message.delete();
     }
 
     if (message.content.toLowerCase().startsWith("/itester")){
@@ -401,8 +402,26 @@ bot.on('raw', async event => {
 
         if (event_emoji_name == "✔"){
             if (!requests[event_messageid]){
-                reqchannel.send(`\`[ERROR]\` <@${requser.id}> \`пользователь не отправлял запрос или сообщение не загрузилось!\``);
-                return
+                if (!reqrem[event_messageid]){
+                return reqchannel.send(`\`[ERROR]\` <@${requser.id}> \`пользователь не отправлял запрос или сообщение не загрузилось!\``);
+                }else{
+                    /*
+                    "status": "wait",
+                    "userrem": user.id,
+                    "whorem": message.author.id,
+                    "rolerem": rolerem.name,
+                    */
+                    let userremto = bot.guilds.find(g => g.id == event_guildid).members.find(m => m.id == reqrem[event_messageid].userrem);
+                    let whoremto = bot.guilds.find(g => g.id == event_guildid).members.find(m => m.id == reqrem[event_messageid].whorem)
+                    let roleremto = bot.guilds.find(g => g.id == event_guildid).roles.find(r => r.name == reqrem[event_messageid].rolerem);
+                    if (userremto.roles.some(r => [roleremto.name].includes(r.name))){
+                        userremto.removeRole(roleremto)
+                        reqchannel.send(`\`[ACCEPT]\` <@${requser.id}> \`одобрил запрос на снятие роли от ${whoremto.displayName}, с ID: ${whoremto.id} пользователю:\` <@${userremto.id}>`);
+                        reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
+                    }else{
+                        reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
+                    }
+                }
             }
             let userto = bot.guilds.find(g => g.id == event_guildid).members.find(m => m.id == requests[event_messageid].whogetrole);
             let channelto = bot.guilds.find(g => g.id == event_guildid).channels.find(c => c.id == requests[event_messageid].channel);
