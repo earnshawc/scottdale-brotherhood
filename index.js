@@ -2,7 +2,6 @@
 const bot = new Discord.Client();
 const fs = require("fs");
 const Logger = require('./objects/logger');
-
 let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 
@@ -160,6 +159,11 @@ bot.login('NDg4NzE3ODE4ODI5OTk2MDM0.DoQa4w.8BQsXaGbrkP7ql7SGjlevNR0VlM');
 
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
+    if (bot.guilds.find(g => g.id == "488400983496458260").defaultChannel) bot.guilds.find(g => g.id == "488400983496458260").defaultChannel.send(`\`\`\`diff
+        В этой версии добавлено:
+        - Функция выдачи ролей. Написав в чат: "роль", система отправит ваш никнейм на проверку модераторами.
+        - Команда: /itester - выдает роль на тестовом сервере.
+    \`\`\``)
 });
 
 bot.on('message', async message => {
@@ -236,6 +240,7 @@ bot.on('message', async message => {
                         return console.error(`Произошла ошибка. ${err}`)
                     });
                     await msgsen.pin();
+                    message.reply(`\`ваш запрос на выдачу роли фракции был отправлен модераторам!\``)
                 })
                 return
             }
