@@ -4,7 +4,8 @@ const fs = require("fs");
 const Logger = require('./objects/logger');
 let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
-let version = 1.2;
+let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
+let version = 2.0;
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -160,11 +161,21 @@ bot.login('NDg4NzE3ODE4ODI5OTk2MDM0.DoQa4w.8BQsXaGbrkP7ql7SGjlevNR0VlM');
 
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
+    /*
     if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`\`\`\`diff
 Вышло обновление версии ${version}:
-- Убрано сообщение "у вас уже есть роль";
-- Добавлена команда /remove [@упоминание] (ИДЕТ РАЗРАБОТКА)
-+ Ваш разработчик Kory_McGregor.\`\`\``)
+- Добавлена новая база запосов "./database/requests remove.json", "utf8";
+- Добавлена новая команда /remove [@упоминание] на тестовый сервер;
+    Отправляется запрос на снятие фракционной роли в request-for-roles;
+    В чате появляются цифры с нумерацией ролей;
+    Нажав на которую можно забрать определенную роль;
+    Или снять все роли фракций полностью;
+    Одобряют запрос: Spectator, Helper, Jr.Administrator, Administrator;
++ Ваш разработчик Kory_McGregor.\`\`\``).then(msgdone => {
+    await msgdone.react(`👍`)
+    await msgdone.react(`👎`)
+    })
+*/
 });
 
 bot.on('message', async message => {
@@ -185,6 +196,9 @@ bot.on('message', async message => {
             message.delete();
             return message.reply(`\`Вы не указали пользователя! /remove [@упоминание]\``);
         }
+        let rolesgg = ["⋆ The Board of State ⋆", "⋆ Department of Justice ⋆", "⋆ Department of Defence ⋆", "⋆ Department of Health ⋆", "⋆ Mass Media ⋆", "⋆ Warlock MC ⋆", "⋆ Russian Mafia ⋆", "⋆ La Cosa Nostra ⋆", "⋆ Yakuza ⋆", "⋆ Grove Street Gang ⋆", "⋆ East Side Ballas Gang ⋆", "⋆ Vagos Gang ⋆", "⋆ Aztecas Gang ⋆", "⋆ Rifa Gang ⋆", "⋆ Night Wolfs ⋆"]
+        let countroles = user.roles.map(r => r.name.includes(rolesgg))
+        return message.reply(countroles.length);
     }
 
     if (message.content.toLowerCase().startsWith("/itester")){
