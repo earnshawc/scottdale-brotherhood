@@ -4,6 +4,7 @@ const fs = require("fs");
 const Logger = require('./objects/logger');
 let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
+let version = 1.1;
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -160,10 +161,10 @@ bot.login('NDg4NzE3ODE4ODI5OTk2MDM0.DoQa4w.8BQsXaGbrkP7ql7SGjlevNR0VlM');
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
     if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`\`\`\`diff
-В этой версии добавлено:
+Вышло обновление версии ${version}:
 - Функция выдачи ролей. Написав в чат: "роль", система отправит ваш никнейм на проверку модераторами.
 - Команда: /itester - выдает роль на тестовом сервере.
-    \`\`\``)
+Ваш разработчик Kory_McGregor.\`\`\``)
 });
 
 bot.on('message', async message => {
