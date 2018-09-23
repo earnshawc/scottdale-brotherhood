@@ -261,7 +261,8 @@ bot.on('message', async message => {
             let admin = messages.some(msgd => msgd.content.includes(`**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:**`));
             if (admin){
                 let admintemp = `**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:**`;
-                message.reply("Он админ! LVL: " + admin.content.split(admintemp.length))
+                const adminlvl = admin.content.slice(admintemp.length).trim().split(/ +/g);
+                message.reply("Он админ! LVL: " + adminlvl[0])
             }else{
                 message.reply("Он не админ!")
             }
