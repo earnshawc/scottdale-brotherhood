@@ -165,7 +165,7 @@ const events = {
     MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
 };
 
-function checknick(member, role, startnum, endnum, bot, message){
+async function checknick(member, role, startnum, endnum, bot, message){
     if (member.roles.some(r => [role].includes(r.name))){
         let ruletagst = startnum
         let ruletagend = endnum
@@ -180,7 +180,7 @@ function checknick(member, role, startnum, endnum, bot, message){
                 for (var i in rolesgg){
                     let rolerem = bot.guilds.find(g => g.id == message.guild.id).roles.find(r => r.name == rolesgg[i]);
                     if (member.roles.some(role=>[rolesgg[i]].includes(role.name))){
-                        member.removeRole(rolerem);
+                        await member.removeRole(rolerem);
                     }
                 }
                 nrpnames.add(member.id)
