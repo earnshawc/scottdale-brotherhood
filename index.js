@@ -260,7 +260,7 @@ bot.on('message', async message => {
         administartion_channel.fetchMessages().then(messages => {
             let admin = messages.some(msgd => msgd.content.includes(`**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:**`));
             if (admin){
-                const args = message.content.split(" ").slice(1);
+                const args = message.content.split(" ").slice(1).join;
                 message.reply("Он админ!")
                 console.log(args)
                 console.log(args[1])
