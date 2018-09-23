@@ -180,7 +180,13 @@ function checknick (member, role, startnum, endnum, bot, message){
                 for (var i in rolesgg){
                     let rolerem = bot.guilds.find(g => g.id == message.guild.id).roles.find(r => r.name == rolesgg[i]);
                     if (member.roles.some(role=>[rolesgg[i]].includes(role.name))){
-                        member.removeRole(rolerem);
+                        member.removeRole(rolerem).then(() => {	
+                            setTimeout(function(){
+                                if(member.roles.has(rolerem)){
+                                    member.removeRole(rolerem);
+                                }
+                            }, 5000);
+                        }).catch(console.error);
                     }
                 }
                 nrpnames.add(member.id)
@@ -213,27 +219,11 @@ let test = [
     "Все короче",
 ];
 
-function sleep(miliseconds){
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++){
-        if ((new Date().getTime() - start) > miliseconds){
-            break;
-        }
-    }
-}
-
 bot.on('message', async message => {
     if (message.channel.type == "dm") return // Если в ЛС, то выход.
     if (message.guild.id != "355656045600964609" && message.guild.id != "488400983496458260") return
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
     if (message.content == "test ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
-
-    if (message.content == "test command"){
-        for (var i in test){
-            message.reply(`Сообщение: \`${test[i]}\` ${i++} из 3.`)
-            sleep(7000);
-        }
-    }
 
     if (message.content.toLowerCase() == "/invalidrole"){
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.reply(`\`нет прав доступа.\``)
