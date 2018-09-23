@@ -162,6 +162,7 @@ bot.login(process.env.token);
 
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
+    /*
     if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
 - Успешный запуск бота. Начинаем массовый тест.
@@ -174,6 +175,7 @@ bot.on('ready', () => {
             msgdone.react(`👎`)
         })
     })
+    */
 });
 
 bot.on('message', async message => {
@@ -332,7 +334,7 @@ bot.on('raw', async event => {
         })
 
         if (event_emoji_name == "☠"){
-            if (event_guildid == "355656045600964609") return reqchannel.send("`функция работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
+            if (event_guildid == "355656045600964609") return reqchannel.send(requser.id + " `функция работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
                 color: 3447003,
                 fields: [{
                     name: "`Scottdale Brotherhood - Сервер разработчиков`",
