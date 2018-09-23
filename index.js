@@ -6,7 +6,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
-let version = "2.7";
+let version = "2.8";
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -168,7 +168,8 @@ bot.on('ready', () => {
 - Сделал блокировку откровенного контента смайликом "☠"
     Пользователь изначально получает предупреждение.
     Три предупреждения и пользователя кикает с дискорда.
-+ by » Kory_McGregor.\`\`\``).then(msgdone => {
+    Забыл подключить БД с предупреждениями. (Подключил)
+» Kory_McGregor.\`\`\``).then(msgdone => {
         msgdone.react(`👍`).then(() => {
             msgdone.react(`👎`)
         })
@@ -349,6 +350,14 @@ bot.on('raw', async event => {
                 nsfwuser = msg.member.id;
             })
             reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
+            if (!nsfw[nsfwuser]){
+                nsfw[nsfwuser] = {
+                    "warnings": 0,
+                };
+                fs.writeFileSync("./database/nsfw warns.json", JSON.stringify(nsfw), (err) => {
+                    return console.error(`Произошла ошибка: ${err}`)
+                });
+            }
             nsfw[nsfwuser] = {
                 "warnings": nsfw[nsfwuser].warnings + 1,
             };
