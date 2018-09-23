@@ -225,6 +225,41 @@ bot.on('message', async message => {
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
     if (message.content == "test ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
 
+    if (message.content.toLowerCase().startsWith("/setadmin")){
+        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
+            color: 3447003,
+            fields: [{
+                name: "`Scottdale Brotherhood - Сервер разработчиков`",
+                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
+            }]}}).then(msg => msg.delete(5000))
+        if (!message.member.roles.some(r => r.name == "Tester's Team ✔")){
+            return message.reply("`вы не тестер! Используйте /itester.`")
+        }
+        let user = message.guild.member(message.mentions.users.first());
+        if (!user) return
+        bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.name == "administration").send(`**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:** \`1\``)
+    }
+
+    if (message.content.toLowerCase().startsWith("/findadmin")){
+        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
+            color: 3447003,
+            fields: [{
+                name: "`Scottdale Brotherhood - Сервер разработчиков`",
+                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
+            }]}}).then(msg => msg.delete(5000))
+        if (!message.member.roles.some(r => r.name == "Tester's Team ✔")){
+            return message.reply("`вы не тестер! Используйте /itester.`")
+        }
+        let administartion_channel = bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.name == "administration");
+        administartion_channel.fetchMessages().then(messages => {
+            if (messages.includes(`**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:** \`1\``)){
+                message.reply("Он админ!")
+            }else{
+                message.reply("Он не админ!")
+            }
+        });
+    }
+
     if (message.content.toLowerCase() == "/invalidrole"){
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.reply(`\`нет прав доступа.\``)
         if (cooldowncommand.has(message.guild.id)) {
