@@ -6,7 +6,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
-let version = "3.7";
+let version = "3.8";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -186,8 +186,8 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Команда "/invalidrole" добавлена на сервер Scottdale Brotherhood.
-        Установлена задержка на использование команды.
+- Команда "/invalidrole" была обновлена.
+        КД работает между серверами в одну минуту.
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -204,13 +204,13 @@ bot.on('message', async message => {
 
     if (message.content.toLowerCase() == "/invalidrole"){
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.reply(`\`нет прав доступа.\``)
-        if (cooldowncommand.has("INVALIDROLE")) {
-            return message.channel.send("`Можно использовать раз в две минуты!` - " + message.author);
+        if (cooldowncommand.has(message.guild.id)) {
+            return message.channel.send("`Можно использовать раз в минуту!` - " + message.author);
         }
-        cooldowncommand.add("INVALIDROLE");
+        cooldowncommand.add(message.guild.id);
         setTimeout(() => {
-            cooldowncommand.delete("INVALIDROLE");
-        }, 120000);
+            cooldowncommand.delete(message.guild.id);
+        }, 60000);
 
         /*
         if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
