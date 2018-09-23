@@ -180,7 +180,7 @@ function checknick (member, role, startnum, endnum, bot, message){
                 for (var i in rolesgg){
                     let rolerem = bot.guilds.find(g => g.id == message.guild.id).roles.find(r => r.name == rolesgg[i]);
                     if (member.roles.some(role=>[rolesgg[i]].includes(role.name))){
-                        await member.removeRole(rolerem);
+                        member.removeRole(rolerem);
                     }
                 }
                 nrpnames.add(member.id)
