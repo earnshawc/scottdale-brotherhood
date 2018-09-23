@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.1";
+let version = "4.2";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -203,14 +203,7 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Оптимизированна работа Discord бота.
-  1) Убрал команду "test command";
-  2) Изменил команду "test ping" на "/ping";
-  3) Убрал команду "/setadmin";
-  4) Убрал команду "/findadmin";
-  5) Обновил команду "/invalidrole", КД: 2 минуты;
-  6) Для использования "/invalidrole" нужно право "MANAGE_ROLES";
-  7) "/remove" с заместителя и выше.
+  Исправлена ошибка с системой выдачи ролей в версии 4.1;
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -403,11 +396,8 @@ bot.on('message', async message => {
                 `\`Сообщение:\`  \`${message.content}\`\n` +
                 `\`[D] - УДАЛИТЬ ЕСЛИ ЗАБАГАЛОСЬ\``)
                 reqchat.send(embed).then(async msgsen => {
-                    if (!msgsend) return
                     await msgsen.react('✔')
-                    if (!msgsend) return
                     await msgsen.react('❌')
-                    if (!msgsend) return
                     await msgsen.react('🇩')
                     requests[msgsen.id] = {
                         "status": "wait",
@@ -420,7 +410,6 @@ bot.on('message', async message => {
                     fs.writeFileSync("./database/requests.json", JSON.stringify(requests), (err) => {
                         return console.error(`Произошла ошибка. ${err}`)
                     });
-                    if (!msgsend) return
                     await msgsen.pin();
                 })
                 return
