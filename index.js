@@ -6,10 +6,11 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
-let version = "3.6";
-let hideobnova = true;
+let version = "3.7";
+let hideobnova = false;
 
 const nrpnames = new Set();
+const cooldowncommand = new Set();
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -185,10 +186,8 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Обновил систему по определению нРП ника.
-        Сделана функция: checknick(пользователь, роль, startnum, endnum)
-        Запустил проверку через функцию checknick(member, "⋆ The Board of State ⋆", 0, 4);
-        Пока в тестовом режиме.
+- Команда "/invalidrole" добавлена на сервер Scottdale Brotherhood.
+        Установлена задержка на использование команды.
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -204,6 +203,16 @@ bot.on('message', async message => {
     if (message.content == "test ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
 
     if (message.content.toLowerCase() == "/invalidrole"){
+
+        if (cooldowncommand.has("INVALIDROLE")) {
+            return message.channel.send("`Можно использовать раз в минуту!` - " + msg.author);
+        }
+        cooldowncommand.add("INVALIDROLE");
+        setTimeout(() => {
+            cooldowncommand.delete("INVALIDROLE");
+        }, 60000);
+
+        /*
         if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
         color: 3447003,
         fields: [{
@@ -216,6 +225,7 @@ bot.on('message', async message => {
             name: "`Scottdale Brotherhood - Сервер разработчиков`",
             value: "**Используйте `/itester`**"
         }]}})
+        */
         let noformnick;
         bot.guilds.find(g => g.id == message.guild.id).members.forEach(member => {
             checknick(member, "⋆ The Board of State ⋆", 0, 3);
