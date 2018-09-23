@@ -2,10 +2,13 @@
 const bot = new Discord.Client();
 const fs = require("fs");
 const Logger = require('./objects/logger');
+const wait = require('util').promisify(setTimeout);
+
 let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
+
 let version = "3.11";
 let hideobnova = true;
 
@@ -219,9 +222,8 @@ bot.on('message', async message => {
 
     if (message.content == "test command"){
         for (var i in test){
-            setTimeout(function(i, test){
-                message.reply(`Сообщение: \`${test[i]}\` ${i} из 3.`)
-            }, 5000);
+            message.reply(`Сообщение: \`${test[i]}\` ${i} из 3.`)
+            wait(5000);
         }
     }
 
