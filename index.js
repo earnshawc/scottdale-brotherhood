@@ -5,7 +5,7 @@ const Logger = require('./objects/logger');
 let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
-let version = "2.3";
+let version = "2.4";
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -163,8 +163,11 @@ bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
     if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`\`\`\`diff
 Вышло обновление версии ${version}:
-- Добавил удаление команды после /remove
-- Команда "/remove" успешно функционирует!
+- Все команды доработаны. Снизу список.
+1) Что бы получить роль нужно поставить тэг и попросить в чат роль.
+2) Что бы забрать роль, нужно написать "/remove @упоминание".
+3) Проверка на онлайн бота: "test ping".
+4) Выдать себе права тестера: "/itester".
 + Ваш разработчик Kory_McGregor.\`\`\``).then(msgdone => {
         msgdone.react(`👍`).then(() => {
             msgdone.react(`👎`)
