@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.0";
+let version = "4.1";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -203,7 +203,14 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Сделана новая система голосования в #ваши-предложения
+- Оптимизированна работа Discord бота.
+  1) Убрал команду "test command";
+  2) Изменил команду "test ping" на "/ping";
+  3) Убрал команду "/setadmin";
+  4) Убрал команду "/findadmin";
+  5) Обновил команду "/invalidrole", КД: 2 минуты;
+  6) Для использования "/invalidrole" нужно право "MANAGE_ROLES";
+  7) "/remove" с заместителя и выше.
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -212,20 +219,15 @@ bot.on('ready', () => {
     }
 });
 
-let test = [
-    "Пример сообщения",
-    "Пример номер два",
-    "Все короче",
-];
-
 bot.on('message', async message => {
     if (message.channel.type == "dm") return // Если в ЛС, то выход.
     if (message.guild.id != "355656045600964609" && message.guild.id != "488400983496458260") return
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
-    if (message.content == "test ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
+    if (message.content == "/ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
 
     if (message.guild.id == 488400983496458260){
         if (message.channel.name == "ваши-предложения"){
+            if (!message) return
             message.react(`✔`).then(() => {
                 if (!message) return
                 message.react(`❌`).then(() => {
@@ -236,106 +238,15 @@ bot.on('message', async message => {
         }
     }
 
-    if (message.content.startsWith("test coomand")){
-        return message.reply(message.content.split(1));
-    }
-
-    if (message.content.toLowerCase().startsWith("/setadmin")){
-        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
-            color: 3447003,
-            fields: [{
-                name: "`Scottdale Brotherhood - Сервер разработчиков`",
-                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
-            }]}}).then(msg => msg.delete(5000))
-        if (!message.member.roles.some(r => r.name == "Tester's Team ✔")){
-            return message.reply("`вы не тестер! Используйте /itester.`")
-        }
-        let user = message.guild.member(message.mentions.users.first());
-        if (!user) return
-        bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.name == "administration").send(`**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:** \`1\``)
-    }
-
-    if (message.content.toLowerCase().startsWith("/findadmin")){
-        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
-            color: 3447003,
-            fields: [{
-                name: "`Scottdale Brotherhood - Сервер разработчиков`",
-                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
-            }]}}).then(msg => msg.delete(5000))
-        if (!message.member.roles.some(r => r.name == "Tester's Team ✔")){
-            return message.reply("`вы не тестер! Используйте /itester.`")
-        }
-        let user = message.guild.member(message.mentions.users.first());
-        if (!user) return message.reply("Пользователь не найден!")
-        let administartion_channel = bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.name == "administration");
-        administartion_channel.fetchMessages().then(messages => {
-            let admin = messages.some(msgd => msgd.content.includes(`**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:**`));
-            if (admin){
-
-            }else{
-                return message.reply("Пользователь не администратор!")
-            }
-        });
-    }
-
-
-    /*
-    if (message.content.toLowerCase().startsWith("/findadmin")){
-        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
-            color: 3447003,
-            fields: [{
-                name: "`Scottdale Brotherhood - Сервер разработчиков`",
-                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
-            }]}}).then(msg => msg.delete(5000))
-        if (!message.member.roles.some(r => r.name == "Tester's Team ✔")){
-            return message.reply("`вы не тестер! Используйте /itester.`")
-        }
-        let user = message.guild.member(message.mentions.users.first());
-        if (!user) return
-        let administartion_channel = bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.name == "administration");
-        administartion_channel.fetchMessages().then(messages => {
-            let admin = messages.some(msgd => msgd.content.includes(`**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:**`));
-            console.log(admin)
-            if (admin){
-                const args = messages.content.slice(`**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:**`).split('`')
-                message.reply("Он админ!")
-                console.log(args)
-                console.log(args[1])
-                console.log(args[2])
-                console.log(args[3])
-                console.log(args[4])
-                console.log(args[5])
-            }else{
-                message.reply("Он не админ!")
-            }
-        });
-    }
-    */
-
     if (message.content.toLowerCase() == "/invalidrole"){
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.reply(`\`нет прав доступа.\``)
         if (cooldowncommand.has(message.guild.id)) {
-            return message.channel.send("`Можно использовать раз в минуту!` - " + message.author);
+            return message.channel.send("`Можно использовать раз в две минуты!` - " + message.author);
         }
         cooldowncommand.add(message.guild.id);
         setTimeout(() => {
             cooldowncommand.delete(message.guild.id);
-        }, 60000);
-
-        /*
-        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
-        color: 3447003,
-        fields: [{
-            name: "`Scottdale Brotherhood - Сервер разработчиков`",
-            value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
-        }]}})
-        if (!message.member.roles.some(r => r.name == "Tester's Team ✔")) return message.reply("`вы не являетесь тестером.`", {embed: {
-        color: 3447003,
-        fields: [{
-            name: "`Scottdale Brotherhood - Сервер разработчиков`",
-            value: "**Используйте `/itester`**"
-        }]}})
-        */
+        }, 120000);
         let noformnick;
         await bot.guilds.find(g => g.id == message.guild.id).members.forEach(member => {
             checknick(member, "⋆ The Board of State ⋆", 0, 3, bot, message);
@@ -385,6 +296,7 @@ bot.on('message', async message => {
     }
     
     if (message.content.toLowerCase().startsWith("/remove")){
+        if (!message.member.roles.some(r=>["✫Deputy Leader✫", "✵Leader✵", "✮Ministers✮", "Spectator™", "✔ Helper ✔", "Support Team", "✔Jr.Administrator✔", "✔ Administrator ✔"].includes(r.name))) return
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
             message.delete();
@@ -433,7 +345,6 @@ bot.on('message', async message => {
                     return console.error(`Произошла ошибка. ${err}`)
                 });
                 await msgsen.pin();
-                message.reply(`\`ваш запрос на снятие роли фракции был отправлен модераторам!\``).then(msg => msg.delete(10000))
             })
         }
         return message.delete();
@@ -445,7 +356,7 @@ bot.on('message', async message => {
             fields: [{
                 name: "`Scottdale Brotherhood - Сервер разработчиков`",
                 value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
-            }]}})
+            }]}}).then(msg => msg.delete(12000))
         if (message.member.roles.some(r => r.name == "Tester's Team ✔")){
             return message.reply("`вы уже являетесь тестером.`")
         }
@@ -492,8 +403,11 @@ bot.on('message', async message => {
                 `\`Сообщение:\`  \`${message.content}\`\n` +
                 `\`[D] - УДАЛИТЬ ЕСЛИ ЗАБАГАЛОСЬ\``)
                 reqchat.send(embed).then(async msgsen => {
+                    if (!msgsend) return
                     await msgsen.react('✔')
+                    if (!msgsend) return
                     await msgsen.react('❌')
+                    if (!msgsend) return
                     await msgsen.react('🇩')
                     requests[msgsen.id] = {
                         "status": "wait",
@@ -506,8 +420,8 @@ bot.on('message', async message => {
                     fs.writeFileSync("./database/requests.json", JSON.stringify(requests), (err) => {
                         return console.error(`Произошла ошибка. ${err}`)
                     });
+                    if (!msgsend) return
                     await msgsen.pin();
-                    message.reply(`\`ваш запрос на выдачу роли фракции был отправлен модераторам!\``).then(msg => msg.delete(5000))
                 })
                 return
             }
@@ -532,64 +446,6 @@ bot.on('raw', async event => {
         bot.guilds.find(g => g.id == event_guildid).channels.find(c => c.id == event_channelid).fetchMessage(event_messageid).then(msg => {
             if (!msg) return
         })
-
-        if (event_emoji_name == "☠"){
-            if (event_guildid == "355656045600964609") return reqchannel.send(`<@${requser.id}>, \`функция работает только на тестовом сервере Scottdale Brotherhood.\``, {embed: {
-                color: 3447003,
-                fields: [{
-                    name: "`Scottdale Brotherhood - Сервер разработчиков`",
-                    value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
-                }]}}).then(msg => msg.delete(30000))
-            if (!requser.roles.some(r=>["Tester's Team ✔"].includes(r.name))) return reqchannel.send(`<@${requser.id}>, \`вы не тестер.\``, {embed: {
-                color: 3447003,
-                fields: [{
-                    name: "`Scottdale Brotherhood - Сервер разработчиков`",
-                    value: "**PERMISSION ERROR** `Используй: /itester`"
-                }]}}).then(msg => msg.delete(15000))
-            let nsfwchannel = bot.guilds.find(g => g.id == event_guildid).channels.find(c => c.id == event_channelid)
-            nsfwchannel.fetchMessage(event_messageid).then(msg => {
-                let nsfwuser = msg.member.id
-                reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
-                if (!nsfw[nsfwuser]){
-                    nsfw[nsfwuser] = {
-                        "warnings": 0,
-                    };
-                    fs.writeFileSync("./database/nsfw warns.json", JSON.stringify(nsfw), (err) => {
-                        return console.error(`Произошла ошибка: ${err}`)
-                    });
-                }
-                nsfw[nsfwuser] = {
-                    "warnings": nsfw[nsfwuser].warnings + 1,
-                };
-                fs.writeFileSync("./database/nsfw warns.json", JSON.stringify(nsfw), (err) => {
-                    return console.error(`Произошла ошибка: ${err}`)
-                });
-                if (nsfw[nsfwuser].warnings == 3){
-                    nsfwchannel.send(`<@${nsfwuser}> \`к сожалению мне придется тебя кикнуть за нарушение правил.\``)
-                    return nsfwuser.kick(`откровенный контент`)
-                }else{
-                    return nsfwchannel.send(`<@${nsfwuser}> \`ваше сообщение было удалено из-за содержания откровенного контента.\``).then(msg => {
-                        msg.react(`🇸`).then(() => {
-                            msg.react(`🇪`).then(() => {
-                                msg.react(`🇨`).then(() => {
-                                    msg.react(`🇺`).then(() => {
-                                        msg.react(`🇷`).then(() => {
-                                            msg.react(`🇮`).then(() => {
-                                                msg.react(`🇹`).then(() => {
-                                                    msg.react(`🇾`).then(() => {
-                                                        msg.react(`🛡`)
-                                                    })
-                                                })
-                                            })
-                                        })
-                                    })
-                                })
-                            })
-                        })
-                    })
-                }
-            })
-        }
 
         if (reqchannel.name != "requests-for-roles") return
 
