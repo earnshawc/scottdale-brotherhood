@@ -250,6 +250,8 @@ bot.on('message', async message => {
         if (!message.member.roles.some(r => r.name == "Tester's Team ✔")){
             return message.reply("`вы не тестер! Используйте /itester.`")
         }
+        let user = message.guild.member(message.mentions.users.first());
+        if (!user) return
         let administartion_channel = bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.name == "administration");
         administartion_channel.fetchMessages().then(messages => {
             if (messages.includes(`**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:** \`1\``)){
