@@ -209,7 +209,7 @@ let test = [
     "Пример сообщения",
     "Пример номер два",
     "Все короче",
-]
+];
 
 bot.on('message', async message => {
     if (message.channel.type == "dm") return // Если в ЛС, то выход.
@@ -218,10 +218,10 @@ bot.on('message', async message => {
     if (message.content == "test ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
 
     if (message.content == "test command"){
-        for (i in test){
+        for (var i in test){
             setTimeout(function(){
                 message.reply(`Сообщение: \`${test[i]}\` ${i} из 3.`)
-            }, 2000);
+            }, 5000);
         }
     }
 
