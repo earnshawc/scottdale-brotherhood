@@ -230,7 +230,7 @@ bot.on('message', async message => {
 
     if (message.content == "test command"){
         for (var i in test){
-            message.reply(`Сообщение: \`${test[i]}\` ${i + 1} из 3.`)
+            message.reply(`Сообщение: \`${test[i]}\` ${i++} из 3.`)
             sleep(7000);
         }
     }
