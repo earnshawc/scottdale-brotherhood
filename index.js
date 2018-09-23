@@ -187,7 +187,7 @@ bot.on('ready', () => {
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
 - Команда "/invalidrole" была обновлена.
-        КД работает между серверами в одну минуту.
+        Все ники валидно отображаются.
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -257,13 +257,8 @@ bot.on('message', async message => {
                 }
                 nrpnamesget = nrpnamesget + 1;
                 nrpnames.delete(newmember.id);
-                if (nrpnamesget == 10){
-                    bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\``, {embed: {
-                    color: 3447003,
-                    fields: [{
-                        name: "`Ники у которых есть роль, но не совпадает ТЭГ.`",
-                        value: `${nrpsend}`
-                    }]}})
+                if (nrpnamesget == 15){
+                    bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\`\n${nrpsend}`)
                     nrpnamesget = 0;
                     nrpsend = null;
                 }
@@ -273,12 +268,7 @@ bot.on('message', async message => {
             return message.reply(`Невалидных ников нет.`)
         }else{
             if (nrpsend == null) return
-            bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\``, {embed: {
-            color: 3447003,
-            fields: [{
-                name: "`Ники у которых есть роль, но не совпадает ТЭГ.`",
-                value: `${nrpsend}`
-            }]}})
+            bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\`\n${nrpsend}`)
             nrpnamesget = 0;
             nrpsend = null;
         }
