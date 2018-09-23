@@ -6,7 +6,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
-let version = "2.8";
+let version = "2.9";
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -164,11 +164,7 @@ bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
     if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-+ Внесены мелкие недоработки.
-- Сделал блокировку откровенного контента смайликом "☠"
-    Пользователь изначально получает предупреждение.
-    Три предупреждения и пользователя кикает с дискорда.
-    Забыл подключить БД с предупреждениями. (Подключил)
+- Сделал тестовый вариант на сервере тестеров.
 » Kory_McGregor.\`\`\``).then(msgdone => {
         msgdone.react(`👍`).then(() => {
             msgdone.react(`👎`)
@@ -332,13 +328,13 @@ bot.on('raw', async event => {
         })
 
         if (event_emoji_name == "☠"){
-            if (event_guildid == "355656045600964609") return message.reply("`функция работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
+            if (event_guildid == "355656045600964609") return reqchannel.reply("`функция работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
                 color: 3447003,
                 fields: [{
                     name: "`Scottdale Brotherhood - Сервер разработчиков`",
                     value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
                 }]}}).then(msg => msg.delete(30000))
-            if (!requser.roles.some(r=>["Tester's Team ✔"].includes(r.name))) return message.reply("`вы не тестер.`", {embed: {
+            if (!requser.roles.some(r=>["Tester's Team ✔"].includes(r.name))) return reqchannel.reply("`вы не тестер.`", {embed: {
                 color: 3447003,
                 fields: [{
                     name: "`Scottdale Brotherhood - Сервер разработчиков`",
