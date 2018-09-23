@@ -213,6 +213,15 @@ let test = [
     "Все короче",
 ];
 
+function sleep(miliseconds){
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++){
+        if ((new Date().getTime() - start) > miliseconds){
+            break;
+        }
+    }
+}
+
 bot.on('message', async message => {
     if (message.channel.type == "dm") return // Если в ЛС, то выход.
     if (message.guild.id != "355656045600964609" && message.guild.id != "488400983496458260") return
@@ -221,8 +230,8 @@ bot.on('message', async message => {
 
     if (message.content == "test command"){
         for (var i in test){
-            await setTimeout(() => {}, 5000);
-            message.reply(`Сообщение: \`${test[i]}\` ${i} из 3.`)
+            message.reply(`Сообщение: \`${test[i]}\` ${i + 1} из 3.`)
+            sleep(7000);
         }
     }
 
