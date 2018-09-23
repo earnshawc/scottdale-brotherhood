@@ -203,14 +203,14 @@ bot.on('message', async message => {
     if (message.content == "test ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
 
     if (message.content.toLowerCase() == "/invalidrole"){
-
+        if (!message.member.hasPermission("MANAGE_ROLES")) return message.reply(`\`нет прав доступа.\``)
         if (cooldowncommand.has("INVALIDROLE")) {
-            return message.channel.send("`Можно использовать раз в минуту!` - " + msg.author);
+            return message.channel.send("`Можно использовать раз в две минуты!` - " + message.author);
         }
         cooldowncommand.add("INVALIDROLE");
         setTimeout(() => {
             cooldowncommand.delete("INVALIDROLE");
-        }, 60000);
+        }, 120000);
 
         /*
         if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
