@@ -163,7 +163,7 @@ const events = {
     MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
 };
 
-function checknick(member, role, startnum, endnum){
+function checknick(member, role, startnum, endnum, bot, message){
     if (member.roles.some(r => [role].includes(r.name))){
         let ruletagst = startnum
         let ruletagend = endnum
@@ -174,7 +174,13 @@ function checknick(member, role, startnum, endnum){
         }
         if (!rpname){
             if (!nrpnames.has(member.id)){
-                Logger.logMessage(`${member.displayName} - NRP NAME`)
+                let rolesgg = ["⋆ The Board of State ⋆", "⋆ Department of Justice ⋆", "⋆ Department of Defence ⋆", "⋆ Department of Health ⋆", "⋆ Mass Media ⋆", "⋆ Warlock MC ⋆", "⋆ Russian Mafia ⋆", "⋆ La Cosa Nostra ⋆", "⋆ Yakuza ⋆", "⋆ Grove Street Gang ⋆", "⋆ East Side Ballas Gang ⋆", "⋆ Vagos Gang ⋆", "⋆ Aztecas Gang ⋆", "⋆ Rifa Gang ⋆", "⋆ Night Wolfs ⋆"]
+                for (var i in rolesgg){
+                    let rolerem = bot.guilds.find(g => g.id == message.guild.id).roles.find(r => r.name == rolesgg[i]);
+                    if (member.roles.some(role=>[rolesgg[i]].includes(role.name))){
+                        member.removeRole(rolerem);
+                    }
+                }
                 nrpnames.add(member.id)
             }
         }
@@ -205,6 +211,14 @@ bot.on('message', async message => {
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
     if (message.content == "test ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
 
+    if (message.content == "test command"){
+        for (i in 3){
+            setTimeout(function(){
+                message.reply(`Цифра: ${i} из 3.`)
+            }, 2000);
+        }
+    }
+
     if (message.content.toLowerCase() == "/invalidrole"){
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.reply(`\`нет прав доступа.\``)
         if (cooldowncommand.has(message.guild.id)) {
@@ -231,21 +245,21 @@ bot.on('message', async message => {
         */
         let noformnick;
         await bot.guilds.find(g => g.id == message.guild.id).members.forEach(member => {
-            checknick(member, "⋆ The Board of State ⋆", 0, 3);
-            checknick(member, "⋆ Department of Justice ⋆", 4, 15);
-            checknick(member, "⋆ Department of Defence ⋆", 16, 25);
-            checknick(member, "⋆ Department of Health ⋆", 26, 31);
-            checknick(member, "⋆ Mass Media ⋆", 32, 43);
-            checknick(member, "⋆ Warlock MC ⋆", 44, 45);
-            checknick(member, "⋆ Russian Mafia ⋆", 46, 47);
-            checknick(member, "⋆ La Cosa Nostra ⋆", 48, 49);
-            checknick(member, "⋆ Yakuza ⋆", 50, 51);
-            checknick(member, "⋆ Grove Street Gang ⋆", 52, 53);
-            checknick(member, "⋆ East Side Ballas Gang ⋆", 54, 55);
-            checknick(member, "⋆ Vagos Gang ⋆", 56, 57);
-            checknick(member, "⋆ Aztecas Gang ⋆", 58, 59);
-            checknick(member, "⋆ Rifa Gang ⋆", 60, 61);
-            checknick(member, "⋆ Night Wolfs ⋆", 62, 63);
+            checknick(member, "⋆ The Board of State ⋆", 0, 3, bot, message);
+            checknick(member, "⋆ Department of Justice ⋆", 4, 15, bot, message);
+            checknick(member, "⋆ Department of Defence ⋆", 16, 25, bot, message);
+            checknick(member, "⋆ Department of Health ⋆", 26, 31, bot, message);
+            checknick(member, "⋆ Mass Media ⋆", 32, 43, bot, message);
+            checknick(member, "⋆ Warlock MC ⋆", 44, 45, bot, message);
+            checknick(member, "⋆ Russian Mafia ⋆", 46, 47, bot, message);
+            checknick(member, "⋆ La Cosa Nostra ⋆", 48, 49, bot, message);
+            checknick(member, "⋆ Yakuza ⋆", 50, 51, bot, message);
+            checknick(member, "⋆ Grove Street Gang ⋆", 52, 53, bot, message);
+            checknick(member, "⋆ East Side Ballas Gang ⋆", 54, 55, bot, message);
+            checknick(member, "⋆ Vagos Gang ⋆", 56, 57, bot, message);
+            checknick(member, "⋆ Aztecas Gang ⋆", 58, 59, bot, message);
+            checknick(member, "⋆ Rifa Gang ⋆", 60, 61, bot, message);
+            checknick(member, "⋆ Night Wolfs ⋆", 62, 63, bot, message);
         })
         let nrpsend;
         let nrpnamesget = 0;
@@ -261,7 +275,7 @@ bot.on('message', async message => {
                 nrpnamesget = nrpnamesget + 1;
                 nrpnames.delete(newmember.id);
                 if (nrpnamesget == 15){
-                    bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\`\n\n**${nrpsend}**`)
+                    bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\`\n\n**${nrpsend}**\n\`Я автоматически забрал у них роли.\``)
                     nrpnamesget = 0;
                     nrpsend = null;
                 }
@@ -271,7 +285,7 @@ bot.on('message', async message => {
             return message.reply(`Невалидных ников нет.`)
         }else{
             if (nrpsend == null) return
-            bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\`\n\n**${nrpsend}**`)
+            bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\`\n\n**${nrpsend}**\n\`Я автоматически забрал у них роли.\``)
             nrpnamesget = 0;
             nrpsend = null;
         }
