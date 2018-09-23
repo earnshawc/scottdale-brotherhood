@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.2";
+let version = "4.3";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -203,7 +203,7 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-  Исправлена ошибка с системой выдачи ролей в версии 4.1;
+- "/remove" работает с правами "ADMINISTRATOR"
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -289,7 +289,7 @@ bot.on('message', async message => {
     }
     
     if (message.content.toLowerCase().startsWith("/remove")){
-        if (!message.member.roles.some(r=>["✫Deputy Leader✫", "✵Leader✵", "✮Ministers✮", "Spectator™", "✔ Helper ✔", "Support Team", "✔Jr.Administrator✔", "✔ Administrator ✔"].includes(r.name))) return
+        if (!message.member.roles.some(r=>["✫Deputy Leader✫", "✵Leader✵", "✮Ministers✮", "Spectator™", "✔ Helper ✔", "Support Team", "✔Jr.Administrator✔", "✔ Administrator ✔"].includes(r.name)) && !message.member.hasPermission("ADMINISTRATOR")) return
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
             message.delete();
