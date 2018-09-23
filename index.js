@@ -157,8 +157,6 @@ let manytags = [
 "НВ",
 ];
 
-console.log(manytags[0])
-
 const events = {
     MESSAGE_REACTION_ADD: 'messageReactionAdd',
     MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
@@ -220,68 +218,21 @@ bot.on('message', async message => {
         }]}})
         let noformnick;
         bot.guilds.find(g => g.id == message.guild.id).members.forEach(member => {
-            checknick(member, "⋆ The Board of State ⋆", 0, 4);
-            checknick(member, "⋆ Department of Justice ⋆", 5, 16);
-            checknick(member, "⋆ Department of Defence ⋆", 17, 26);
-            checknick(member, "⋆ Department of Health ⋆", 27, 32);
-            checknick(member, "⋆ Mass Media ⋆", 33, 44);
-            checknick(member, "⋆ Warlock MC ⋆", 45, 46);
-            checknick(member, "⋆ Russian Mafia ⋆", 47, 48);
-            checknick(member, "⋆ La Cosa Nostra ⋆", 49, 50);
-            checknick(member, "⋆ Yakuza ⋆", 51, 52);
-            checknick(member, "⋆ Grove Street Gang ⋆", 53, 54);
-            checknick(member, "⋆ East Side Ballas Gang ⋆", 55, 56);
-            checknick(member, "⋆ Vagos Gang ⋆", 57, 58);
-            checknick(member, "⋆ Aztecas Gang ⋆", 59, 60);
-            checknick(member, "⋆ Rifa Gang ⋆", 61, 62);
-            checknick(member, "⋆ Night Wolfs ⋆", 63, 64);
-            /*
-            if (member.roles.some(r => ["⋆ The Board of State ⋆"].includes(r.name))){
-                let ruletagst = 0
-                let ruletagend = 4
-                let rpname = false;
-                for (i in manytags){
-                    if (i >= ruletagst && i <= ruletagend)
-                    if (member.displayName.toUpperCase().includes(manytags[i])) rpname = true;
-                }
-                if (!rpname){
-                    nrpnames.add(member.id)
-                }
-            }
-
-            if (member.roles.some(r => ["⋆ Department of Justice ⋆"].includes(r.name))){
-                let ruletags = ["FBI", "ФБР", "LSPD", "ЛСПД", "SFPD", "СФПД", "LVPD", "ЛВПД", "SWAT", "СВАТ", "RCPD", "РКПД"]
-                let rpname = false;
-                for (i in ruletags){
-                    if (member.displayName.toUpperCase().includes(ruletags[i])) rpname = true;
-                }
-                if (!rpname){
-                    nrpnames.add(member.id)
-                }
-            }
-
-            if (member.roles.some(r => ["⋆ Department of Defence ⋆"].includes(r.name))){
-                let ruletags = ["LSA","ЛСА","SFA","СФА","LS-A","ЛС-А","SF-A","СФ-А","ТСР","ТЮРЬМА"]
-                let rpname = false;
-                for (i in ruletags){
-                    if (member.displayName.toUpperCase().includes(ruletags[i])) rpname = true;
-                }
-                if (!rpname){
-                    nrpnames.add(member.id)
-                }
-            }
-
-            if (member.roles.some(r => ["⋆ Department of Defence ⋆"].includes(r.name))){
-                let ruletags = ["LSA","ЛСА","SFA","СФА","LS-A","ЛС-А","SF-A","СФ-А","ТСР","ТЮРЬМА"]
-                let rpname = false;
-                for (i in ruletags){
-                    if (member.displayName.toUpperCase().includes(ruletags[i])) rpname = true;
-                }
-                if (!rpname){
-                    nrpnames.add(member.id)
-                }
-            }
-            */
+            checknick(member, "⋆ The Board of State ⋆", 0, 3);
+            checknick(member, "⋆ Department of Justice ⋆", 4, 15);
+            checknick(member, "⋆ Department of Defence ⋆", 16, 25);
+            checknick(member, "⋆ Department of Health ⋆", 26, 31);
+            checknick(member, "⋆ Mass Media ⋆", 32, 43);
+            checknick(member, "⋆ Warlock MC ⋆", 44, 45);
+            checknick(member, "⋆ Russian Mafia ⋆", 46, 47);
+            checknick(member, "⋆ La Cosa Nostra ⋆", 48, 49);
+            checknick(member, "⋆ Yakuza ⋆", 50, 51);
+            checknick(member, "⋆ Grove Street Gang ⋆", 52, 53);
+            checknick(member, "⋆ East Side Ballas Gang ⋆", 54, 55);
+            checknick(member, "⋆ Vagos Gang ⋆", 56, 57);
+            checknick(member, "⋆ Aztecas Gang ⋆", 58, 59);
+            checknick(member, "⋆ Rifa Gang ⋆", 60, 61);
+            checknick(member, "⋆ Night Wolfs ⋆", 62, 63);
         })
         let nrpsend;
         let nrpnamesget = 0;
