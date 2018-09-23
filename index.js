@@ -8,8 +8,8 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "3.11";
-let hideobnova = true;
+let version = "4.0";
+let hideobnova = false;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -203,8 +203,7 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Команда "/invalidrole" была обновлена.
-        Все ники валидно отображаются.
+- Сделана новая система голосования в #ваши-предложения
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
