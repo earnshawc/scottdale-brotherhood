@@ -165,7 +165,7 @@ const events = {
     MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
 };
 
-async function checknick(member, role, startnum, endnum, bot, message){
+function checknick (member, role, startnum, endnum, bot, message){
     if (member.roles.some(r => [role].includes(r.name))){
         let ruletagst = startnum
         let ruletagend = endnum
@@ -221,8 +221,9 @@ bot.on('message', async message => {
 
     if (message.content == "test command"){
         for (var i in test){
-            message.reply(`Сообщение: \`${test[i]}\` ${i} из 3.`)
-            
+            setTimeout(() => {
+                message.reply(`Сообщение: \`${test[i]}\` ${i} из 3.`)
+            }, 5000);
         }
     }
 
