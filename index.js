@@ -6,7 +6,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
-let version = "3.1";
+let version = "3.2";
 let hideobnova = true;
 
 tags = ({
@@ -199,9 +199,7 @@ bot.on('message', async message => {
         }]}})
         bot.guilds.find(g => g.id == message.guild.id).members.forEach(member => {
             if (member.roles.some(r => ["⋆ The Board of State ⋆"].includes(r.name))){
-                if (["ПРА-ВО", "ГЦЛ", "АШ", "ЦБ"].includes(member.displayName.toUpperCase())){
-
-                }else{
+                if (!member.displayName.toUpperCase().includes(["ПРА-ВО", "ГЦЛ", "АШ", "ЦБ"])){
                     bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`\`У пользователя\` <@${member.id}> \`ник не по форме.\`\n\`Ник: ${member.displayName.toUpperCase()}\``)
                 }
             }
