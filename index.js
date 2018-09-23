@@ -6,7 +6,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
-let version = "2.10";
+let version = "2.11";
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -164,8 +164,7 @@ bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
     if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Исправил недоработки в фильтре откровенного контента.
-- Уже 4ый запуск, пытаюсь без краша.
+- Вроде все фикс, запуск №5
 » Kory_McGregor.\`\`\``).then(msgdone => {
         msgdone.react(`👍`).then(() => {
             msgdone.react(`👎`)
@@ -342,39 +341,38 @@ bot.on('raw', async event => {
                     value: "**PERMISSION ERROR** `Используй: /itester`"
                 }]}}).then(msg => msg.delete(15000))
             let nsfwchannel = bot.guilds.find(g => g.id == event_guildid).channels.find(c => c.id == event_channelid)
-            let nsfwuser;
             nsfwchannel.fetchMessage(event_messageid).then(msg => {
-                nsfwuser = msg.member.id;
-            })
-            reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
-            if (!nsfw[nsfwuser]){
+                let nsfwuser = msg.member.id
+                reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
+                if (!nsfw[nsfwuser]){
+                    nsfw[nsfwuser] = {
+                        "warnings": 0,
+                    };
+                    fs.writeFileSync("./database/nsfw warns.json", JSON.stringify(nsfw), (err) => {
+                        return console.error(`Произошла ошибка: ${err}`)
+                    });
+                }
                 nsfw[nsfwuser] = {
-                    "warnings": 0,
+                    "warnings": nsfw[nsfwuser].warnings + 1,
                 };
                 fs.writeFileSync("./database/nsfw warns.json", JSON.stringify(nsfw), (err) => {
                     return console.error(`Произошла ошибка: ${err}`)
                 });
-            }
-            nsfw[nsfwuser] = {
-                "warnings": nsfw[nsfwuser].warnings + 1,
-            };
-            fs.writeFileSync("./database/nsfw warns.json", JSON.stringify(nsfw), (err) => {
-                return console.error(`Произошла ошибка: ${err}`)
-            });
-            if (nsfw[nsfwuser].warnings == 3){
-                nsfwchannel.send(`<@${nsfwuser}> \`к сожалению мне придется тебя кикнуть за нарушение правил.\``)
-                return nsfwuser.kick(`откровенный контент`)
-            }else{
-                return nsfwchannel.send(`<@${nsfwuser}> \`ваше сообщение было удалено из-за содержания откровенного контента.\``).then(msg => {
-                    msg.react(`🇸`).then(() => {
-                        msg.react(`🇪`).then(() => {
-                            msg.react(`🇨`).then(() => {
-                                msg.react(`🇺`).then(() => {
-                                    msg.react(`🇷`).then(() => {
-                                        msg.react(`🇮`).then(() => {
-                                            msg.react(`🇹`).then(() => {
-                                                msg.react(`🇾`).then(() => {
-                                                    msg.react(`🛡`)
+                if (nsfw[nsfwuser].warnings == 3){
+                    nsfwchannel.send(`<@${nsfwuser}> \`к сожалению мне придется тебя кикнуть за нарушение правил.\``)
+                    return nsfwuser.kick(`откровенный контент`)
+                }else{
+                    return nsfwchannel.send(`<@${nsfwuser}> \`ваше сообщение было удалено из-за содержания откровенного контента.\``).then(msg => {
+                        msg.react(`🇸`).then(() => {
+                            msg.react(`🇪`).then(() => {
+                                msg.react(`🇨`).then(() => {
+                                    msg.react(`🇺`).then(() => {
+                                        msg.react(`🇷`).then(() => {
+                                            msg.react(`🇮`).then(() => {
+                                                msg.react(`🇹`).then(() => {
+                                                    msg.react(`🇾`).then(() => {
+                                                        msg.react(`🛡`)
+                                                    })
                                                 })
                                             })
                                         })
@@ -383,8 +381,8 @@ bot.on('raw', async event => {
                             })
                         })
                     })
-                })
-            }
+                }
+            })
         }
 
         if (reqchannel.name != "requests-for-roles") return
