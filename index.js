@@ -6,8 +6,10 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
-let version = "3.3";
-let hideobnova = true;
+let version = "3.4";
+let hideobnova = false;
+
+const nrpnames = new Set();
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -167,10 +169,7 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Добавлена новая команда: /invalidrole
-    Проверяет пользователей с ролью правительства
-    Если ник не по форме - выводит в чат, где была написана команда
-    Работает в тестовом режиме на тест сервере
+- Обновлена команда "/invalidrole"
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -198,6 +197,7 @@ bot.on('message', async message => {
             name: "`Scottdale Brotherhood - Сервер разработчиков`",
             value: "**Используйте `/itester`**"
         }]}})
+        let noformnick;
         bot.guilds.find(g => g.id == message.guild.id).members.forEach(member => {
             if (member.roles.some(r => ["⋆ The Board of State ⋆"].includes(r.name))){
                 let ruletags = ["ПРА-ВО", "ГЦЛ", "АШ", "ЦБ"]
@@ -206,10 +206,47 @@ bot.on('message', async message => {
                     if (member.displayName.toUpperCase().includes(ruletags[i])) rpname = true;
                 }
                 if (!rpname){
-                    bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`\`У пользователя\` <@${member.id}> \`ник не по форме.\`\n\`Ник: ${member.displayName.toUpperCase()}\``)
+                    nrpnames.add(member.id)
                 }
             }
         })
+        let nrpsend;
+        let nrpnamesget = 0;
+        let allservernonrpnames = false;
+        bot.guilds.find(g => g.id == message.guild.id).members.forEach(newmember => {
+            if (nrpnames.has(newmember.id)){
+                allservernonrpnames = true;
+                if (nrpnamesget == 0){
+                    nrpsend = `<@${newmember.id}>`;
+                }else{
+                    nrpsend = nrpsend + `\n<@${newmember.id}>`;
+                }
+                nrpnamesget = nrpnamesget + 1;
+                nrpnames.delete(newmember.id);
+                if (nrpnamesget == 10){
+                    bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`я нашел невалидные ники\``, {embed: {
+                    color: 3447003,
+                    fields: [{
+                        name: "`Ники у которых есть роль, но не совпадает ТЭГ.`",
+                        value: `${nrpsend}`
+                    }]}})
+                    nrpnamesget = 0;
+                    nrpsend = null;
+                }
+            }
+        })
+        if (!allservernonrpnames){
+            return message.reply(`Невалидных ников нет.`)
+        }else{
+            bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`я нашел невалидные ники\``, {embed: {
+            color: 3447003,
+            fields: [{
+                name: "`Ники у которых есть роль, но не совпадает ТЭГ.`",
+                value: `${nrpsend}`
+            }]}})
+            nrpnamesget = 0;
+            nrpsend = null;
+        }
     }
     
     if (message.content.toLowerCase().startsWith("/remove")){
