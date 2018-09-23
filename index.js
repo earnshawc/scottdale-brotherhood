@@ -7,6 +7,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 let version = "3.0";
+let hideobnova = true;
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -162,17 +163,19 @@ bot.login(process.env.token);
 
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
-    if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
+    if (!hideobnova){
+        if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
 - Добавлена новая команда: /invalidrole
     Проверяет пользователей с ролью правительства
     Если ник не по форме - выводит в чат, где была написана команда
     Работает в тестовом режиме на тест сервере
 » Kory_McGregor.\`\`\``).then(msgdone => {
-        msgdone.react(`👍`).then(() => {
-            msgdone.react(`👎`)
+            msgdone.react(`👍`).then(() => {
+                msgdone.react(`👎`)
+            })
         })
-    })
+    }
 });
 
 bot.on('message', async message => {
@@ -196,8 +199,8 @@ bot.on('message', async message => {
         }]}})
         bot.guilds.find(g => g.id == message.guild.id).members.forEach(member => {
             if (member.roles.some(r => ["⋆ The Board of State ⋆"].includes(r.name))){
-                if (!["пра-во", "гцл", "аш", "цб"].includes(member.displayName.toLowerCase())){
-                    bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`\`у пользователя\` <@${member.id}> \`ник не по форме.\``)
+                if (!["ПРА-ВО", "ГЦЛ", "АШ", "ЦБ"].includes(member.displayName.toUpperCase())){
+                    bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`\`У пользователя\` <@${member.id}> \`ник не по форме.\`\n\`Ник: ${member.displayName.toUpperCase()}\``)
                 }
             }
         })
