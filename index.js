@@ -334,13 +334,13 @@ bot.on('raw', async event => {
         })
 
         if (event_emoji_name == "☠"){
-            if (event_guildid == "355656045600964609") return reqchannel.send(requser.id + " `функция работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
+            if (event_guildid == "355656045600964609") return reqchannel.send(`<@${requser.id}>, \`функция работает только на тестовом сервере Scottdale Brotherhood.\``, {embed: {
                 color: 3447003,
                 fields: [{
                     name: "`Scottdale Brotherhood - Сервер разработчиков`",
                     value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
                 }]}}).then(msg => msg.delete(30000))
-            if (!requser.roles.some(r=>["Tester's Team ✔"].includes(r.name))) return reqchannel.send(`${requser.id} \`вы не тестер.\``, {embed: {
+            if (!requser.roles.some(r=>["Tester's Team ✔"].includes(r.name))) return reqchannel.send(`<@${requser.id}>, \`вы не тестер.\``, {embed: {
                 color: 3447003,
                 fields: [{
                     name: "`Scottdale Brotherhood - Сервер разработчиков`",
