@@ -201,7 +201,11 @@ bot.on('message', async message => {
         bot.guilds.find(g => g.id == message.guild.id).members.forEach(member => {
             if (member.roles.some(r => ["⋆ The Board of State ⋆"].includes(r.name))){
                 let ruletags = ["ПРА-ВО", "ГЦЛ", "АШ", "ЦБ"]
-                if (!member.displayName.toUpperCase().includes(ruletags)){
+                let rpname = false;
+                for (i in ruletags){
+                    if (!member.displayName.toUpperCase().includes(ruletags[i])) rpname = true;
+                }
+                if (!rpname){
                     bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`\`У пользователя\` <@${member.id}> \`ник не по форме.\`\n\`Ник: ${member.displayName.toUpperCase()}\``)
                 }
             }
