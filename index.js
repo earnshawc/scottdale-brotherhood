@@ -225,6 +225,10 @@ bot.on('message', async message => {
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
     if (message.content == "test ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
 
+    if (message.content.startsWith("test coomand")){
+        return message.reply(message.content.split(1));
+    }
+
     if (message.content.toLowerCase().startsWith("/setadmin")){
         if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
             color: 3447003,
@@ -257,7 +261,7 @@ bot.on('message', async message => {
             let admin = messages.some(msgd => msgd.content.includes(`**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:**`));
             if (admin){
                 let admintemp = `**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:**`;
-                message.reply("Он админ! LVL: " + admin.split(admintemp.length))
+                message.reply("Он админ! LVL: " + admin.content.split(admintemp.length))
             }else{
                 message.reply("Он не админ!")
             }
