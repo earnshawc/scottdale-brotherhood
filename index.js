@@ -1,9 +1,7 @@
 ﻿const Discord = require('discord.js');
-const delay = require('delay');
 const bot = new Discord.Client();
 const fs = require("fs");
 const Logger = require('./objects/logger');
-const wait = require('util').promisify(setTimeout);
 
 let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
@@ -224,7 +222,7 @@ bot.on('message', async message => {
     if (message.content == "test command"){
         for (var i in test){
             message.reply(`Сообщение: \`${test[i]}\` ${i} из 3.`)
-            await delay(7000);
+            
         }
     }
 
