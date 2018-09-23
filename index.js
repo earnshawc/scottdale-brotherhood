@@ -1,4 +1,5 @@
 ﻿const Discord = require('discord.js');
+const delay = require('delay');
 const bot = new Discord.Client();
 const fs = require("fs");
 const Logger = require('./objects/logger');
@@ -223,7 +224,7 @@ bot.on('message', async message => {
     if (message.content == "test command"){
         for (var i in test){
             message.reply(`Сообщение: \`${test[i]}\` ${i} из 3.`)
-            wait(5000);
+            await delay(7000);
         }
     }
 
