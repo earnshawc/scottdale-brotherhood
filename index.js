@@ -6,8 +6,8 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
-let version = "3.8";
-let hideobnova = false;
+let version = "3.9";
+let hideobnova = true;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -258,7 +258,7 @@ bot.on('message', async message => {
                 nrpnamesget = nrpnamesget + 1;
                 nrpnames.delete(newmember.id);
                 if (nrpnamesget == 15){
-                    bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\`\n${nrpsend}`)
+                    bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\`\n\n**${nrpsend}**`)
                     nrpnamesget = 0;
                     nrpsend = null;
                 }
@@ -268,7 +268,7 @@ bot.on('message', async message => {
             return message.reply(`Невалидных ников нет.`)
         }else{
             if (nrpsend == null) return
-            bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\`\n${nrpsend}`)
+            bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\`\n\n**${nrpsend}**`)
             nrpnamesget = 0;
             nrpsend = null;
         }
