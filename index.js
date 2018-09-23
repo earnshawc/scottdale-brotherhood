@@ -6,7 +6,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
-let version = "2.12";
+let version = "3.0";
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -162,20 +162,17 @@ bot.login(process.env.token);
 
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
-    /*
     if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Успешный запуск бота. Начинаем массовый тест.
-- Сделал блокировку откровенного контента смайликом "☠"
--   Пользователь изначально получает предупреждение.
--   Три предупреждения и пользователя кикает с дискорда.
--   На сервере Scottdale Brotherhood выдает ошибку. Тестить тута.
+- Добавлена новая команда: /invalidrole
+    Проверяет пользователей с ролью правительства
+    Если ник не по форме - выводит в чат, где была написана команда
+    Работает в тестовом режиме на тест сервере
 » Kory_McGregor.\`\`\``).then(msgdone => {
         msgdone.react(`👍`).then(() => {
             msgdone.react(`👎`)
         })
     })
-    */
 });
 
 bot.on('message', async message => {
@@ -184,6 +181,28 @@ bot.on('message', async message => {
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
     if (message.content == "test ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
 
+    if (message.content.toLowerCase() == "/invalidrole"){
+        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
+        color: 3447003,
+        fields: [{
+            name: "`Scottdale Brotherhood - Сервер разработчиков`",
+            value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
+        }]}})
+        if (!message.member.roles.some(r => r.name == "Tester's Team ✔")) return message.reply("`вы не являетесь тестером.`", {embed: {
+        color: 3447003,
+        fields: [{
+            name: "`Scottdale Brotherhood - Сервер разработчиков`",
+            value: "**Используйте `/itester`**"
+        }]}})
+        bot.guilds.find(g => g.id == message.guild.id).members.forEach(member => {
+            if (member.roles.some(r => ["⋆ The Board of State ⋆"].includes(r.name))){
+                if (!["пра-во", "гцл", "аш", "цб"].includes(member.displayName.toLowerCase())){
+                    bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`\`у пользователя\` <@${member.id}> \`ник не по форме.\``)
+                }
+            }
+        })
+    }
+    
     if (message.content.toLowerCase().startsWith("/remove")){
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
