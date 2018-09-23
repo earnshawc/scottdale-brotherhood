@@ -5,7 +5,8 @@ const Logger = require('./objects/logger');
 let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
-let version = "2.6";
+let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
+let version = "2.7";
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -161,9 +162,12 @@ bot.login(process.env.token);
 
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
-    if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`@everyone\n\`\`\`diff
+    if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Релиз обновления состоялся в Discord - Scottdale Brotherhood.
++ Внесены мелкие недоработки.
+- Сделал блокировку откровенного контента смайликом "☠"
+    Пользователь изначально получает предупреждение.
+    Три предупреждения и пользователя кикает с дискорда.
 + by » Kory_McGregor.\`\`\``).then(msgdone => {
         msgdone.react(`👍`).then(() => {
             msgdone.react(`👎`)
@@ -300,7 +304,7 @@ bot.on('message', async message => {
                         return console.error(`Произошла ошибка. ${err}`)
                     });
                     await msgsen.pin();
-                    message.reply(`\`ваш запрос на выдачу роли фракции был отправлен модераторам!\``)
+                    message.reply(`\`ваш запрос на выдачу роли фракции был отправлен модераторам!\``).then(msg => msg.delete(5000))
                 })
                 return
             }
@@ -321,11 +325,63 @@ bot.on('raw', async event => {
         if (event_userid == bot.user.id) return
         let requser = bot.guilds.find(g => g.id == event_guildid).members.find(m => m.id == event_userid);
         let reqchannel = bot.guilds.find(g => g.id == event_guildid).channels.find(c => c.id == event_channelid);
-        if (reqchannel.name != "requests-for-roles") return
 
         bot.guilds.find(g => g.id == event_guildid).channels.find(c => c.id == event_channelid).fetchMessage(event_messageid).then(msg => {
             if (!msg) return
         })
+
+        if (event_emoji_name == "☠"){
+            if (event_guildid == "355656045600964609") return message.reply("`функция работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
+                color: 3447003,
+                fields: [{
+                    name: "`Scottdale Brotherhood - Сервер разработчиков`",
+                    value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
+                }]}}).then(msg => msg.delete(30000))
+            if (!requser.roles.some(r=>["Tester's Team ✔"].includes(r.name))) return message.reply("`вы не тестер.`", {embed: {
+                color: 3447003,
+                fields: [{
+                    name: "`Scottdale Brotherhood - Сервер разработчиков`",
+                    value: "**PERMISSION ERROR** `Используй: /itester`"
+                }]}}).then(msg => msg.delete(15000))
+            let nsfwchannel = bot.guilds.find(g => g.id == event_guildid).channels.find(c => c.id == event_channelid);
+            let nsfwuser;
+            nsfwchannel.fetchMessage(event_messageid).then(msg => {
+                nsfwuser = msg.member.id;
+            })
+            reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
+            nsfw[nsfwuser] = {
+                "warnings": nsfw[nsfwuser].warnings + 1,
+            };
+            fs.writeFileSync("./database/nsfw warns.json", JSON.stringify(nsfw), (err) => {
+                return console.error(`Произошла ошибка: ${err}`)
+            });
+            if (nsfw[nsfwuser].warnings == 3){
+                nsfwchannel.send(`<@${nsfwuser}> \`к сожалению мне придется тебя кикнуть за нарушение правил.\``)
+                return nsfwuser.kick(`откровенный контент`)
+            }else{
+                return nsfwchannel.send(`<@${nsfwuser}> \`ваше сообщение было удалено из-за содержания откровенного контента.\``).then(msg => {
+                    msg.react(`🇸`).then(() => {
+                        msg.react(`🇪`).then(() => {
+                            msg.react(`🇨`).then(() => {
+                                msg.react(`🇺`).then(() => {
+                                    msg.react(`🇷`).then(() => {
+                                        msg.react(`🇮`).then(() => {
+                                            msg.react(`🇹`).then(() => {
+                                                msg.react(`🇾`).then(() => {
+                                                    msg.react(`🛡`)
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            }
+        }
+
+        if (reqchannel.name != "requests-for-roles") return
 
         if (event_emoji_name == "🇩"){
             if (requser.roles.some(r=>["✫Deputy Leader✫", "✵Leader✵", "✮Ministers✮"].includes(r.name)) && !requser.roles.some(r => ["Spectator™", "✔ Helper ✔", "✔Jr.Administrator✔", "✔ Administrator ✔"].includes(r.name))){
