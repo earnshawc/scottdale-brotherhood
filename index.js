@@ -311,6 +311,7 @@ bot.on('message', async message => {
         if (!allservernonrpnames){
             return message.reply(`Невалидных ников нет.`)
         }else{
+            if (nrpsend == null) return
             bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\``, {embed: {
             color: 3447003,
             fields: [{
