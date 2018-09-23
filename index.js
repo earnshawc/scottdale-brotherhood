@@ -6,7 +6,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
-let version = "3.10";
+let version = "3.11";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -170,10 +170,13 @@ function checknick(member, role, startnum, endnum){
         let rpname = false;
         for (i in manytags){
             if (i >= ruletagst && i <= ruletagend)
-            if (member.nickname.toUpperCase().includes(manytags[i])) rpname = true;
+            if (member.displayName.toUpperCase().includes(manytags[i])) rpname = true;
         }
         if (!rpname){
-            nrpnames.add(member.id)
+            if (!nrpnames.has(member.id)){
+                Logger.logMessage(`${member.displayName} - NRP NAME`)
+                nrpnames.add(member.id)
+            }
         }
     }
 }
@@ -227,7 +230,7 @@ bot.on('message', async message => {
         }]}})
         */
         let noformnick;
-        bot.guilds.find(g => g.id == message.guild.id).members.forEach(member => {
+        await bot.guilds.find(g => g.id == message.guild.id).members.forEach(member => {
             checknick(member, "⋆ The Board of State ⋆", 0, 3);
             checknick(member, "⋆ Department of Justice ⋆", 4, 15);
             checknick(member, "⋆ Department of Defence ⋆", 16, 25);
@@ -247,7 +250,7 @@ bot.on('message', async message => {
         let nrpsend;
         let nrpnamesget = 0;
         let allservernonrpnames = false;
-        bot.guilds.find(g => g.id == message.guild.id).members.forEach(newmember => {
+        await bot.guilds.find(g => g.id == message.guild.id).members.forEach(newmember => {
             if (nrpnames.has(newmember.id)){
                 allservernonrpnames = true;
                 if (nrpnamesget == 0){
