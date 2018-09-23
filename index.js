@@ -203,7 +203,7 @@ bot.on('message', async message => {
                 let ruletags = ["ПРА-ВО", "ГЦЛ", "АШ", "ЦБ"]
                 let rpname = false;
                 for (i in ruletags){
-                    if (!member.displayName.toUpperCase().includes(ruletags[i])) rpname = true;
+                    if (member.displayName.toUpperCase().includes(ruletags[i])) rpname = true;
                 }
                 if (!rpname){
                     bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`\`У пользователя\` <@${member.id}> \`ник не по форме.\`\n\`Ник: ${member.displayName.toUpperCase()}\``)
