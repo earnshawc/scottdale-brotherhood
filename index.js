@@ -6,8 +6,8 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
-let version = "3.5";
-let hideobnova = false;
+let version = "3.6";
+let hideobnova = true;
 
 const nrpnames = new Set();
 
@@ -149,13 +149,15 @@ let manytags = [
 "БАЛЛАС",
 "VAGOS",
 "ВАГОС",
-"NW",
-"НВ",
-"RIFA",
-"РИФА",
 "AZTEC",  
 "АЦТЕК",
+"RIFA",
+"РИФА",
+"NW",
+"НВ",
 ];
+
+console.log(manytags[0])
 
 const events = {
     MESSAGE_REACTION_ADD: 'messageReactionAdd',
@@ -219,6 +221,20 @@ bot.on('message', async message => {
         let noformnick;
         bot.guilds.find(g => g.id == message.guild.id).members.forEach(member => {
             checknick(member, "⋆ The Board of State ⋆", 0, 4);
+            checknick(member, "⋆ Department of Justice ⋆", 5, 16);
+            checknick(member, "⋆ Department of Defence ⋆", 17, 26);
+            checknick(member, "⋆ Department of Health ⋆", 27, 32);
+            checknick(member, "⋆ Mass Media ⋆", 33, 44);
+            checknick(member, "⋆ Warlock MC ⋆", 45, 46);
+            checknick(member, "⋆ Russian Mafia ⋆", 47, 48);
+            checknick(member, "⋆ La Cosa Nostra ⋆", 49, 50);
+            checknick(member, "⋆ Yakuza ⋆", 51, 52);
+            checknick(member, "⋆ Grove Street Gang ⋆", 53, 54);
+            checknick(member, "⋆ East Side Ballas Gang ⋆", 55, 56);
+            checknick(member, "⋆ Vagos Gang ⋆", 57, 58);
+            checknick(member, "⋆ Aztecas Gang ⋆", 59, 60);
+            checknick(member, "⋆ Rifa Gang ⋆", 61, 62);
+            checknick(member, "⋆ Night Wolfs ⋆", 63, 64);
             /*
             if (member.roles.some(r => ["⋆ The Board of State ⋆"].includes(r.name))){
                 let ruletagst = 0
