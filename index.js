@@ -221,7 +221,7 @@ bot.on('message', async message => {
 
     if (message.content == "test command"){
         for (var i in test){
-            setTimeout(() => {
+            await setTimeout(() => {
                 message.reply(`Сообщение: \`${test[i]}\` ${i} из 3.`)
             }, 5000);
         }
