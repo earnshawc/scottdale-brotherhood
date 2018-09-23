@@ -5,7 +5,7 @@ const Logger = require('./objects/logger');
 let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
-let version = "2.4";
+let version = "2.5";
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -163,11 +163,7 @@ bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
     if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`\`\`\`diff
 Вышло обновление версии ${version}:
-- Все команды доработаны. Снизу список.
-1) Что бы получить роль нужно поставить тэг и попросить в чат роль.
-2) Что бы забрать роль, нужно написать "/remove @упоминание".
-3) Проверка на онлайн бота: "test ping".
-4) Выдать себе права тестера: "/itester".
+- Исправлен баг с /remove, можно было забрать роль у пользователя, если самой роли у него нет.
 + Ваш разработчик Kory_McGregor.\`\`\``).then(msgdone => {
         msgdone.react(`👍`).then(() => {
             msgdone.react(`👎`)
@@ -197,6 +193,10 @@ bot.on('message', async message => {
         let rolesgg = ["⋆ The Board of State ⋆", "⋆ Department of Justice ⋆", "⋆ Department of Defence ⋆", "⋆ Department of Health ⋆", "⋆ Mass Media ⋆", "⋆ Warlock MC ⋆", "⋆ Russian Mafia ⋆", "⋆ La Cosa Nostra ⋆", "⋆ Yakuza ⋆", "⋆ Grove Street Gang ⋆", "⋆ East Side Ballas Gang ⋆", "⋆ Vagos Gang ⋆", "⋆ Aztecas Gang ⋆", "⋆ Rifa Gang ⋆", "⋆ Night Wolfs ⋆"]
         for (i in rolesgg){
             if(user.roles.some(r=>rolesgg[i].includes(r.name)) ) countroles = countroles + 1;
+        }
+        if (countroles == 0){
+            message.delete();
+            return message.reply(`\`у данного пользователя нет фракционных ролей.\``)
         }
         if (countroles > 1){
             for (var i in rolesgg){
