@@ -260,9 +260,14 @@ bot.on('message', async message => {
         administartion_channel.fetchMessages().then(messages => {
             let admin = messages.some(msgd => msgd.content.includes(`**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:**`));
             if (admin){
-                let admintemp = `**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:**`;
-                const adminlvl = admin.content.slice(admintemp.length).trim().split(/ +/g);
-                message.reply("Он админ! LVL: " + adminlvl[0])
+                const args = message.content.split(" ").slice(1);
+                message.reply("Он админ!")
+                console.log(args)
+                console.log(args[1])
+                console.log(args[2])
+                console.log(args[3])
+                console.log(args[4])
+                console.log(args[5])
             }else{
                 message.reply("Он не админ!")
             }
