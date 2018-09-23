@@ -5,7 +5,7 @@ const Logger = require('./objects/logger');
 let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
-let version = "2.5";
+let version = "2.6";
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -161,10 +161,10 @@ bot.login(process.env.token);
 
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
-    if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`\`\`\`diff
+    if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`@everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Исправлен баг с /remove, можно было забрать роль у пользователя, если самой роли у него нет.
-+ Ваш разработчик Kory_McGregor.\`\`\``).then(msgdone => {
+- Релиз обновления состоялся в Discord - Scottdale Brotherhood.
++ by » Kory_McGregor.\`\`\``).then(msgdone => {
         msgdone.react(`👍`).then(() => {
             msgdone.react(`👎`)
         })
@@ -178,12 +178,6 @@ bot.on('message', async message => {
     if (message.content == "test ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
 
     if (message.content.toLowerCase().startsWith("/remove")){
-        if (message.guild.id == 355656045600964609) return message.reply(`\`работает только на тестовом сервере!\``, {embed: {
-            color: 3447003,
-            fields: [{
-                name: "`Scottdale Brotherhood - Сервер разработчиков`",
-                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
-            }]}})
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
             message.delete();
@@ -239,15 +233,15 @@ bot.on('message', async message => {
     }
 
     if (message.content.toLowerCase().startsWith("/itester")){
+        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
+            color: 3447003,
+            fields: [{
+                name: "`Scottdale Brotherhood - Сервер разработчиков`",
+                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
+            }]}})
         if (message.member.roles.some(r => r.name == "Tester's Team ✔")){
             return message.reply("`вы уже являетесь тестером.`")
         }
-        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
-        color: 3447003,
-        fields: [{
-            name: "`Scottdale Brotherhood - Сервер разработчиков`",
-            value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
-        }]}})
         message.member.addRole(bot.guilds.find(g => g.id == message.guild.id).roles.find(r => r.name == "Tester's Team ✔"));
         return message.reply(`\`теперь вы тестер.\``)
     }
