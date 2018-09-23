@@ -259,6 +259,7 @@ bot.on('message', async message => {
         let administartion_channel = bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.name == "administration");
         administartion_channel.fetchMessages().then(messages => {
             let admin = messages.some(msgd => msgd.content.includes(`**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:**`));
+            console.log(admin)
             if (admin){
                 const args = messages.content.slice(`**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:**`).split('`')
                 message.reply("Он админ!")
