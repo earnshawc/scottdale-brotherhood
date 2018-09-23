@@ -6,7 +6,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
-let version = "3.9";
+let version = "3.10";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -170,7 +170,7 @@ function checknick(member, role, startnum, endnum){
         let rpname = false;
         for (i in manytags){
             if (i >= ruletagst && i <= ruletagend)
-            if (member.displayName.toUpperCase().includes(manytags[i])) rpname = true;
+            if (member.nickname.toUpperCase().includes(manytags[i])) rpname = true;
         }
         if (!rpname){
             nrpnames.add(member.id)
