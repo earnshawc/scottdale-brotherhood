@@ -6,7 +6,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
-let version = "3.4";
+let version = "3.5";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -89,6 +89,7 @@ let manytags = [
 "ГЦЛ",
 "АШ",
 "ЦБ",
+
 "FBI",
 "ФБР",
 "LSPD",
@@ -161,6 +162,21 @@ const events = {
     MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
 };
 
+function checknick(member, role, startnum, endnum){
+    if (member.roles.some(r => [role].includes(r.name))){
+        let ruletagst = startnum
+        let ruletagend = endnum
+        let rpname = false;
+        for (i in manytags){
+            if (i >= ruletagst && i <= ruletagend)
+            if (member.displayName.toUpperCase().includes(manytags[i])) rpname = true;
+        }
+        if (!rpname){
+            nrpnames.add(member.id)
+        }
+    }
+}
+
 bot.login(process.env.token);
 
 bot.on('ready', () => {
@@ -169,7 +185,10 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Обновлена команда "/invalidrole"
+- Обновил систему по определению нРП ника.
+        Сделана функция: checknick(пользователь, роль, startnum, endnum)
+        Запустил проверку через функцию checknick(member, "⋆ The Board of State ⋆", 0, 4);
+        Пока в тестовом режиме.
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -199,8 +218,23 @@ bot.on('message', async message => {
         }]}})
         let noformnick;
         bot.guilds.find(g => g.id == message.guild.id).members.forEach(member => {
+            checknick(member, "⋆ The Board of State ⋆", 0, 4);
+            /*
             if (member.roles.some(r => ["⋆ The Board of State ⋆"].includes(r.name))){
-                let ruletags = ["ПРА-ВО", "ГЦЛ", "АШ", "ЦБ"]
+                let ruletagst = 0
+                let ruletagend = 4
+                let rpname = false;
+                for (i in manytags){
+                    if (i >= ruletagst && i <= ruletagend)
+                    if (member.displayName.toUpperCase().includes(manytags[i])) rpname = true;
+                }
+                if (!rpname){
+                    nrpnames.add(member.id)
+                }
+            }
+
+            if (member.roles.some(r => ["⋆ Department of Justice ⋆"].includes(r.name))){
+                let ruletags = ["FBI", "ФБР", "LSPD", "ЛСПД", "SFPD", "СФПД", "LVPD", "ЛВПД", "SWAT", "СВАТ", "RCPD", "РКПД"]
                 let rpname = false;
                 for (i in ruletags){
                     if (member.displayName.toUpperCase().includes(ruletags[i])) rpname = true;
@@ -209,6 +243,29 @@ bot.on('message', async message => {
                     nrpnames.add(member.id)
                 }
             }
+
+            if (member.roles.some(r => ["⋆ Department of Defence ⋆"].includes(r.name))){
+                let ruletags = ["LSA","ЛСА","SFA","СФА","LS-A","ЛС-А","SF-A","СФ-А","ТСР","ТЮРЬМА"]
+                let rpname = false;
+                for (i in ruletags){
+                    if (member.displayName.toUpperCase().includes(ruletags[i])) rpname = true;
+                }
+                if (!rpname){
+                    nrpnames.add(member.id)
+                }
+            }
+
+            if (member.roles.some(r => ["⋆ Department of Defence ⋆"].includes(r.name))){
+                let ruletags = ["LSA","ЛСА","SFA","СФА","LS-A","ЛС-А","SF-A","СФ-А","ТСР","ТЮРЬМА"]
+                let rpname = false;
+                for (i in ruletags){
+                    if (member.displayName.toUpperCase().includes(ruletags[i])) rpname = true;
+                }
+                if (!rpname){
+                    nrpnames.add(member.id)
+                }
+            }
+            */
         })
         let nrpsend;
         let nrpnamesget = 0;
@@ -224,7 +281,7 @@ bot.on('message', async message => {
                 nrpnamesget = nrpnamesget + 1;
                 nrpnames.delete(newmember.id);
                 if (nrpnamesget == 10){
-                    bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`я нашел невалидные ники\``, {embed: {
+                    bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\``, {embed: {
                     color: 3447003,
                     fields: [{
                         name: "`Ники у которых есть роль, но не совпадает ТЭГ.`",
@@ -238,7 +295,7 @@ bot.on('message', async message => {
         if (!allservernonrpnames){
             return message.reply(`Невалидных ников нет.`)
         }else{
-            bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`я нашел невалидные ники\``, {embed: {
+            bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\``, {embed: {
             color: 3447003,
             fields: [{
                 name: "`Ники у которых есть роль, но не совпадает ТЭГ.`",
