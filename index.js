@@ -225,6 +225,18 @@ bot.on('message', async message => {
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
     if (message.content == "test ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
 
+    if (message.guild.id == 488400983496458260){
+        if (message.channel.name == "ваши-предложения"){
+            message.react(`✔`).then(() => {
+                if (!message) return
+                message.react(`❌`).then(() => {
+                    if (!message) return
+                    message.react(`🌿`)
+                })
+            })
+        }
+    }
+
     if (message.content.startsWith("test coomand")){
         return message.reply(message.content.split(1));
     }
@@ -255,6 +267,31 @@ bot.on('message', async message => {
             return message.reply("`вы не тестер! Используйте /itester.`")
         }
         let user = message.guild.member(message.mentions.users.first());
+        if (!user) return message.reply("Пользователь не найден!")
+        let administartion_channel = bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.name == "administration");
+        administartion_channel.fetchMessages().then(messages => {
+            let admin = messages.some(msgd => msgd.content.includes(`**[ADMINISTRATION]**\n**USER:** \`${user.id}\`\n**ADMINLVL:**`));
+            if (admin){
+
+            }else{
+                return message.reply("Пользователь не администратор!")
+            }
+        });
+    }
+
+
+    /*
+    if (message.content.toLowerCase().startsWith("/findadmin")){
+        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
+            color: 3447003,
+            fields: [{
+                name: "`Scottdale Brotherhood - Сервер разработчиков`",
+                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
+            }]}}).then(msg => msg.delete(5000))
+        if (!message.member.roles.some(r => r.name == "Tester's Team ✔")){
+            return message.reply("`вы не тестер! Используйте /itester.`")
+        }
+        let user = message.guild.member(message.mentions.users.first());
         if (!user) return
         let administartion_channel = bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.name == "administration");
         administartion_channel.fetchMessages().then(messages => {
@@ -274,6 +311,7 @@ bot.on('message', async message => {
             }
         });
     }
+    */
 
     if (message.content.toLowerCase() == "/invalidrole"){
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.reply(`\`нет прав доступа.\``)
