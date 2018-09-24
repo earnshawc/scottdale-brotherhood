@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.8";
+let version = "4.9";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -231,13 +231,28 @@ bot.on('message', async message => {
         }
     }
 
+    const args = message.content.slice(0).trim().split(/ +/g);
+    const command = args.shift().toLowerCase();
+
     if (message.content.startsWith("/setadmin")){
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
             message.delete();
-            return message.reply(`\`вы не указали пользователя! /remove [@упоминание]\``);
+            message.reply(`\`укажите пользователя.\``)
+            message.channel.awaitMessages(response => response.member.id == message.member.id, {
+                max: 1,
+                time: 30000,
+                errors: ['time'],
+            }).then((collected) => {
+                message.reply(`Привет, ${collected.first().content}`);
+                let user = message.guild.member(collected.first().mentions.users.first());
+                if (!user) return message.reply(`\`вы не указали пользователя.\``)
+            }).catch(() => {
+                return
+            });
         }  
         bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376").send(`**ADMINISTRATION**\n**USER:** \`${user.id}\`\n**LVL:** \`2\``);
+        return message.reply(`\`отправлено.\``)
     }
 
     if (message.content.startsWith("/findadmin")){
@@ -257,7 +272,7 @@ bot.on('message', async message => {
         })
     }
 
-    if (message.content == "/testadmin"){
+    if (command == "/testadmin"){
         const ev_channel = bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376")
         ev_channel.fetchMessages().then(messages => {
             messages.find(m => {
@@ -268,6 +283,7 @@ bot.on('message', async message => {
         })
     }
 
+    /*
     if (message.content.toLowerCase() == "привет, бот"){
         message.reply('Как тебя зовут?').then(() => {
             message.channel.awaitMessages(response => response.member.id == message.member.id, {
@@ -281,6 +297,7 @@ bot.on('message', async message => {
             });
         });
     }
+    */
 
     if (message.content.toLowerCase() == "/invalidrole"){
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.reply(`\`нет прав доступа.\``)
