@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.5";
+let version = "4.6";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -199,7 +199,7 @@ bot.login(process.env.token);
 
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
-    bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "general").send(`\`Я был запущен!\``)
+    bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "general").send(`\`Я был запущен! Версия ${version}\``)
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
