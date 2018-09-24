@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.4";
+let version = "4.5";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -238,6 +238,22 @@ bot.on('message', async message => {
             return message.reply(`\`вы не указали пользователя! /remove [@упоминание]\``);
         }  
         bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376").send(`**ADMINISTRATION**\n**USER:** \`${user.id}\``);
+    }
+
+    if (message.content.startsWith("/findadmin")){
+        let user = message.guild.member(message.mentions.users.first());
+        if (!user){
+            message.delete();
+            return message.reply(`\`вы не указали пользователя! /remove [@упоминание]\``);
+        }  
+        let ev_channel = bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376")
+        ev_channel.fetchMessages().then(messages => {
+            if (messages.content == `**ADMINISTRATION**\n**USER:** \`${user.id}\``){
+                message.reply("Он админ")
+            }else{
+                message.reply("Он не админ.")
+            }
+        })
     }
 
     if (message.content.toLowerCase() == "/invalidrole"){
