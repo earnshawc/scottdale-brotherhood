@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.9";
+let version = "4.10";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -244,9 +244,10 @@ bot.on('message', async message => {
                 time: 30000,
                 errors: ['time'],
             }).then((collected) => {
-                message.reply(`Привет, ${collected.first().content}`);
                 let user = message.guild.member(collected.first().mentions.users.first());
                 if (!user) return message.reply(`\`вы не указали пользователя.\``)
+                bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376").send(`**ADMINISTRATION**\n**USER:** \`${user.id}\`\n**LVL:** \`2\``);
+                return message.reply(`\`отправлено.\``)
             }).catch(() => {
                 return
             });
