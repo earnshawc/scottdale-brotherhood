@@ -248,7 +248,7 @@ bot.on('message', async message => {
         }  
         let ev_channel = bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376")
         ev_channel.fetchMessages().then(messages => {
-            if (messages.content == `**ADMINISTRATION**\n**USER:** \`${user.id}\``){
+            if (messages.content.includes(`**ADMINISTRATION**\n**USER:** \`${user.id}\``)){
                 message.reply("Он админ")
             }else{
                 message.reply("Он не админ.")
