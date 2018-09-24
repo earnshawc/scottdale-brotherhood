@@ -246,9 +246,10 @@ bot.on('message', async message => {
             message.delete();
             return message.reply(`\`вы не указали пользователя! /remove [@упоминание]\``);
         }  
-        let ev_channel = bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376")
+        const ev_channel = bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376")
         ev_channel.fetchMessages().then(messages => {
-            if (messages.includes(`**ADMINISTRATION**\n**USER:** \`${user.id}\``)){
+            let msgconst = messages.find(m => m.content == `**ADMINISTRATION**\n**USER:** \`${user.id}\``)
+            if (msgconst){
                 message.reply("Он админ")
             }else{
                 message.reply("Он не админ.")
