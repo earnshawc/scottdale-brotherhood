@@ -8,8 +8,8 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.3";
-let hideobnova = false;
+let version = "4.4";
+let hideobnova = true;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -229,6 +229,15 @@ bot.on('message', async message => {
                 })
             })
         }
+    }
+
+    if (message.content.startsWith("/setadmin")){
+        let user = message.guild.member(message.mentions.users.first());
+        if (!user){
+            message.delete();
+            return message.reply(`\`вы не указали пользователя! /remove [@упоминание]\``);
+        }  
+        bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376").send(`**ADMINISTRATION**\n**USER:** \`${user.id}\``);
     }
 
     if (message.content.toLowerCase() == "/invalidrole"){
