@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.7";
+let version = "4.8";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -269,15 +269,15 @@ bot.on('message', async message => {
     }
 
     if (message.content.toLowerCase() == "привет, бот"){
-        message.channel.send('Как тебя зовут?').then(() => {
+        message.reply('Как тебя зовут?').then(() => {
             message.channel.awaitMessages(response => response.member.id == message.member.id, {
                 max: 1,
                 time: 30000,
                 errors: ['time'],
             }).then((collected) => {
-                message.channel.send(`Привет, ${collected.first().content}`);
+                message.reply(`Привет, ${collected.first().content}`);
             }).catch(() => {
-                message.channel.send('Что-то ты медленно отвечаешь. Буду называть тебя "медляк".');
+                message.reply('Что-то ты медленно отвечаешь. Буду называть тебя "медляк".');
             });
         });
     }
