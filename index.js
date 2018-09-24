@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.6";
+let version = "4.7";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -237,7 +237,7 @@ bot.on('message', async message => {
             message.delete();
             return message.reply(`\`вы не указали пользователя! /remove [@упоминание]\``);
         }  
-        bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376").send(`**ADMINISTRATION**\n**USER:** \`${user.id}\``);
+        bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376").send(`**ADMINISTRATION**\n**USER:** \`${user.id}\`\n**LVL:** \`2\``);
     }
 
     if (message.content.startsWith("/findadmin")){
@@ -248,7 +248,7 @@ bot.on('message', async message => {
         }  
         const ev_channel = bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376")
         ev_channel.fetchMessages().then(messages => {
-            let msgconst = messages.find(m => m.content == `**ADMINISTRATION**\n**USER:** \`${user.id}\``)
+            let msgconst = messages.find(m => m.content.startsWith(`**ADMINISTRATION**\n**USER:** \`${user.id}\``))
             if (msgconst){
                 message.reply("Он админ")
             }else{
@@ -266,6 +266,20 @@ bot.on('message', async message => {
                 }
             })
         })
+    }
+
+    if (message.content.toLowerCase() == "привет, бот"){
+        message.channel.send('Как тебя зовут?').then(() => {
+            message.channel.awaitMessages(response => response.member.id == message.member.id, {
+                max: 1,
+                time: 30000,
+                errors: ['time'],
+            }).then((collected) => {
+                message.channel.send(`Привет, ${collected.first().content}`);
+            }).catch(() => {
+                message.channel.send('Что-то ты медленно отвечаешь. Буду называть тебя "медляк".');
+            });
+        });
     }
 
     if (message.content.toLowerCase() == "/invalidrole"){
