@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.13";
+let version = "4.14";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -233,6 +233,31 @@ bot.on('message', async message => {
 
     const args = message.content.slice().trim().split(/ +/g);
     const command = args.shift().toLowerCase();
+    let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
+    if (!dataserver){
+        message.channel.send(`\`Data-Server of Scottdale не был загружен!\nПередайте это сообщение техническим администраторам Discord:\`<@336207279412215809>, <@402092109429080066>\n`)
+        console.log(`Процесс завершен. Data-Server не найден.`)
+        return bot.destroy();
+    }
+
+    let checkm = message.guild.member(message.mentions.users.first());
+    if (checkm){
+        if (message.guild.id == "355656045600964609"){
+            if (checkm.user.id == "336207279412215809"){
+                let data_channel_mention = dataserver.channels.find(c => c.name == "mentions");
+                if (!data_channel_mention) return message.channel.send(`\`Data-Server => Channels => [mentions] не был загружен!\nПередайте это сообщение техническим администраторам Discord:\`<@336207279412215809>, <@402092109429080066>\n`)
+                const mention_embed = new Discord.RichEmbed()
+                .setTitle("`Discord » Упоминание в Discord`")
+                .setDescription(`Вас упомянули в канале Scottdale Brotherhood! Пожалуйста прочитайте сообщение.`)
+                .setColor("#FF0000")
+                .setFooter("by Kory_McGregor")
+                .setTimestamp()
+                .addField("Сообщение", 
+                message.content)
+                data_channel_mention.send(mention_embed);
+            }
+        }
+    }
 
     if (message.content.startsWith("/setadmin")){
         let user = message.guild.member(message.mentions.users.first());
