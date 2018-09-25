@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.11";
+let version = "4.12";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -254,7 +254,7 @@ bot.on('message', async message => {
         ev_channel.fetchMessages().then(messages => {
             let msgconst = messages.find(m => m.content.startsWith(`**ADMINISTRATION**=>**USER:**=>\`${user.id}\``))
             if (msgconst){
-                const adminlvl = message.content.slice().trim().split('=>');
+                const adminlvl = msgconst.content.slice().split('=>');
                 message.reply(`Он админ\n${adminlvl}\n${adminlvl[0]}\n${adminlvl[1]}\n${adminlvl[2]}`)
             }else{
                 message.reply("Он не админ.")
