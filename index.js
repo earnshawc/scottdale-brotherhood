@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.14";
+let version = "4.15";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -195,6 +195,41 @@ function checknick (member, role, startnum, endnum, bot, message){
     }
 }
 
+function hook(channel, name, message, avatar) {
+
+    if (!channel) return console.log('Channel not specified.');
+    if (!name) return console.log('Title not specified.');
+    if (!message) return console.log('Message not specified.');
+    if (!avatar) return console.log('Avatar not specified.');
+
+    color = color.replace(/\s/g, '');
+    avatar = avatar.replace(/\s/g, '');
+    channel.fetchWebhooks()
+        .then(webhook => {
+            let foundHook = webhook.find('name', 'Капитан Патрик');
+            if (!foundHook) {
+                channel.createWebhook('Webhook', 'https://cdn4.iconfinder.com/data/icons/technology-devices-1/500/speech-bubble-128.png')
+                    .then(webhook => {
+                        webhook.send(message, {
+                            "username": name,
+                            "avatarURL": avatar,
+                        }).catch(error => { // We also want to make sure if an error is found, to report it in chat.
+                            console.log(error);
+                            return channel.send('**Something went wrong when sending the webhook. Please check console.**');
+                        })
+                    })
+            }else{ // That webhook was only for if it couldn't find the original webhook
+                foundHook.send(message, { // This means you can just copy and paste the webhook & catch part.
+                    "username": name,
+                    "avatarURL": avatar,
+                }).catch(error => { // We also want to make sure if an error is found, to report it in chat.
+                        console.log(error);
+                        return channel.send('**Something went wrong when sending the webhook. Please check console.**');
+                    })
+                }
+        })
+}
+
 bot.login(process.env.token);
 
 bot.on('ready', () => {
@@ -245,17 +280,24 @@ bot.on('message', async message => {
     if (checkm){
         if (message.guild.id == "355656045600964609"){
             if (checkm.user.id == "336207279412215809"){
-                let data_channel_mention = dataserver.channels.find(c => c.name == "mentions");
-                if (!data_channel_mention) return message.channel.send(`\`Data-Server => Channels => [mentions] не был загружен!\nПередайте это сообщение техническим администраторам Discord:\`<@336207279412215809>, <@402092109429080066>\n`)
-                const mention_embed = new Discord.RichEmbed()
-                .setTitle("`Discord » Упоминание в Discord`")
-                .setDescription(`Вас упомянули в канале Scottdale Brotherhood! Пожалуйста прочитайте сообщение.`)
-                .setColor("#FF0000")
-                .setFooter("by Kory_McGregor")
-                .setTimestamp()
-                .addField("Сообщение", 
-                message.content)
-                data_channel_mention.send(mention_embed);
+                if (message.channel.name == "general"){
+                    let data_channel_mention = dataserver.channels.find(c => c.name == "mentions");
+                    if (!data_channel_mention) return message.channel.send(`\`Data-Server => Channels => [mentions] не был загружен!\nПередайте это сообщение техническим администраторам Discord:\`<@336207279412215809>, <@402092109429080066>\n`)
+                    const mention_embed = new Discord.RichEmbed()
+                    .setTitle("`Discord » Упоминание в Discord`")
+                    .setDescription(`**Вас упомянули в канале Scottdale Brotherhood! Пожалуйста прочитайте сообщение.**`)
+                    .setColor("#FF0000")
+                    .setFooter("by Kory_McGregor")
+                    .setTimestamp()
+                    .addField("Сообщение", 
+                    `**От пользователя:** <@${message.author.id}>\n**Сообщение:** \`${message.content}\`\n\`Быстрые ответы:\``)
+                    data_channel_mention.send(mention_embed).then(menmsg => {
+                        await menmsg.react('❓')
+                        await menmsg.react('➖')
+                        await menmsg.react('➕')
+                        await menmsg.react('♻')
+                    })
+                }
             }
         }
     }
@@ -511,7 +553,7 @@ bot.on('raw', async event => {
         let event_emoji_name = event.d.emoji.name
         let event_channelid = event.d.channel_id
         let event_guildid = event.d.guild_id
-        if (event_guildid != "355656045600964609" && event_guildid != "488400983496458260") return
+        if (event_guildid != "355656045600964609" && event_guildid != "488400983496458260" && event_guildid != "493459379878625320") return
         if (event_userid == bot.user.id) return
         let requser = bot.guilds.find(g => g.id == event_guildid).members.find(m => m.id == event_userid);
         let reqchannel = bot.guilds.find(g => g.id == event_guildid).channels.find(c => c.id == event_channelid);
@@ -519,6 +561,27 @@ bot.on('raw', async event => {
         bot.guilds.find(g => g.id == event_guildid).channels.find(c => c.id == event_channelid).fetchMessage(event_messageid).then(msg => {
             if (!msg) return
         })
+        if (reqchannel.name == "mentions"){
+            let gotochannel = bot.guilds.find(g => g.id == "355656045600964609").channels.find(c => c.name == "general");
+            if (event_emoji_name == "❓"){
+                hook(gotochannel, `Kory_McGregor`, `?`, requser.user.avatarURL)
+                return reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
+            }
+
+            if (event_emoji_name == "➖"){
+                hook(gotochannel, `Kory_McGregor`, `Нет.`, requser.user.avatarURL)
+                return reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
+            }
+
+            if (event_emoji_name == "➕"){
+                hook(gotochannel, `Kory_McGregor`, `Да.`, requser.user.avatarURL)
+                return reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
+            }
+
+            if (event_emoji_name == "♻"){
+                return reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
+            }
+        }
 
         if (reqchannel.name != "requests-for-roles") return
 
