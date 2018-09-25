@@ -292,10 +292,10 @@ bot.on('message', async message => {
                     .addField("Сообщение", 
                     `**От пользователя:** <@${message.author.id}>\n**Сообщение:** \`${message.content}\`\n\`Быстрые ответы:\``)
                     data_channel_mention.send(mention_embed).then(menmsg => {
-                        await menmsg.react('❓')
-                        await menmsg.react('➖')
-                        await menmsg.react('➕')
-                        await menmsg.react('♻')
+                        menmsg.react('❓')
+                        menmsg.react('➖')
+                        menmsg.react('➕')
+                        menmsg.react('♻')
                     })
                 }
             }
