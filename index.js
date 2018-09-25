@@ -202,7 +202,6 @@ function hook(channel, name, message, avatar) {
     if (!message) return console.log('Message not specified.');
     if (!avatar) return console.log('Avatar not specified.');
 
-    color = color.replace(/\s/g, '');
     avatar = avatar.replace(/\s/g, '');
     channel.fetchWebhooks()
         .then(webhook => {
@@ -290,7 +289,7 @@ bot.on('message', async message => {
                     .setFooter("by Kory_McGregor")
                     .setTimestamp()
                     .addField("Сообщение", 
-                    `**От пользователя:** <@${message.author.id}>\n**Сообщение:** \`${message.content}\`\n\`Быстрые ответы:\``)
+                    `**От пользователя:** <@${message.author.id}>\n**Сообщение:** ${message.content}\n\`Быстрые ответы:\``)
                     data_channel_mention.send(mention_embed).then(menmsg => {
                         menmsg.react('❓')
                         menmsg.react('➖')
