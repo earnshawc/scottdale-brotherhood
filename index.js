@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.12";
+let version = "4.13";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -240,7 +240,7 @@ bot.on('message', async message => {
             message.delete();
             message.reply(`\`пользователь не указан.\``)
         }  
-        bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376").send(`**ADMINISTRATION**=>**USER:**=>\`${user.id}\`=>**LVL:** \`2\``);
+        bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376").send(`**ADMINISTRATION**=>**USER:**=>\`${user.id}\`=>**LVL:**=>\`2\``);
         return message.reply(`\`отправлено.\``)
     }
 
@@ -255,7 +255,7 @@ bot.on('message', async message => {
             let msgconst = messages.find(m => m.content.startsWith(`**ADMINISTRATION**=>**USER:**=>\`${user.id}\``))
             if (msgconst){
                 const adminlvl = msgconst.content.slice().split('=>');
-                message.reply(`Он админ\n${adminlvl}\n${adminlvl[0]}\n${adminlvl[1]}\n${adminlvl[2]}`)
+                message.reply(`Он админ\n${msgconst.content}\n${adminlvl}\n${adminlvl[0]}\n${adminlvl[1]}\n${adminlvl[2]}`)
             }else{
                 message.reply("Он не админ.")
             }
