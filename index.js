@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "5.3";
+let version = "5.4";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -291,9 +291,11 @@ bot.on('message', async message => {
             let find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
             if (find_message) return message.reply(`\`он уже является администратором.\``).then(msg => msg.delete(7000));
         });
-        if (!args[1] && args[1] > 3 && args[1] < 1) return message.reply(`\`лвл администрирования не указан или указан не верно. [1-3]\``).then(msg => msg.delete(7000));
-        db_channel.send(`**ADMINISTRATION\nUSER-ID: \`${user.id}\`\nADMIN PERMISSIONS:** ${args[1]}`)
-        return message.reply(`\`вы назначили\` <@${user.id}> \`администратором\` ${args[1]} \`уровня.\``)
+        if (!args[2]) return message.reply(`\`лвл администрирования не указан или указан не верно. [1-3]\``).then(msg => msg.delete(7000));
+        if (args[2] > 3) return message.reply(`\`лвл администрирования не указан или указан не верно. [1-3]\``).then(msg => msg.delete(7000));
+        if (args[2] < 1) return message.reply(`\`лвл администрирования не указан или указан не верно. [1-3]\``).then(msg => msg.delete(7000));
+        db_channel.send(`**ADMINISTRATION\nUSER-ID: \`${user.id}\`\nADMIN PERMISSIONS:** ${args[2]}`)
+        return message.reply(`\`вы назначили\` <@${user.id}> \`администратором\` ${args[2]} \`уровня.\``)
     }
 
     if (message.content.startsWith("/admininfo")){
@@ -557,27 +559,6 @@ bot.on('raw', async event => {
         bot.guilds.find(g => g.id == event_guildid).channels.find(c => c.id == event_channelid).fetchMessage(event_messageid).then(msg => {
             if (!msg) return
         })
-        if (reqchannel.name == "mentions"){
-            let gotochannel = bot.guilds.find(g => g.id == "355656045600964609").channels.find(c => c.name == "general");
-            if (event_emoji_name == "❓"){
-                hook(gotochannel, bot.guilds.find(g => g.id == "355656045600964609").members.find(m => m.id == event_userid).displayName, `?`, requser.user.avatarURL)
-                return reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
-            }
-
-            if (event_emoji_name == "➖"){
-                hook(gotochannel, bot.guilds.find(g => g.id == "355656045600964609").members.find(m => m.id == event_userid).displayName, `Нет.`, requser.user.avatarURL)
-                return reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
-            }
-
-            if (event_emoji_name == "➕"){
-                hook(gotochannel, bot.guilds.find(g => g.id == "355656045600964609").members.find(m => m.id == event_userid).displayName, `Да.`, requser.user.avatarURL)
-                return reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
-            }
-
-            if (event_emoji_name == "♻"){
-                return reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
-            }
-        }
 
         if (reqchannel.name != "requests-for-roles") return
 
