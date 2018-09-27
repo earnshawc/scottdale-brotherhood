@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.15";
+let version = "4.16";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -307,7 +307,7 @@ bot.on('message', async message => {
             message.delete();
             message.reply(`\`пользователь не указан.\``)
         }  
-        bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376").send(`**ADMINISTRATION**=>**USER:**=>\`${user.id}\`=>**LVL:**=>\`2\``);
+        bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376").send(`ADMINISTRATION=>USER:=>${user.id}=>LVL:=>2`);
         return message.reply(`\`отправлено.\``)
     }
 
@@ -319,10 +319,10 @@ bot.on('message', async message => {
         }  
         const ev_channel = bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376")
         ev_channel.fetchMessages().then(messages => {
-            let msgconst = messages.find(m => m.content.startsWith(`**ADMINISTRATION**=>**USER:**=>\`${user.id}\``))
+            let msgconst = messages.find(m => m.content.startsWith(`ADMINISTRATION=>USER:=>${user.id}`))
             if (msgconst){
                 const adminlvl = msgconst.content.slice().split('=>');
-                message.reply(`Он админ\n${msgconst.content}\n${adminlvl}\n${adminlvl[0]}\n${adminlvl[1]}\n${adminlvl[2]}`)
+                message.reply(`Он админ\n${msgconst.content}\n${adminlvl[1]}\n${adminlvl[2]}\n${adminlvl[3]}\n${adminlvl[4]}`)
             }else{
                 message.reply("Он не админ.")
             }
@@ -563,17 +563,17 @@ bot.on('raw', async event => {
         if (reqchannel.name == "mentions"){
             let gotochannel = bot.guilds.find(g => g.id == "355656045600964609").channels.find(c => c.name == "general");
             if (event_emoji_name == "❓"){
-                hook(gotochannel, `Kory_McGregor`, `?`, requser.user.avatarURL)
+                hook(gotochannel, bot.guilds.find(g => g.id == "355656045600964609").members.find(m => m.id == event_userid).displayName, `?`, requser.user.avatarURL)
                 return reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
             }
 
             if (event_emoji_name == "➖"){
-                hook(gotochannel, `Kory_McGregor`, `Нет.`, requser.user.avatarURL)
+                hook(gotochannel, bot.guilds.find(g => g.id == "355656045600964609").members.find(m => m.id == event_userid).displayName, `Нет.`, requser.user.avatarURL)
                 return reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
             }
 
             if (event_emoji_name == "➕"){
-                hook(gotochannel, `Kory_McGregor`, `Да.`, requser.user.avatarURL)
+                hook(gotochannel, bot.guilds.find(g => g.id == "355656045600964609").members.find(m => m.id == event_userid).displayName, `Да.`, requser.user.avatarURL)
                 return reqchannel.fetchMessage(event_messageid).then(msg => msg.delete());
             }
 
