@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.18";
+let version = "4.19";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -205,7 +205,7 @@ function hook(channel, name, message, avatar) {
     avatar = avatar.replace(/\s/g, '');
     channel.fetchWebhooks()
         .then(webhook => {
-            let foundHook = webhook.find('name', 'Капитан Патрик');
+            let foundHook = webhook.find(w => w.name == 'Капитан Патрик');
             if (!foundHook) {
                 channel.createWebhook('Капитан Патрик', 'https://cdn4.iconfinder.com/data/icons/technology-devices-1/500/speech-bubble-128.png')
                     .then(webhook => {
