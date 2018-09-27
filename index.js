@@ -7,8 +7,8 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "5.8";
-let hideobnova = false;
+let version = "5.9";
+let hideobnova = true;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -380,29 +380,29 @@ bot.on('message', async message => {
 
     if (message.content == "/listadmins"){
         let db_channel = dataserver.channels.find(c => c.name == "administration");
+        let administratorsnum = 0;
+        let administrators = null;
         await db_channel.fetchMessages().then(messages => {
-            let administratorsnum = 0;
-            let administrators = null;
-            messages.forEach(m => {
-                let hzmsg = db_channel.fetchMessage(m.id);
-                const adminuser = hzmsg.content.slice().split('USER-ID: ');
-                adminuser = adminuser[1].replace(`\``, '');
-                adminuser = scottdale.members.find(m => m.id == adminuser)
-                const adminlvl = hzmsg.content.slice().split('ADMIN PERMISSIONS:** ');
-                if (!administrators){
-                    administrators = `<@${adminuser.id}>, adm_lvl: ${adminlvl}`
-                    administratorsnum = administratorsnum+1;
-                }else{
-                    administrators = administrators + `\n<@${adminuser.id}>, adm_lvl: ${adminlvl}`
-                    administratorsnum = administratorsnum+1;
-                }
-                if (administratorsnum == 10){
-                    message.reply(`администрация:\n` + administrators)
-                    administratorsnum = 0;
-                    administrators = null;
-                }
-            })
-        });
+            const adminuser = messages.content.slice().split('USER-ID: ');
+            adminuser = adminuser[1].replace(`\``, '');
+            adminuser = scottdale.members.find(m => m.id == adminuser)
+            const adminlvl = messages.content.slice().split('ADMIN PERMISSIONS:** ');
+            if (!administrators){
+                administrators = `<@${adminuser.id}>, adm_lvl: ${adminlvl}`
+                administratorsnum = administratorsnum+1;
+            }else{
+                administrators = administrators + `\n<@${adminuser.id}>, adm_lvl: ${adminlvl}`
+                administratorsnum = administratorsnum+1;
+            }
+            if (administratorsnum == 10){
+                message.reply(`администрация:\n` + administrators)
+                administratorsnum = 0;
+                administrators = null;
+            }
+        })
+        message.reply(`администрация:\n` + administrators)
+        administratorsnum = 0;
+        administrators = null;
     }
 
     /*
