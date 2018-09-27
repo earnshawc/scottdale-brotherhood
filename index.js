@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.24";
+let version = "4.26";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -207,14 +207,14 @@ function hook(channel, name, message, avatar) {
     avatar = avatar.replace(/\s/g, '');
     if (counthooks & 1){
         // Нечетно.
+        counthooks = counthooks+1;
         channel.fetchWebhooks()
         .then(webhook => {
-            let foundHook = webhook.find(web => web.name == "Запасной Бот")
-            if (!foundHook) {
+            let foundHookza = webhook.find(web => web.name == "Запасной Бот")
+            if (!foundHookza) {
                 channel.createWebhook('Запасной Бот', 'https://cdn4.iconfinder.com/data/icons/technology-devices-1/500/speech-bubble-128.png')
-                    .then(webhook => {
-                        counthooks = counthooks+1;
-                        webhook.send(message, {
+                    .then(webhookza => {
+                        webhookza.send(message, {
                             "username": name,
                             "avatarURL": avatar,
                         }).catch(error => { // We also want to make sure if an error is found, to report it in chat.
@@ -223,8 +223,7 @@ function hook(channel, name, message, avatar) {
                         })
                     })
             }else{ // That webhook was only for if it couldn't find the original webhook
-                counthooks = counthooks+1;
-                foundHook.send(message, { // This means you can just copy and paste the webhook & catch part.
+                foundHookza.send(message, { // This means you can just copy and paste the webhook & catch part.
                     "username": name,
                     "avatarURL": avatar,
                 }).catch(error => { // We also want to make sure if an error is found, to report it in chat.
@@ -235,13 +234,13 @@ function hook(channel, name, message, avatar) {
         })
     }else{
         // Четно.
+        counthooks = counthooks+1;
         channel.fetchWebhooks()
         .then(webhook => {
             let foundHook = webhook.find(web => web.name == "Капитан Патрик")
             if (!foundHook) {
                 channel.createWebhook('Капитан Патрик', 'https://cdn4.iconfinder.com/data/icons/technology-devices-1/500/speech-bubble-128.png')
                     .then(webhook => {
-                        counthooks = counthooks+1;
                         webhook.send(message, {
                             "username": name,
                             "avatarURL": avatar,
@@ -251,7 +250,6 @@ function hook(channel, name, message, avatar) {
                         })
                     })
             }else{ // That webhook was only for if it couldn't find the original webhook
-                counthooks = counthooks+1;
                 foundHook.send(message, { // This means you can just copy and paste the webhook & catch part.
                     "username": name,
                     "avatarURL": avatar,
@@ -302,7 +300,7 @@ bot.on('message', async message => {
     }
 
     if (message.content == "test_cоmmand"){
-        for (var i = 0; i < 31; i++){
+        for (var i = 0; i < 11; i++){
             hook(message.channel, "TEST #" + i, `ПРОВЕРКА №${i}\nЧисло: ${counthooks}`, message.author.avatarURL)
         }
     }
@@ -346,7 +344,7 @@ bot.on('message', async message => {
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
             message.delete();
-            message.reply(`\`пользователь не указан.\``)
+            return message.reply(`\`пользователь не указан.\``)
         }  
         bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376").send(`ADMINISTRATION=>USER:=>${user.id}=>LVL:=>2`);
         return message.reply(`\`отправлено.\``)
@@ -363,7 +361,7 @@ bot.on('message', async message => {
             let msgconst = messages.find(m => m.content.startsWith(`ADMINISTRATION=>USER:=>${user.id}`))
             if (msgconst){
                 const adminlvl = msgconst.content.slice().split('=>');
-                message.reply(`Он админ\n${adminlvl[1]}\n${adminlvl[2]}\n${adminlvl[3]}\n${adminlvl[4]}`)
+                message.reply(`Он админ\nПользователь: <@${adminlvl[2]}>, является администратором \`${adminlvl[4]}\` уровня.`)
             }else{
                 message.reply("Он не админ.")
             }
