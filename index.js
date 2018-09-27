@@ -7,8 +7,8 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "5.4";
-let hideobnova = true;
+let version = "5.5";
+let hideobnova = false;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -236,7 +236,7 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Пофиксил "undefined" в "/setadmin [USER] [LVL]"
+- Добавлена команда "/deladmin";
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -291,11 +291,11 @@ bot.on('message', async message => {
             let find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
             if (find_message) return message.reply(`\`он уже является администратором.\``).then(msg => msg.delete(7000));
         });
-        if (!args[2]) return message.reply(`\`лвл администрирования не указан или указан не верно. [1-3]\``).then(msg => msg.delete(7000));
-        if (args[2] > 3) return message.reply(`\`лвл администрирования не указан или указан не верно. [1-3]\``).then(msg => msg.delete(7000));
-        if (args[2] < 1) return message.reply(`\`лвл администрирования не указан или указан не верно. [1-3]\``).then(msg => msg.delete(7000));
+        if (!args[2]) return message.reply(`\`лвл администрирования не указан.\``).then(msg => msg.delete(7000));
+        if (args[2] > 3) return message.reply(`\`лвл администрирования не может быть больше 3-х.\``).then(msg => msg.delete(7000));
+        if (args[2] < 1) return message.reply(`\`лвл администрирования не может быть меньше 1-ого.\``).then(msg => msg.delete(7000));
         db_channel.send(`**ADMINISTRATION\nUSER-ID: \`${user.id}\`\nADMIN PERMISSIONS:** ${args[2]}`)
-        return message.reply(`\`вы назначили\` <@${user.id}> \`администратором\` ${args[2]} \`уровня.\``)
+        return message.reply(`\`вы назначили\` <@${user.id}> \`администратором ${args[2]} уровня.\``)
     }
 
     if (message.content.startsWith("/admininfo")){
@@ -328,15 +328,49 @@ bot.on('message', async message => {
         })
     }
 
-    if (command == "/testadmin"){
-        const ev_channel = bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376")
-        ev_channel.fetchMessages().then(messages => {
-            messages.find(m => {
-                if (m.content.startsWith("**ADMINISTRATION**")){
-                    message.reply(m.content)
+    if (message.content.startsWith("/deladmin")){
+        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
+            color: 3447003,
+            fields: [{
+                name: "`Scottdale Brotherhood - Сервер разработчиков`",
+                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
+            }]}}).then(msg => msg.delete(12000))
+
+        const args = message.content.slice('/setadmin').split(/ +/)
+        let user = message.guild.member(message.mentions.users.first());
+        if (!user){
+            let userfind = false;
+            if (args[1]){
+                userfind = message.guild.members.find(m => m.id == args[1]);
+                user = message.guild.members.find(m => m.id == args[1]);
+            }
+            if (!userfind){
+            message.delete();
+            return message.reply(`\`вы не указали пользователя! /deladmin [USER]\``).then(msg => msg.delete(7000));
+            }
+        }
+        if (user == message.member){
+            let db_channel = dataserver.channels.find(c => c.name == "administration");
+            await db_channel.fetchMessages().then(messages => {
+                let find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
+                if (!find_message){
+                    return message.reply(`\`вы не являетесь администратором.\``)
+                }else{
+                    find_message.delete();
+                    return message.reply(`\`вы назначили себя 0-ым уровнем администрирования.\``)
                 }
-            })
-        })
+            });
+        }
+        let db_channel = dataserver.channels.find(c => c.name == "administration");
+        await db_channel.fetchMessages().then(messages => {
+            let find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
+            let my_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${message.member.id}\``));
+            const adminlvl = find_message.content.slice().split('ADMIN PERMISSIONS:** ');
+            const adminlvl_my = my_message.content.slice().split('ADMIN PERMISSIONS:** ');
+            if (adminlvl[1] >= adminlvl_my[1] && message.member.id != "336207279412215809") return message.reply(`\`вы не можете убрать админа выше или равному вас по уровню.\``)
+            find_message.delete()
+            return message.reply(`\`вы сняли администратора\` <@${user.id}> \`с adm-лвлом: ${adminlvl[1]}\``);
+        });
     }
 
     /*
