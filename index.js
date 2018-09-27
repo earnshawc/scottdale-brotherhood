@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "5.10";
+let version = "5.11";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -376,34 +376,6 @@ bot.on('message', async message => {
             find_message.delete()
             return message.reply(`\`вы сняли администратора\` <@${user.id}> \`с adm-лвлом: ${adminlvl[1]}\``);
         });
-    }
-
-    if (message.content == "/listadmins"){
-        let db_channel = dataserver.channels.find(c => c.name == "administration");
-        let administratorsnum = 0;
-        let administrators = null;
-        await db_channel.fetchMessages().then(messages => {
-                supmsg = messages.find(mgg => mgg.content.startsWith(`**ADMINISTRATION`));
-                    const adminuser = supmsg.content.slice().split('USER-ID: ');
-                    adminuser = adminuser[1].replace(`\``, '');
-                    adminuser = scottdale.members.find(m => m.id == adminuser)
-                    const adminlvl = supmsg.content.slice().split('ADMIN PERMISSIONS:** ');
-                    if (!administrators){
-                        administrators = `<@${adminuser.id}>, adm_lvl: ${adminlvl}`
-                        administratorsnum = administratorsnum+1;
-                    }else{
-                        administrators = administrators + `\n<@${adminuser.id}>, adm_lvl: ${adminlvl}`
-                        administratorsnum = administratorsnum+1;
-                    }
-                    if (administratorsnum == 10){
-                        message.reply(`администрация:\n` + administrators)
-                        administratorsnum = 0;
-                        administrators = null;
-                    }
-        })
-        message.reply(`администрация:\n` + administrators)
-        administratorsnum = 0;
-        administrators = null;
     }
 
     /*
