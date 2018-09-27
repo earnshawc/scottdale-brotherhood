@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.21";
+let version = "4.22";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -195,6 +195,8 @@ function checknick (member, role, startnum, endnum, bot, message){
     }
 }
 
+let counthooks = 0;
+
 function hook(channel, name, message, avatar) {
 
     if (!channel) return console.log('Channel not specified.');
@@ -203,12 +205,15 @@ function hook(channel, name, message, avatar) {
     if (!avatar) return console.log('Avatar not specified.');
 
     avatar = avatar.replace(/\s/g, '');
+    let testcommand = counthooks/2
+    console.log(testcommand)
     channel.fetchWebhooks()
         .then(webhook => {
             let foundHook = webhook.find(web => web.name == "Капитан Патрик")
             if (!foundHook) {
                 channel.createWebhook('Капитан Патрик', 'https://cdn4.iconfinder.com/data/icons/technology-devices-1/500/speech-bubble-128.png')
                     .then(webhook => {
+                        counthooks = counthooks+1;
                         webhook.send(message, {
                             "username": name,
                             "avatarURL": avatar,
@@ -218,6 +223,7 @@ function hook(channel, name, message, avatar) {
                         })
                     })
             }else{ // That webhook was only for if it couldn't find the original webhook
+                counthooks = counthooks+1;
                 foundHook.send(message, { // This means you can just copy and paste the webhook & catch part.
                     "username": name,
                     "avatarURL": avatar,
