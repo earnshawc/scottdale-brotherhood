@@ -584,7 +584,7 @@ bot.on('message', async message => {
     if (message.content.toLowerCase().startsWith("/addbadword")){
         if (message.guild.id != "355656045600964609") return
         if (!message.member.roles.some(r => ["Spectator™", "Support Team"].includes(r.name)) && !message.member.hasPermission("ADMINISTRATOR")) return
-        const args = message.content.slice('/addbadword').trim().split(/ +/g);
+        const args = message.content.slice('/addbadword').split(/ +/)
         let text = args.slice(1).join(" ");
         if (!text) return message.reply(`\`/addbadword [фраза]\``)
         let checkword = false;
