@@ -7,8 +7,8 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "5.11";
-let hideobnova = true;
+let version = "5.12";
+let hideobnova = false;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -236,8 +236,7 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Добавлена команда: "/listadmins" - список администраторов добавленных через "/setadmin".
-- Работает в тестовом режиме.
+- Bad Words, test version
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -579,6 +578,16 @@ bot.on('message', async message => {
             }
         }
     }
+
+    let bad_words_channel = dataserver.channels.find(c => c.name == "bad-words");
+    bad_words_channel.fetchMessages().then(badmessages => {
+        badmessages.filter(badmessage => {
+            if (message.content == badmessage.content){
+                message.delete();
+                return message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента.\``)
+            }
+        })
+    })
 });
 
 bot.on('raw', async event => {
