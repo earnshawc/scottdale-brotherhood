@@ -6,10 +6,9 @@ const Logger = require('./objects/logger');
 let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
-let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.26";
-let hideobnova = true;
+let version = "5.0";
+let hideobnova = false;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -195,8 +194,6 @@ function checknick (member, role, startnum, endnum, bot, message){
     }
 }
 
-let counthooks = 0;
-
 function hook(channel, name, message, avatar) {
 
     if (!channel) return console.log('Channel not specified.');
@@ -205,36 +202,6 @@ function hook(channel, name, message, avatar) {
     if (!avatar) return console.log('Avatar not specified.');
 
     avatar = avatar.replace(/\s/g, '');
-    if (counthooks & 1){
-        // Нечетно.
-        counthooks = counthooks+1;
-        channel.fetchWebhooks()
-        .then(webhook => {
-            let foundHookza = webhook.find(web => web.name == "Запасной Бот")
-            if (!foundHookza) {
-                channel.createWebhook('Запасной Бот', 'https://cdn4.iconfinder.com/data/icons/technology-devices-1/500/speech-bubble-128.png')
-                    .then(webhookza => {
-                        webhookza.send(message, {
-                            "username": name,
-                            "avatarURL": avatar,
-                        }).catch(error => { // We also want to make sure if an error is found, to report it in chat.
-                            console.log(error);
-                            return channel.send('**Something went wrong when sending the webhook. Please check console.**');
-                        })
-                    })
-            }else{ // That webhook was only for if it couldn't find the original webhook
-                foundHookza.send(message, { // This means you can just copy and paste the webhook & catch part.
-                    "username": name,
-                    "avatarURL": avatar,
-                }).catch(error => { // We also want to make sure if an error is found, to report it in chat.
-                        console.log(error);
-                        return channel.send('**Something went wrong when sending the webhook. Please check console.**');
-                    })
-                }
-        })
-    }else{
-        // Четно.
-        counthooks = counthooks+1;
         channel.fetchWebhooks()
         .then(webhook => {
             let foundHook = webhook.find(web => web.name == "Капитан Патрик")
@@ -259,7 +226,6 @@ function hook(channel, name, message, avatar) {
                     })
                 }
         })
-    }
 }
 
 bot.login(process.env.token);
@@ -270,7 +236,8 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- "/remove" работает с правами "ADMINISTRATOR"
+- Добавлена команда "/setadmin [USER] [LVL]";
+- Добавлена команда "/admininfo [USER]";
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -299,71 +266,66 @@ bot.on('message', async message => {
         }
     }
 
-    if (message.content == "test_cоmmand"){
-        for (var i = 0; i < 11; i++){
-            hook(message.channel, "TEST #" + i, `ПРОВЕРКА №${i}\nЧисло: ${counthooks}`, message.author.avatarURL)
-        }
-    }
-
     const args = message.content.slice().trim().split(/ +/g);
     const command = args.shift().toLowerCase();
+
     let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
+    let scottdale = bot.guilds.find(g => g.id == "355656045600964609");
     if (!dataserver){
         message.channel.send(`\`Data-Server of Scottdale не был загружен!\nПередайте это сообщение техническим администраторам Discord:\`<@336207279412215809>, <@402092109429080066>\n`)
-        console.log(`Процесс завершен. Data-Server не найден.`)
+        console.error(`Процесс завершен. Data-Server не найден.`)
         return bot.destroy();
     }
 
-    let checkm = message.guild.member(message.mentions.users.first());
-    if (checkm){
-        if (message.guild.id == "355656045600964609"){
-            if (checkm.user.id == "336207279412215809"){
-                if (message.channel.name == "general"){
-                    let data_channel_mention = dataserver.channels.find(c => c.name == "mentions");
-                    if (!data_channel_mention) return message.channel.send(`\`Data-Server => Channels => [mentions] не был загружен!\nПередайте это сообщение техническим администраторам Discord:\`<@336207279412215809>, <@402092109429080066>\n`)
-                    const mention_embed = new Discord.RichEmbed()
-                    .setTitle("`Discord » Упоминание в Discord`")
-                    .setDescription(`**Вас упомянули в канале Scottdale Brotherhood! Пожалуйста прочитайте сообщение.**`)
-                    .setColor("#FF0000")
-                    .setFooter("by Kory_McGregor")
-                    .setTimestamp()
-                    .addField("Сообщение", 
-                    `**От пользователя:** <@${message.author.id}>\n**Сообщение:** ${message.content}\n\`Быстрые ответы:\``)
-                    data_channel_mention.send(mention_embed).then(menmsg => {
-                        menmsg.react('❓')
-                        menmsg.react('➖')
-                        menmsg.react('➕')
-                        menmsg.react('♻')
-                    })
-                }
-            }
-        }
-    }
-
     if (message.content.startsWith("/setadmin")){
+        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
+            color: 3447003,
+            fields: [{
+                name: "`Scottdale Brotherhood - Сервер разработчиков`",
+                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
+            }]}}).then(msg => msg.delete(12000))
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
             message.delete();
-            return message.reply(`\`пользователь не указан.\``)
+            return message.reply(`\`пользователь не указан. /setadmin [USER] [LVL]\``).then(msg => msg.delete(7000));
         }  
-        bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376").send(`ADMINISTRATION=>USER:=>${user.id}=>LVL:=>2`);
-        return message.reply(`\`отправлено.\``)
+        let db_channel = dataserver.channels.find(c => c.name == "administration");
+        db_channel.fetchMessages().then(messages => {
+            let find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
+            if (find_message) return message.reply(`\`он уже является администратором.\``).then(msg => msg.delete(7000));
+        });
+        if (!args[2] && args[2] > 3 && args[2] < 1) return message.reply(`\`лвл администрирования не указан или указан не верно. [1-3]\``).then(msg => msg.delete(7000));
+        db_channel.send(`**ADMINISTRATION\nUSER-ID: \`${user.id}\`\nADMIN PERMISSIONS: \`${args[2]}\`**`)
+        return message.reply(`\`вы назначили\` <@${user.id}> \`администратором\` ${args[2]} \`уровня.\``)
     }
 
-    if (message.content.startsWith("/findadmin")){
+    if (message.content.startsWith("/admininfo")){
+        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
+            color: 3447003,
+            fields: [{
+                name: "`Scottdale Brotherhood - Сервер разработчиков`",
+                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
+            }]}}).then(msg => msg.delete(12000))
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
             message.delete();
-            return message.reply(`\`вы не указали пользователя! /findadmin [@упоминание]\``);
+            return message.reply(`\`вы не указали пользователя! /findadmin [USER]\``).then(msg => msg.delete(7000));
         }  
-        const ev_channel = bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.id == "493743372423397376")
-        ev_channel.fetchMessages().then(messages => {
-            let msgconst = messages.find(m => m.content.startsWith(`ADMINISTRATION=>USER:=>${user.id}`))
+        let db_channel = dataserver.channels.find(c => c.name == "administration");
+        db_channel.fetchMessages().then(messages => {
+            let msgconst = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``))
             if (msgconst){
-                const adminlvl = msgconst.content.slice().split('=>');
-                message.reply(`Он админ\nПользователь: <@${adminlvl[2]}>, является администратором \`${adminlvl[4]}\` уровня.`)
+                const adminlvl = msgconst.content.slice().split('ADMIN PERMISSIONS: ');
+                message.reply(`\`по вашему запросу найдена следующая информация:\``, {embed: {
+                color: 3447003,
+                fields: [{
+                    name: `Информация о <@${user.id}>`,
+                    value: `**Пользователь:** <@${user.id}>` +
+                    `**Ник на Scottdale:** \`${scottdale.members.find(m => m.id == user.id)}\`\n` +
+                    `**Уровень администрирования:** \`${adminlvl[1]}\``
+                }]}})
             }else{
-                message.reply("Он не админ.")
+                message.reply("`пользователь которого вы указали не является администратором.`").then(msg => msg.delete(7000));
             }
         })
     }
