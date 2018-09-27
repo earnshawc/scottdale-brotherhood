@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "5.7";
+let version = "5.8";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -236,8 +236,8 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Пофиксил баги с "/setadmin" + "/deladmin";
-- Запускаю тест №2
+- Добавлена команда: "/listadmins" - список администраторов добавленных через "/setadmin".
+- Работает в тестовом режиме.
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -375,6 +375,33 @@ bot.on('message', async message => {
             if (adminlvl[1] >= adminlvl_my[1] && message.member.id != "336207279412215809") return message.reply(`\`вы не можете убрать админа выше или равному вас по уровню.\``)
             find_message.delete()
             return message.reply(`\`вы сняли администратора\` <@${user.id}> \`с adm-лвлом: ${adminlvl[1]}\``);
+        });
+    }
+
+    if (message.content == "/listadmins"){
+        let db_channel = dataserver.channels.find(c => c.name == "administration");
+        await db_channel.fetchMessages().then(messages => {
+            let administratorsnum = 0;
+            let administrators = null;
+            messages.forEach(m => {
+                let hzmsg = db_channel.fetchMessage(m.id);
+                const adminuser = hzmsg.content.slice().split('USER-ID: ');
+                adminuser = adminuser[1].replace(`\``, '');
+                adminuser = scottdale.members.find(m => m.id == adminuser)
+                const adminlvl = hzmsg.content.slice().split('ADMIN PERMISSIONS:** ');
+                if (!administrators){
+                    administrators = `<@${adminuser.id}>, adm_lvl: ${adminlvl}`
+                    administratorsnum = administratorsnum+1;
+                }else{
+                    administrators = administrators + `\n<@${adminuser.id}>, adm_lvl: ${adminlvl}`
+                    administratorsnum = administratorsnum+1;
+                }
+                if (administratorsnum == 10){
+                    message.reply(`администрация:\n` + administrators)
+                    administratorsnum = 0;
+                    administrators = null;
+                }
+            })
         });
     }
 
