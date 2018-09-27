@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.16";
+let version = "4.17";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -266,6 +266,12 @@ bot.on('message', async message => {
         }
     }
 
+    if (message.content == "test_cоmmand"){
+        for (var i = 0; i < 31; i++){
+            hook(message.channel, "TEST", `ПРОВЕРКА №${i}`, message.author.avatarURL)
+        }
+    }
+
     const args = message.content.slice().trim().split(/ +/g);
     const command = args.shift().toLowerCase();
     let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
@@ -322,7 +328,7 @@ bot.on('message', async message => {
             let msgconst = messages.find(m => m.content.startsWith(`ADMINISTRATION=>USER:=>${user.id}`))
             if (msgconst){
                 const adminlvl = msgconst.content.slice().split('=>');
-                message.reply(`Он админ\n${msgconst.content}\n${adminlvl[1]}\n${adminlvl[2]}\n${adminlvl[3]}\n${adminlvl[4]}`)
+                message.reply(`Он админ\n${adminlvl[1]}\n${adminlvl[2]}\n${adminlvl[3]}\n${adminlvl[4]}`)
             }else{
                 message.reply("Он не админ.")
             }
