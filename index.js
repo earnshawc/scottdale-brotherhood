@@ -383,11 +383,11 @@ bot.on('message', async message => {
         let administratorsnum = 0;
         let administrators = null;
         await db_channel.fetchMessages().then(messages => {
-                messages.find(mgg => {
-                    const adminuser = mgg.content.slice().split('USER-ID: ');
+                supmsg = messages.find(mgg => mgg.content.startsWith(`**ADMINISTRATION`));
+                    const adminuser = supmsg.content.slice().split('USER-ID: ');
                     adminuser = adminuser[1].replace(`\``, '');
                     adminuser = scottdale.members.find(m => m.id == adminuser)
-                    const adminlvl = mgg.content.slice().split('ADMIN PERMISSIONS:** ');
+                    const adminlvl = supmsg.content.slice().split('ADMIN PERMISSIONS:** ');
                     if (!administrators){
                         administrators = `<@${adminuser.id}>, adm_lvl: ${adminlvl}`
                         administratorsnum = administratorsnum+1;
@@ -400,7 +400,6 @@ bot.on('message', async message => {
                         administratorsnum = 0;
                         administrators = null;
                     }
-                });
         })
         message.reply(`администрация:\n` + administrators)
         administratorsnum = 0;
