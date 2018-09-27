@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 let nsfw = JSON.parse(fs.readFileSync("./database/nsfw warns.json", "utf8"));
 
-let version = "4.23";
+let version = "4.24";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -303,7 +303,7 @@ bot.on('message', async message => {
 
     if (message.content == "test_cоmmand"){
         for (var i = 0; i < 31; i++){
-            hook(message.channel, "TEST #" + i, `ПРОВЕРКА №${i}`, message.author.avatarURL)
+            hook(message.channel, "TEST #" + i, `ПРОВЕРКА №${i}\nЧисло: ${counthooks}`, message.author.avatarURL)
         }
     }
 
