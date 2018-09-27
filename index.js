@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "5.13";
+let version = "5.14";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -237,6 +237,7 @@ bot.on('ready', () => {
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
 - Bad Words, cmd: /addbadword [word]
+- Полностью завершено!
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -606,6 +607,12 @@ bot.on('message', async message => {
     bad_words_channel.fetchMessages().then(badmessages => {
         badmessages.filter(badmessage => {
             if (message.content.toLowerCase() == badmessage.content.toLowerCase()){
+                message.delete();
+                return message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента.\``).then(msg => msg.delete(7000))
+            }else if(message.content.toLowerCase().includes(" " + badmessage.content.toLowerCase())){
+                message.delete();
+                return message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента.\``).then(msg => msg.delete(7000))
+            }else if(message.content.toLowerCase().includes(badmessage.content.toLowerCase() + " ")){
                 message.delete();
                 return message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента.\``).then(msg => msg.delete(7000))
             }
