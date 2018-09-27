@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "5.5";
+let version = "5.6";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -236,7 +236,7 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Добавлена команда "/deladmin";
+- Фикс багов.
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -364,7 +364,9 @@ bot.on('message', async message => {
         let db_channel = dataserver.channels.find(c => c.name == "administration");
         await db_channel.fetchMessages().then(messages => {
             let find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
+            if (!find_message) return message.reply(`\`пользователь не администратор.\``);
             let my_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${message.member.id}\``));
+            if (!my_message) return message.reply(`\`вы не администратор.\``)
             const adminlvl = find_message.content.slice().split('ADMIN PERMISSIONS:** ');
             const adminlvl_my = my_message.content.slice().split('ADMIN PERMISSIONS:** ');
             if (adminlvl[1] >= adminlvl_my[1] && message.member.id != "336207279412215809") return message.reply(`\`вы не можете убрать админа выше или равному вас по уровню.\``)
