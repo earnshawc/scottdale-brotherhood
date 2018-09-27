@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "5.12";
+let version = "5.13";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -236,7 +236,7 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Bad Words, test version
+- Bad Words, cmd: /addbadword [word]
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -580,11 +580,34 @@ bot.on('message', async message => {
     }
 
     let bad_words_channel = dataserver.channels.find(c => c.name == "bad-words");
+
+    if (message.content.toLowerCase().startsWith("/addbadword")){
+        if (message.guild.id != "355656045600964609") return
+        if (!message.member.roles.some(r => ["Spectator™", "Support Team"].includes(r.name)) && !message.member.hasPermission("ADMINISTRATOR")) return
+        const args = message.content.slice('/addbadword').trim().split(/ +/g);
+        let text = args.slice(1).join(" ");
+        if (!text) return message.reply(`\`/addbadword [фраза]\``)
+        let checkword = false;
+        bad_words_channel.fetchMessages().then(badmessages => {
+            badmessages.filter(badmessage => {
+                if (text == badmessage.content){
+                    checkword = true;
+                }
+            })
+        })
+        if (checkword){
+            return message.reply(`\`данная фраза уже в списке запрещенных!\``).then(msg => msg.delete(7000))
+        }else{
+            bad_words_channel.send(text)
+            return message.reply(`\`вы успешно добавили фразу:\` **${text}** \`в список запрещенных.\``).then(msg => msg.delete(10000))
+        }
+    }
+
     bad_words_channel.fetchMessages().then(badmessages => {
         badmessages.filter(badmessage => {
-            if (message.content == badmessage.content){
+            if (message.content.toLowerCase() == badmessage.content.toLowerCase()){
                 message.delete();
-                return message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента.\``)
+                return message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента.\``).then(msg => msg.delete(7000))
             }
         })
     })
