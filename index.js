@@ -7,8 +7,8 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "5.2";
-let hideobnova = false;
+let version = "5.3";
+let hideobnova = true;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -291,9 +291,9 @@ bot.on('message', async message => {
             let find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
             if (find_message) return message.reply(`\`он уже является администратором.\``).then(msg => msg.delete(7000));
         });
-        if (!args[2] && args[2] > 3 && args[2] < 1) return message.reply(`\`лвл администрирования не указан или указан не верно. [1-3]\``).then(msg => msg.delete(7000));
-        db_channel.send(`**ADMINISTRATION\nUSER-ID: \`${user.id}\`\nADMIN PERMISSIONS:** ${args[2]}`)
-        return message.reply(`\`вы назначили\` <@${user.id}> \`администратором\` ${args[2]} \`уровня.\``)
+        if (!args[1] && args[1] > 3 && args[1] < 1) return message.reply(`\`лвл администрирования не указан или указан не верно. [1-3]\``).then(msg => msg.delete(7000));
+        db_channel.send(`**ADMINISTRATION\nUSER-ID: \`${user.id}\`\nADMIN PERMISSIONS:** ${args[1]}`)
+        return message.reply(`\`вы назначили\` <@${user.id}> \`администратором\` ${args[1]} \`уровня.\``)
     }
 
     if (message.content.startsWith("/admininfo")){
