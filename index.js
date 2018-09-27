@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "5.6";
+let version = "5.7";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -236,7 +236,8 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Фикс багов.
+- Пофиксил баги с "/setadmin" + "/deladmin";
+- Запускаю тест №2
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -287,10 +288,11 @@ bot.on('message', async message => {
         }  
         const args = message.content.slice('/setadmin').split(/ +/)
         let db_channel = dataserver.channels.find(c => c.name == "administration");
+        let find_message;
         await db_channel.fetchMessages().then(messages => {
-            let find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
-            if (find_message) return message.reply(`\`он уже является администратором.\``).then(msg => msg.delete(7000));
+            find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
         });
+        if (find_message) return message.reply(`\`он уже является администратором.\``).then(msg => msg.delete(7000));
         if (!args[2]) return message.reply(`\`лвл администрирования не указан.\``).then(msg => msg.delete(7000));
         if (args[2] > 3) return message.reply(`\`лвл администрирования не может быть больше 3-х.\``).then(msg => msg.delete(7000));
         if (args[2] < 1) return message.reply(`\`лвл администрирования не может быть меньше 1-ого.\``).then(msg => msg.delete(7000));
@@ -360,6 +362,7 @@ bot.on('message', async message => {
                     return message.reply(`\`вы назначили себя 0-ым уровнем администрирования.\``)
                 }
             });
+            return
         }
         let db_channel = dataserver.channels.find(c => c.name == "administration");
         await db_channel.fetchMessages().then(messages => {
