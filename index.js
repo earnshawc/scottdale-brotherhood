@@ -285,9 +285,9 @@ bot.on('message', async message => {
             message.delete();
             return message.reply(`\`пользователь не указан. /setadmin [USER] [LVL]\``).then(msg => msg.delete(7000));
         }  
-        const args = message.content.slice('!addsec').split(/ +/)
+        const args = message.content.slice('/setadmin').split(/ +/)
         let db_channel = dataserver.channels.find(c => c.name == "administration");
-        db_channel.fetchMessages().then(messages => {
+        await db_channel.fetchMessages().then(messages => {
             let find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
             if (find_message) return message.reply(`\`он уже является администратором.\``).then(msg => msg.delete(7000));
         });
