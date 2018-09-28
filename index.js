@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "5.15";
+let version = "5.16";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -236,9 +236,7 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Обновлен фильтр откровенного контента.
-- Полный фикс багов/недоработок с Bad Words.
-- Использование /addbadword [Spectator+], only Arizona Scottdale
+- Система наказаний за слова в разработке.
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -587,7 +585,7 @@ bot.on('message', async message => {
         if (message.guild.id != "355656045600964609") return
         if (!message.member.roles.some(r => ["Spectator™", "Support Team"].includes(r.name)) && !message.member.hasPermission("ADMINISTRATOR")) return
         const args = message.content.slice('/addbadword').split(/ +/)
-        let text = args.slice(1).join(" ");
+        let text = args.slice(2).join(" ");
         if (!text) return message.reply(`\`/addbadword [фраза]\``)
         let checkword;
         checkword = false;
@@ -601,16 +599,18 @@ bot.on('message', async message => {
         if (checkword){
             return message.reply(`\`данная фраза уже в списке запрещенных!\``).then(msg => msg.delete(7000))
         }else{
-            bad_words_channel.send(text)
+            bad_words_channel.send(`BAD WORD: ${text}\nPUNISHMENT: ${args[1]}`)
             return message.reply(`\`вы успешно добавили фразу:\` **${text}** \`в список запрещенных.\``).then(msg => msg.delete(10000))
         }
     }
     if (!message.member.hasPermission("ADMINISTRATOR")){
         bad_words_channel.fetchMessages().then(badmessages => {
             badmessages.filter(badmessage => {
-                if (message.content.toLowerCase().includes(badmessage.content.toLowerCase())){
+                const bad_word = badmessage.content.toLowerCase().slice().split('BAD WORD: ');
+                const punish = badmessage.content.slice().split('PUNISHMENT: ');
+                if (message.content.toLowerCase().includes(bad_word[1])){
                     message.delete();
-                    return message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента. [Слово в черном списке]\``).then(msg => msg.delete(7000))
+                    return message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента. [Слово в черном списке]\`\nDEBUG => Наказание ${punish}`).then(msg => msg.delete(7000))
                 }
             })
         })
