@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "5.17";
+let version = "5.18";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -620,7 +620,7 @@ bot.on('message', async message => {
                 badmessages.filter(badmessage => {
                     const bad_word = badmessage.content.slice().split('BAD WORD: ');
                     const punish = badmessage.content.slice().split('PUNISHMENT: ');
-                    message.reply(`BAD WORD: ${badword[1]}\n${punish}`)
+                    message.reply(`BAD WORD: ${bad_word[1]}\n${punish}`)
                 })
             })
         }
