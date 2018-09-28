@@ -618,7 +618,7 @@ bot.on('message', async message => {
         if (message.content == "hehhgg"){
             bad_words_channel.fetchMessages().then(badmessages => {
                 badmessages.filter(badmessage => {
-                    const bad_word = badmessage.content.slice().split('BAD WORD: ');
+                    // const bad_word = badmessage.content.slice().split('BAD WORD: ');
                     const punish = badmessage.content.slice().split('PUNISHMENT: ');
                     const testik = badmessage.content.slice('BAD WORD: ').split('\n')
                     const bad_word = testik.slice().split('BAD WORD: ');
