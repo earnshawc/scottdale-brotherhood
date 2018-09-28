@@ -621,7 +621,7 @@ bot.on('message', async message => {
                     const bad_word = badmessage.content.slice().split('BAD WORD: ');
                     const punish = badmessage.content.slice().split('PUNISHMENT: ');
                     const testik = badmessage.content.slice('BAD WORD: ').split('\n')
-                    message.reply(`BAD WORD: ${bad_word[1]}\n\n\nPUNISH: ${punish[1]}\n\n\n${bad_word[1].toLowerCase()}\n[TEST]\n${testik[1]}`)
+                    message.reply(`BAD WORD: ${bad_word[1]}\n\n\nPUNISH: ${punish[1]}\n\n\n${bad_word[1].toLowerCase()}\n[TEST]\n${testik[0]}`)
                 })
             })
         }
