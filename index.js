@@ -7,8 +7,8 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "5.16";
-let hideobnova = false;
+let version = "5.17";
+let hideobnova = true;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -606,14 +606,24 @@ bot.on('message', async message => {
     if (!message.member.hasPermission("ADMINISTRATOR")){
         bad_words_channel.fetchMessages().then(badmessages => {
             badmessages.filter(badmessage => {
-                const bad_word = badmessage.content.toLowerCase().slice().split('BAD WORD: ');
+                const bad_word = badmessage.content.slice().split('BAD WORD: ');
                 const punish = badmessage.content.slice().split('PUNISHMENT: ');
-                if (message.content.toLowerCase().includes(bad_word[1])){
+                if (message.content.toLowerCase().includes(bad_word[1].toLowerCase())){
                     message.delete();
-                    return message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента. [Слово в черном списке]\`\nDEBUG => Наказание ${punish}`).then(msg => msg.delete(7000))
+                    return message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента. [Слово в черном списке]\`\nDEBUG => Наказание ${punish[1]}`).then(msg => msg.delete(7000))
                 }
             })
         })
+    }else{
+        if (message.content == "hehhgg"){
+            bad_words_channel.fetchMessages().then(badmessages => {
+                badmessages.filter(badmessage => {
+                    const bad_word = badmessage.content.slice().split('BAD WORD: ');
+                    const punish = badmessage.content.slice().split('PUNISHMENT: ');
+                    message.reply(`BAD WORD: ${badword[1]}\n${punish}`)
+                })
+            })
+        }
     }
 });
 
