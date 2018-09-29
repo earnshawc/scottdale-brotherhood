@@ -586,7 +586,8 @@ bot.on('message', async message => {
         if (!message.member.roles.some(r => ["Spectator™", "Support Team"].includes(r.name)) && !message.member.hasPermission("ADMINISTRATOR")) return
         const args = message.content.slice('/addbadword').split(/ +/)
         let text = args.slice(2).join(" ");
-        if (!text) return message.reply(`\`/addbadword [фраза]\``)
+        if (!args[1]) return message.reply(`\`вы не указали наказание. /addbadword [наказание] [фраза]\``)
+        if (!text) return message.reply(`\`укажите запрещенную фразу. /addbadword [наказание] [фраза]\``)
         let checkword;
         checkword = false;
         await bad_words_channel.fetchMessages().then(badmessages => {
@@ -599,7 +600,8 @@ bot.on('message', async message => {
         if (checkword){
             return message.reply(`\`данная фраза уже в списке запрещенных!\``).then(msg => msg.delete(7000))
         }else{
-            bad_words_channel.send(`BAD WORD: ${text}\nPUNISHMENT: ${args[1]}`)
+            bad_words_channel.send(`BAD WORD=>${text}=>PUNISHMENT=>${args[1]}`)
+            message.delete();
             return message.reply(`\`вы успешно добавили фразу:\` **${text}** \`в список запрещенных.\``).then(msg => msg.delete(10000))
         }
     }
@@ -618,10 +620,9 @@ bot.on('message', async message => {
         if (message.content == "hehhgg"){
             bad_words_channel.fetchMessages().then(badmessages => {
                 badmessages.filter(badmessage => {
-                    // const bad_word = badmessage.content.slice().split('BAD WORD: ');
-                    const punish = badmessage.content.slice().split('PUNISHMENT: ');
-                    const bad_word = badmessage.content.slice().split('BAD WORD: ')
-                    message.reply(`bad_word[0]: ${bad_word[0]}\nbad_word[1]: ${bad_word[1]}\nbad_word[2]: ${bad_word[2]}\n\n\npunish[0]: ${punish[0]}\npunish[1]: ${punish[1]}\npunish[2]: ${punish[2]}`)
+                    const bad_word = badmessage.content.slice().split('=>')[2]
+                    const punish = badmessage.content.slice().split('=>')[4]
+                    message.reply(`DEBUG:\nЗапрещенное слово: ${bad_word}\nНаказание: ${punish}`)
                 })
             })
         }
