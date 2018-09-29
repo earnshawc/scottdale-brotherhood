@@ -608,11 +608,11 @@ bot.on('message', async message => {
     if (!message.member.hasPermission("ADMINISTRATOR")){
         bad_words_channel.fetchMessages().then(badmessages => {
             badmessages.filter(badmessage => {
-                const bad_word = badmessage.content.slice().split('BAD WORD: ');
-                const punish = badmessage.content.slice().split('PUNISHMENT: ');
-                if (message.content.toLowerCase().includes(bad_word[1].toLowerCase())){
+                const bad_word = badmessage.content.slice().split('=>')[1]
+                const punish = badmessage.content.slice().split('=>')[3]
+                if (message.content.toLowerCase().includes(bad_word.toLowerCase())){
                     message.delete();
-                    return message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента. [Слово в черном списке]\`\nDEBUG => Наказание ${punish[1]}`).then(msg => msg.delete(7000))
+                    return message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента. [Слово в черном списке]\`\nDEBUG => Наказание ${punish}`).then(msg => msg.delete(7000))
                 }
             })
         })
