@@ -620,8 +620,8 @@ bot.on('message', async message => {
         if (message.content == "hehhgg"){
             bad_words_channel.fetchMessages().then(badmessages => {
                 badmessages.filter(badmessage => {
-                    const bad_word = badmessage.content.slice().split('=>')[2]
-                    const punish = badmessage.content.slice().split('=>')[4]
+                    const bad_word = badmessage.content.slice().split('=>')[1]
+                    const punish = badmessage.content.slice().split('=>')[3]
                     message.reply(`DEBUG:\nЗапрещенное слово: ${bad_word}\nНаказание: ${punish}`)
                 })
             })
