@@ -7,11 +7,16 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "5.18";
+let version = "5.19";
 let hideobnova = true;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
+
+punishment_rep = ({
+    "mute": "Вы были замучены в текстовых каналах.",
+    "kick": "Вы были отключены от Discord-сервера.",
+})
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -586,8 +591,9 @@ bot.on('message', async message => {
         if (!message.member.roles.some(r => ["Spectator™", "Support Team"].includes(r.name)) && !message.member.hasPermission("ADMINISTRATOR")) return
         const args = message.content.slice('/addbadword').split(/ +/)
         let text = args.slice(2).join(" ");
-        if (!args[1]) return message.reply(`\`вы не указали наказание. /addbadword [наказание] [фраза]\``)
-        if (!text) return message.reply(`\`укажите запрещенную фразу. /addbadword [наказание] [фраза]\``)
+        if (!args[1]) return message.reply(`\`вы не указали наказание. /addbadword [none/mute/kick] [фраза]\nПример: /addbadword mute дурак\``)
+        if (args[1] != "none" && args[1] != "mute" && args[1] != "kick") return message.reply(`\`наказания: ["none", "mute", "kick"]. /addbadword [none/mute/kick] [фраза]\nПример: /addbadword mute дурак\``)
+        if (!text) return message.reply(`\`укажите запрещенную фразу. /addbadword [none/mute/kick] [фраза]\nПример: /addbadword mute дурак\``)
         let checkword;
         checkword = false;
         await bad_words_channel.fetchMessages().then(badmessages => {
@@ -611,21 +617,22 @@ bot.on('message', async message => {
                 const bad_word = badmessage.content.slice().split('=>')[1]
                 const punish = badmessage.content.slice().split('=>')[3]
                 if (message.content.toLowerCase().includes(bad_word.toLowerCase())){
+                    scottdale.channels.find(c => c.name == "spectator-chat").send(`<@${message.member.id}> \`использовал запрещенную фразу "${bad_word}" в сообщении: "${message.content}".\nDEBUG: [PUNISHMENT=${punish}]\``)
                     message.delete();
-                    return message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента. [Слово в черном списке]\`\nDEBUG => Наказание ${punish}`).then(msg => msg.delete(7000))
+                    if (punish == "none") return
+                    message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента.\`\n\`${punishment_rep[punish]}\``).then(msg => msg.delete(7000))
+                    if (punish == "mute"){
+                        let muterole = scottdale.roles.find(r => r.name == "Muted");
+                        return message.member.addRole(muterole); 
+                    }
+                    if (punish == "kick"){
+                        message.member.sendMessage(`\`Вас наказала система за использование зап.слов.\``).then(() => {
+                            message.member.kick(`Зап.слово [${bad_word}]`)
+                        })
+                    }
                 }
             })
         })
-    }else{
-        if (message.content == "hehhgg"){
-            bad_words_channel.fetchMessages().then(badmessages => {
-                badmessages.filter(badmessage => {
-                    const bad_word = badmessage.content.slice().split('=>')[1]
-                    const punish = badmessage.content.slice().split('=>')[3]
-                    message.reply(`DEBUG:\nЗапрещенное слово: ${bad_word}\nНаказание: ${punish}`)
-                })
-            })
-        }
     }
 });
 
