@@ -620,8 +620,8 @@ bot.on('message', async message => {
                 badmessages.filter(badmessage => {
                     // const bad_word = badmessage.content.slice().split('BAD WORD: ');
                     const punish = badmessage.content.slice().split('PUNISHMENT: ');
-                    const bad_word = badmessage.content.slice('BAD WORD: ').split('\n')
-                    message.reply(`BAD WORD: ${bad_word[1]}\n\n\nPUNISH: ${punish[1]}\n\n\n${bad_word[1].toLowerCase()}\n[TEST]\n${bad_word[1]}`)
+                    const bad_word = badmessage.content.slice().split('BAD WORD: ')
+                    message.reply(`bad_word[0]: ${bad_word[0]}\nbad_word[1]: ${bad_word[1]}\nbad_word[2]: ${bad_word[2]}\n\n\npunish[0]: ${punish[0]}\npunish[1]: ${punish[1]}\npunish[2]: ${punish[2]}`)
                 })
             })
         }
