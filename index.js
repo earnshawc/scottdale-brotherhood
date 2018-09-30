@@ -7,9 +7,8 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.20";
-let hideobnova = true;
-let test_dostup;
+let version = "7.0";
+let hideobnova = false;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -235,31 +234,6 @@ function hook(channel, name, message, avatar) {
         })
 }
 
-function checkadmin(message, admin_level, test_dostup){
-    if (!message) return
-    if (!admin_level) return
-    let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
-    if (!dataserver) return
-    let db_channel = dataserver.channels.find(c => c.name == "administration");
-    if (!db_channel) return
-    let user_admin_level;
-    test_dostup = true;
-
-    db_channel.fetchMessages().then(messages => {
-        let user_admin = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${message.member.id}\``))
-        if (user_admin){
-            const admin_lvl = user_admin.content.slice().split('ADMIN PERMISSIONS:** ');
-            user_admin_level = admin_lvl[1]
-        }else{
-            user_admin_level = 0;
-        }
-    });
-
-    if (user_admin_level < admin_level){
-        test_dostup = false;
-    }
-}
-
 bot.login(process.env.token);
 
 bot.on('ready', () => {
@@ -270,8 +244,8 @@ bot.on('ready', () => {
 Вышло обновление версии ${version}:
 - Полностью реализована система вопросов.
 - Отправить вопрос: "/report [text]";
-- Узнать текущие вопросы: "/questions";
-- Ответить на вопрос: "/ans";
+- Узнать текущие вопросы: "/questions"; [adm 1]
+- Ответить на вопрос: "/ans"; [adm 1]
 - Ответить на вопрос под определенным номером: "/ans [num]";
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
@@ -312,8 +286,23 @@ bot.on('message', async message => {
 
     if (message.content == "/questions"){
 
-        checkadmin(message, 1, test_dostup)
-        if (!test_dostup){
+        
+        let admin_level = 1;
+        let db_channel = dataserver.channels.find(c => c.name == "administration");
+        if (!db_channel) return
+        let user_admin_level;
+
+        await db_channel.fetchMessages().then(messages => {
+            let user_admin = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${message.member.id}\``))
+            if (user_admin){
+                const admin_lvl = user_admin.content.slice().split('ADMIN PERMISSIONS:** ');
+                user_admin_level = admin_lvl[1]
+            }else{
+                user_admin_level = 0;
+            }
+        });
+
+        if (user_admin_level < admin_level){
             message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
             return message.delete();
         }
@@ -426,6 +415,27 @@ bot.on('message', async message => {
     }
 
     if (message.content.startsWith(`/ans`)){
+
+        let admin_level = 1;
+        let db_channel = dataserver.channels.find(c => c.name == "administration");
+        if (!db_channel) return
+        let user_admin_level;
+
+        await db_channel.fetchMessages().then(messages => {
+            let user_admin = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${message.member.id}\``))
+            if (user_admin){
+                const admin_lvl = user_admin.content.slice().split('ADMIN PERMISSIONS:** ');
+                user_admin_level = admin_lvl[1]
+            }else{
+                user_admin_level = 0;
+            }
+        });
+
+        if (user_admin_level < admin_level){
+            message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
+            return message.delete();
+        }
+
         let rep_channel = message.guild.channels.find(c => c.name == "reports");
         const args = message.content.slice('/ans').split(/ +/)
         if (!args[1]){
@@ -604,7 +614,7 @@ bot.on('message', async message => {
     }
 
     if (message.content.startsWith("/setadmin")){
-        if (!message.member.hasPermission("ADMINISTRATOR")){
+        if (!message.member.hasPermission("ADMINISTRATOR") && message.guild.id != scottdale.id){
             message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
             return message.delete();
         }
@@ -628,7 +638,7 @@ bot.on('message', async message => {
     }
 
     if (message.content.startsWith("/admininfo")){
-        if (!message.member.hasPermission("ADMINISTRATOR")){
+        if (!message.member.hasPermission("ADMINISTRATOR") && message.guild.id != scottdale.id){
             message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
             return message.delete();
         }
@@ -656,7 +666,7 @@ bot.on('message', async message => {
     }
 
     if (message.content.startsWith("/deladmin")){
-        if (!message.member.hasPermission("ADMINISTRATOR")){
+        if (!message.member.hasPermission("ADMINISTRATOR") && message.guild.id != scottdale.id){
             message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
             return message.delete();
         }
