@@ -7,8 +7,8 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.19";
-let hideobnova = false;
+let version = "6.20";
+let hideobnova = true;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -234,6 +234,32 @@ function hook(channel, name, message, avatar) {
         })
 }
 
+function checkadmin(member, admin_level){
+    if (!member) return
+    if (!admin_level) return
+    let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
+    if (!dataserver) return
+    let db_channel = dataserver.channels.find(c => c.name == "administration");
+    if (!db_channel) return
+    let user_admin_level;
+
+    db_channel.fetchMessages().then(messages => {
+        let user_admin = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${member.id}\``))
+        if (user_admin){
+            const admin_lvl = user_admin.content.slice().split('ADMIN PERMISSIONS:** ');
+            user_admin_level = admin_lvl[1]
+        }else{
+            user_admin_level = 0;
+        }
+    });
+
+    if (user_admin_level < admin_level){
+        checkadmin = false;
+    }else{
+        checkadmin = true;
+    }
+}
+
 bot.login(process.env.token);
 
 bot.on('ready', () => {
@@ -285,6 +311,11 @@ bot.on('message', async message => {
     }
 
     if (message.content == "/questions"){
+
+        if (!checkadmin(message.member, 1)){
+            message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
+            return message.delete();
+        }
 
         let en_questions = false;
         let num_questions = 0;
@@ -344,20 +375,17 @@ bot.on('message', async message => {
     }
 
     if (message.content.startsWith("/report")){
-        if (message.guild.id == scottdale.id) return
         let rep_channel = message.guild.channels.find(c => c.name == "reports");
         if (!rep_channel) return message.reply(`\`[ERROR] Канал ${rep_channel.name} не был найден.\nПередайте это сообщение техническим администраторам Discord:\`<@336207279412215809>, <@402092109429080066>`)
         if (report_cooldown.has(message.author.id)) {
-            message.channel.send("`Можно использовать раз в 30 секунд!` - " + message.author).then(msg => msg.delete(7000));
+            message.channel.send("`Можно использовать раз в минуту!` - " + message.author).then(msg => msg.delete(7000));
             return message.delete();
         }
         if (!message.member.hasPermission("ADMINISTRATOR")){
-            if (message.guild.id != scottdale.id){
-                report_cooldown.add(message.author.id);
-                setTimeout(() => {
-                    report_cooldown.delete(message.author.id);
-                }, 30000);
-            }
+            report_cooldown.add(message.author.id);
+            setTimeout(() => {
+                report_cooldown.delete(message.author.id);
+            }, 60000);
         }
         const args = message.content.slice('/report').split(/ +/)
         if (!args[1]){
@@ -575,12 +603,10 @@ bot.on('message', async message => {
     }
 
     if (message.content.startsWith("/setadmin")){
-        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
-            color: 3447003,
-            fields: [{
-                name: "`Scottdale Brotherhood - Сервер разработчиков`",
-                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
-            }]}}).then(msg => msg.delete(12000))
+        if (!message.member.hasPermission("ADMINISTRATOR")){
+            message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
+            return message.delete();
+        }
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
             message.delete();
@@ -601,16 +627,14 @@ bot.on('message', async message => {
     }
 
     if (message.content.startsWith("/admininfo")){
-        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
-            color: 3447003,
-            fields: [{
-                name: "`Scottdale Brotherhood - Сервер разработчиков`",
-                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
-            }]}}).then(msg => msg.delete(12000))
+        if (!message.member.hasPermission("ADMINISTRATOR")){
+            message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
+            return message.delete();
+        }
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
             message.delete();
-            return message.reply(`\`вы не указали пользователя! /findadmin [USER]\``).then(msg => msg.delete(7000));
+            return message.reply(`\`вы не указали пользователя! /admininfo [USER]\``).then(msg => msg.delete(7000));
         }  
         let db_channel = dataserver.channels.find(c => c.name == "administration");
         db_channel.fetchMessages().then(messages => {
@@ -631,14 +655,11 @@ bot.on('message', async message => {
     }
 
     if (message.content.startsWith("/deladmin")){
-        if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
-            color: 3447003,
-            fields: [{
-                name: "`Scottdale Brotherhood - Сервер разработчиков`",
-                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
-            }]}}).then(msg => msg.delete(12000))
-
-        const args = message.content.slice('/setadmin').split(/ +/)
+        if (!message.member.hasPermission("ADMINISTRATOR")){
+            message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
+            return message.delete();
+        }
+        const args = message.content.slice('/deladmin').split(/ +/)
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
             let userfind = false;
