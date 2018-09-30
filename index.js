@@ -7,8 +7,8 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.4";
-let hideobnova = false;
+let version = "6.5";
+let hideobnova = true;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -308,7 +308,6 @@ bot.on('message', async message => {
                     rep_number = repmessage.content.slice().split('=>')[1]
                     reportnum_message = true;
                     report_number_message = repmessage;
-                    return
                 }
             })
         })
