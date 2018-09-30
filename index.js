@@ -322,7 +322,7 @@ bot.on('message', async message => {
         await report_number_message.edit(`[REPORTNUMBER]=>${rep_number}`)
         let text = args.slice(1).join(" ");
         rep_channel.send(`REPORT=>${rep_number}=>USER=>${message.author.id}=>CONTENT_REP=>${text}`).then(hayway => {
-            await hayway.pin();
+            hayway.pin();
         })
     }
 
