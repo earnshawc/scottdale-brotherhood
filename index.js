@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.6";
+let version = "6.7";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -242,8 +242,9 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- new command: "/report"
-- В тестовом режиме.
+- update command: "/report"
+- Запрещенный символ: "=>".
+- При отправке сообщения через /report удаление ответа от бота происходит через 30 секунд.
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -304,7 +305,7 @@ bot.on('message', async message => {
         }
         let text = args.slice(1).join(" ");
         if (text.includes(`=>`)){
-            message.reply(`Ваш текст содержит запрещенный символ "=>", замените его на "->"!`).then(msg => msg.delete(7000));
+            message.reply(`\`ваш текст содержит запрещенный символ "=>", замените его на "->".\``).then(msg => msg.delete(10000));
             return message.delete();
         }
         let reportnum_message = false;
@@ -330,7 +331,7 @@ bot.on('message', async message => {
         rep_channel.send(`REPORT=>${rep_number}=>USER=>${message.author.id}=>CONTENT_REP=>${text}`).then(hayway => {
             hayway.pin();
         })
-        message.reply(`\`ваш вопрос/жалоба была успешно отправлена! Номер вашего вопроса: №${rep_number}\``).then(msg => msg.delete(15000));
+        message.reply(`\`ваш вопрос/жалоба была успешно отправлена! Номер вашего вопроса: №${rep_number}\``).then(msg => msg.delete(35000));
         return message.delete();
     }
 
