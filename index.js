@@ -256,6 +256,7 @@ bot.on('message', async message => {
     if (message.channel.type == "dm") return // Если в ЛС, то выход.
     if (message.guild.id != "355656045600964609" && message.guild.id != "488400983496458260" && message.guild.id != "493459379878625320") return
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
+    if (message.type === "PINS_ADD") if (message.channel.name == "reports") message.delete();
     if (message.content == "/ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
     if (message.member.id == bot.user.id) return
 
@@ -282,7 +283,7 @@ bot.on('message', async message => {
 
     if (message.content.startsWith("/report")){
         if (message.guild.id == scottdale.id) return
-        let rep_channel = dataserver.channels.find(c => c.name == "reports");
+        let rep_channel = message.guild.channels.find(c => c.name == "reports");
         if (!rep_channel) return message.reply(`\`[ERROR] Канал ${rep_channel.name} не был найден.\nПередайте это сообщение техническим администраторам Discord:\`<@336207279412215809>, <@402092109429080066>`)
         if (report_cooldown.has(message.author.id)) {
             message.channel.send("`Можно использовать раз в минуту!` - " + message.author).then(msg => msg.delete(7000));
@@ -297,7 +298,7 @@ bot.on('message', async message => {
         const args = message.content.slice('/report').split(/ +/)
         if (!args[1]){
             message.reply(`\`вы не указали суть вашего вопроса/жалобы. /report [текст]\``).then(msg => msg.delete(7000));
-            message.delete();
+            return message.delete();
         }
         let reportnum_message = false;
         let rep_number = 0;
@@ -317,12 +318,14 @@ bot.on('message', async message => {
             })
             rep_number = 0;
         }
-        rep_number = rep_number + 1;
+        rep_number++
         await report_number_message.edit(`[REPORTNUMBER]=>${rep_number}`)
         let text = args.slice(1).join(" ");
         rep_channel.send(`REPORT=>${rep_number}=>USER=>${message.author.id}=>CONTENT_REP=>${text}`).then(hayway => {
             hayway.pin();
         })
+        message.reply(`\`ваш вопрос/жалоба была успешно отправлена! Номер вашего вопроса: №${rep_number}\``);
+        return message.delete();
     }
 
     if (message.content.startsWith("/setadmin")){
