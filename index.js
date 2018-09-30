@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.10";
+let version = "6.11";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -326,7 +326,7 @@ bot.on('message', async message => {
         }
         rep_number++
         await report_number_message.edit(`[REPORTNUMBER]=>${rep_number}`)
-        rep_channel.send(`REPORT=>${rep_number}=>USER=>${message.author.id}=>CONTENT_REP=>${text}`).then(hayway => {
+        rep_channel.send(`REPORT=>${rep_number}=>USER=>${message.author.id}=>CONTENT_REP=>${text}=>CHANNEL=>${message.channel.id}=>STATUS=>WAIT`).then(hayway => {
             hayway.pin();
         })
         message.reply(`\`ваш вопрос/жалоба была успешно отправлена! Номер вашего вопроса: №${rep_number}\``).then(msg => msg.delete(35000));
@@ -361,6 +361,8 @@ bot.on('message', async message => {
                         _report_number = repmessage.content.slice().split('=>')[1]
                         _report_user = repmessage.content.slice().split('=>')[3]
                         _report_content = repmessage.content.slice().split('=>')[5]
+                        _report_channel = repmessage.content.slice().split('=>')[7]
+                        _report_status = repmessage.content.slice().split('=>')[9]
                         del_rep_message = repmessage;
                     }
                 })
@@ -369,6 +371,12 @@ bot.on('message', async message => {
                 message.reply(`\`на данный момент вопросов нет.\``).then(msg => msg.delete(7000));
                 return message.delete();
             }
+            if (_report_status != "WAIT"){
+                message.reply(`\`на данный момент вопросов нет.\``).then(msg => msg.delete(7000))
+                return message.delete();
+            }
+            _report_status = "ON EDIT"
+            await del_rep_message.edit(`REPORT=>${_report_number}=>USER=>${_report_user}=>CONTENT_REP=>${_report_content}=>CHANNEL=>${_report_channel}=>STATUS=>${_report_status}`)
             message.reply(`\`Отпишите ответ на данный вопрос в чат. Жалоба/вопрос от пользователя:\` <@${_report_user}>`, {embed: {
                 color: 3447003,
                 fields: [{
@@ -380,8 +388,9 @@ bot.on('message', async message => {
                     time: 60000,
                     errors: ['time'],
                 }).then((collected) => {
-                    let general = message.guild.channels.find(c => c.name == "general");
-                    general.send(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
+                    let user = message.guild.members.find(m => m.id == _report_user);
+                    let general = message.guild.channels.find(c => c.id == _report_channel);
+                    user.sendMessage(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
                         color: 3447003,
                         fields: [{
                             name: `Ваш вопрос, который вы задали.`,
@@ -390,12 +399,27 @@ bot.on('message', async message => {
                         {
                             name: `Ответ модератора`,
                             value: `${collected.first().content}`
-                        }]}})
+                        }]}}).catch(() => {
+                            general.send(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
+                                color: 3447003,
+                                fields: [{
+                                    name: `Ваш вопрос, который вы задали.`,
+                                    value: `${_report_content}`
+                                },
+                                {
+                                    name: `Ответ модератора`,
+                                    value: `${collected.first().content}`
+                                }]}})
+                        })
                     req_report_message.delete();
                     del_rep_message.delete();
+                    message.delete();
+                    collected.delete();
                 }).catch(() => {
+                    del_rep_message.edit(`REPORT=>${_report_number}=>USER=>${_report_user}=>CONTENT_REP=>${_report_content}=>CHANNEL=>${_report_channel}=>STATUS=>WAIT`)
                     message.reply('\`вы не успели ответить на данный вопрос.\`');
                     req_report_message.delete();
+                    message.delete();
                 });
             });
         }
