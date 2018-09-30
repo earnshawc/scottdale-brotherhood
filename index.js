@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.7";
+let version = "6.8";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -242,9 +242,7 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- update command: "/report"
-- Запрещенный символ: "=>".
-- При отправке сообщения через /report удаление ответа от бота происходит через 30 секунд.
+- add command: "/ans"
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -333,6 +331,72 @@ bot.on('message', async message => {
         })
         message.reply(`\`ваш вопрос/жалоба была успешно отправлена! Номер вашего вопроса: №${rep_number}\``).then(msg => msg.delete(35000));
         return message.delete();
+    }
+
+    if (message.content.startsWith(`/ans`)){
+        const args = message.content.slice('/ans').split(/ +/)
+        if (!args[1]){
+            let reportnum_message = false;
+            await rep_channel.fetchMessages().then(repmessages => {
+                repmessages.filter(repmessage => {
+                    if (repmessage.content.startsWith(`[REPORTNUMBER]`)){
+                        reportnum_message = true;
+                    }
+                })
+            })
+            if (!reportnum_message){
+                message.reply(`\`на данный момент вопросов нет.\``).then(msg => msg.delete(7000));
+                return message.delete();
+            }
+            let reportmessageid = false;
+            let _report_number;
+            let _report_user;
+            let _report_content;
+            await rep_channel.fetchMessages().then(repmessages => {
+                repmessages.filter(repmessage => {
+                    if (repmessage.content.startsWith(`REPORT`)){
+                        reportmessageid = true;
+                        _report_number = repmessage.content.slice().split('=>')[1]
+                        _report_user = repmessage.content.slice().split('=>')[3]
+                        _report_content = repmessage.content.slice().split('=>')[5]
+                    }
+                })
+            })
+            if (!reportmessageid){
+                message.reply(`\`на данный момент вопросов нет.\``).then(msg => msg.delete(7000));
+                return message.delete();
+            }
+            message.reply(`\`Отпишите ответ на данный вопрос в чат. Номер вопроса/жалобы: ${_report_number}\``, {embed: {
+                color: 3447003,
+                fields: [{
+                    name: `Жалоба/Вопрос от <@${_report_user}>`,
+                    value: `${_report_content}`
+                }]}}).then(req_report_message => {
+                message.channel.awaitMessages(response => response.member.id == message.member.id, {
+                    max: 1,
+                    time: 3000*_report_content.length,
+                    errors: ['time'],
+                }).then((collected) => {
+                    req_report_message.delete();
+                    message.guild.channels.find(c => c.name == "general").then(general => {
+                        general.send(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
+                            color: 3447003,
+                            fields: [{
+                                name: `Ваш вопрос, который вы задали.`,
+                                value: `${_report_content}`
+                            },{
+                                name: `Ответ модератора`,
+                                value: `${collected.first().content}`
+                            }]}})
+                    })
+                    message.delete();
+                }).catch(() => {
+                    message.reply('\`вы не успели ответить на данный вопрос.\`');
+                    req_report_message.delete();
+                    message.delete();
+                });
+            });
+        }
     }
 
     if (message.content.startsWith("/setadmin")){
