@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.16";
+let version = "6.17";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -307,7 +307,7 @@ bot.on('message', async message => {
                         if (num_questions == 0){
                             text_questions = `[№${_report_number}] ${_report_content}`
                         }else{
-                            text_questions = text_questions + `\n[№${_report_number}] ${_report_content}`
+                            text_questions = `[№${_report_number}] ${_report_content}\n` + text_questions
                         }
                         if (num_questions == 7){
                             message.channel.send(``, {embed: {
