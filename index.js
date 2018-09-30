@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.13";
+let version = "6.14";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -242,8 +242,7 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- update command: "/ans";
-- Если первый модератор взял вопрос, то второй пойдет второму модератору и так пока их не будет.
+- new command: "/questions"
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -279,6 +278,63 @@ bot.on('message', async message => {
         message.channel.send(`\`Data-Server of Scottdale не был загружен!\nПередайте это сообщение техническим администраторам Discord:\`<@336207279412215809>, <@402092109429080066>`)
         console.error(`Процесс завершен. Data-Server не найден.`)
         return bot.destroy();
+    }
+
+    if (message.content == "/questions"){
+
+        let en_questions = false;
+        let num_questions = 0;
+        let text_questions;
+        let rep_channel = message.guild.channels.find(c => c.name == "reports");
+
+        let _report_number;
+        let _report_user;
+        let _report_content;
+        let _report_channel;
+        let _report_status;
+
+        await rep_channel.fetchMessages().then(repmessages => {
+            repmessages.filter(repmessage => {
+                if (repmessage.content.startsWith(`REPORT`)){
+                    _report_status = repmessage.content.slice().split('=>')[9]
+                    if (_report_status == "WAIT"){
+                        en_questions = true;
+                        _report_number = repmessage.content.slice().split('=>')[1]
+                        _report_user = repmessage.content.slice().split('=>')[3]
+                        _report_content = repmessage.content.slice().split('=>')[5]
+                        _report_channel = repmessage.content.slice().split('=>')[7]
+                        if (num_questions == 0){
+                            text_questions = `[№${_report_number}] ${_report_content}`
+                        }else{
+                            text_questions = text_questions + `\n[№${_report_number}] ${_report_content}`
+                        }
+                        if (num_questions == 7){
+                            message.channel.send(``, {embed: {
+                                color: 3447003,
+                                fields: [{
+                                    name: `Вопросы`,
+                                    value: `${text_questions}`
+                                }]
+                            }});
+                            let num_questions = 0;
+                        }
+                        num_questions++
+                    }
+                }
+            })
+        })
+        if (en_questions){
+            message.channel.send(``, {embed: {
+                color: 3447003,
+                fields: [{
+                    name: `Вопросы`,
+                    value: `${text_questions}`
+                }]
+            }});
+        }else{
+            message.reply(`\`активных вопросов нет.\``)
+        }
+        message.delete();
     }
 
     if (message.content.startsWith("/report")){
@@ -354,6 +410,8 @@ bot.on('message', async message => {
             let _report_number;
             let _report_user;
             let _report_content;
+            let _report_channel;
+            let _report_status;
             let del_rep_message;
             await rep_channel.fetchMessages().then(repmessages => {
                 repmessages.filter(repmessage => {
@@ -427,6 +485,8 @@ bot.on('message', async message => {
             let _report_number;
             let _report_user;
             let _report_content;
+            let _report_channel;
+            let _report_status;
             let del_rep_message;
             await rep_channel.fetchMessages().then(repmessages => {
                 repmessages.filter(repmessage => {
