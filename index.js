@@ -416,7 +416,8 @@ bot.on('message', async message => {
         })
         message.reply(`\`ваш вопрос/жалоба была успешно отправлена! Номер вашего вопроса: №${rep_number}\``).then(msg => msg.delete(35000));
         reportlog.send(`\`[REPORT]\` <@${message.author.id}> \`отправил вопрос №${rep_number}. Суть:\` ${text}`)
-        return message.delete();
+        message.delete();
+        return message.guild.channels.find(c => c.name == "spectator-chat").send(`\`Появился новый вопрос №${rep_number}. Используйте '/ans' что бы ответить. '/questions' - список активных вопросов.\``).then(msg => msg.delete(120000))
     }
 
     if (message.content.startsWith(`/ans`)){
