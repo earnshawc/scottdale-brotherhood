@@ -7,8 +7,8 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.15";
-let hideobnova = false;
+let version = "6.16";
+let hideobnova = true;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -329,7 +329,7 @@ bot.on('message', async message => {
                 message.channel.send(``, {embed: {
                     color: 3447003,
                     fields: [{
-                        name: `Вопросы`,
+                        name: `Активные вопросы`,
                         value: `${text_questions}`
                     }]
                 }});
