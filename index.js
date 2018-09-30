@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.12";
+let version = "6.13";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -242,9 +242,8 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- command: "/report [text]";
-- command: "/ans";
-- command: "/ans [number]";
+- update command: "/ans";
+- Если первый модератор взял вопрос, то второй пойдет второму модератору и так пока их не будет.
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -359,22 +358,20 @@ bot.on('message', async message => {
             await rep_channel.fetchMessages().then(repmessages => {
                 repmessages.filter(repmessage => {
                     if (repmessage.content.startsWith(`REPORT`)){
-                        reportmessageid = true;
-                        _report_number = repmessage.content.slice().split('=>')[1]
-                        _report_user = repmessage.content.slice().split('=>')[3]
-                        _report_content = repmessage.content.slice().split('=>')[5]
-                        _report_channel = repmessage.content.slice().split('=>')[7]
                         _report_status = repmessage.content.slice().split('=>')[9]
-                        del_rep_message = repmessage;
+                        if (_report_status == "WAIT"){
+                            reportmessageid = true;
+                            _report_number = repmessage.content.slice().split('=>')[1]
+                            _report_user = repmessage.content.slice().split('=>')[3]
+                            _report_content = repmessage.content.slice().split('=>')[5]
+                            _report_channel = repmessage.content.slice().split('=>')[7]
+                            del_rep_message = repmessage;
+                        }
                     }
                 })
             })
             if (!reportmessageid){
                 message.reply(`\`на данный момент вопросов нет.\``).then(msg => msg.delete(7000));
-                return message.delete();
-            }
-            if (_report_status != "WAIT"){
-                message.reply(`\`на данный момент вопросов нет.\``).then(msg => msg.delete(7000))
                 return message.delete();
             }
             _report_status = "ON EDIT"
@@ -390,9 +387,8 @@ bot.on('message', async message => {
                     time: 60000,
                     errors: ['time'],
                 }).then((collected) => {
-                    let user = message.guild.members.find(m => m.id == _report_user);
                     let general = message.guild.channels.find(c => c.id == _report_channel);
-                    user.sendMessage(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
+                    general.send(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
                         color: 3447003,
                         fields: [{
                             name: `Ваш вопрос, который вы задали.`,
@@ -401,18 +397,8 @@ bot.on('message', async message => {
                         {
                             name: `Ответ модератора`,
                             value: `${collected.first().content}`
-                        }]}}).catch(() => {
-                            general.send(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
-                                color: 3447003,
-                                fields: [{
-                                    name: `Ваш вопрос, который вы задали.`,
-                                    value: `${_report_content}`
-                                },
-                                {
-                                    name: `Ответ модератора`,
-                                    value: `${collected.first().content}`
-                                }]}})
-                        })
+                        }]
+                    }});
                     req_report_message.delete();
                     del_rep_message.delete();
                     message.delete();
@@ -458,11 +444,11 @@ bot.on('message', async message => {
                 })
             })
             if (!reportmessageid){
-                message.reply(`\`на данный момент вопросов нет.\``).then(msg => msg.delete(7000));
+                message.reply(`\`данного вопроса не существует.\``).then(msg => msg.delete(7000));
                 return message.delete();
             }
             if (_report_status != "WAIT"){
-                message.reply(`\`на данный момент вопросов нет.\``).then(msg => msg.delete(7000))
+                message.reply(`\`на данный вопрос уже отвечают.\``).then(msg => msg.delete(7000))
                 return message.delete();
             }
             _report_status = "ON EDIT"
@@ -478,9 +464,8 @@ bot.on('message', async message => {
                     time: 60000,
                     errors: ['time'],
                 }).then((collected) => {
-                    let user = message.guild.members.find(m => m.id == _report_user);
                     let general = message.guild.channels.find(c => c.id == _report_channel);
-                    user.sendMessage(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
+                    general.send(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
                         color: 3447003,
                         fields: [{
                             name: `Ваш вопрос, который вы задали.`,
@@ -489,18 +474,8 @@ bot.on('message', async message => {
                         {
                             name: `Ответ модератора`,
                             value: `${collected.first().content}`
-                        }]}}).catch(() => {
-                            general.send(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
-                                color: 3447003,
-                                fields: [{
-                                    name: `Ваш вопрос, который вы задали.`,
-                                    value: `${_report_content}`
-                                },
-                                {
-                                    name: `Ответ модератора`,
-                                    value: `${collected.first().content}`
-                                }]}})
-                        })
+                        }]
+                    }})
                     req_report_message.delete();
                     del_rep_message.delete();
                     message.delete();
