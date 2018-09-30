@@ -7,11 +7,12 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.2";
+let version = "6.4";
 let hideobnova = false;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
+const report_cooldown = new Set();
 
 punishment_rep = ({
     "mute": "Вы были замучены в текстовых каналах.",
@@ -241,9 +242,8 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Обновлена система Bad Words.
-- Добавлено автонаказание.
-- Нельзя добавить фразу, которая уже есть в списке запрещенных.
+- new command: "/report"
+- В тестовом режиме.
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -275,9 +275,55 @@ bot.on('message', async message => {
     let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
     let scottdale = bot.guilds.find(g => g.id == "355656045600964609");
     if (!dataserver){
-        message.channel.send(`\`Data-Server of Scottdale не был загружен!\nПередайте это сообщение техническим администраторам Discord:\`<@336207279412215809>, <@402092109429080066>\n`)
+        message.channel.send(`\`Data-Server of Scottdale не был загружен!\nПередайте это сообщение техническим администраторам Discord:\`<@336207279412215809>, <@402092109429080066>`)
         console.error(`Процесс завершен. Data-Server не найден.`)
         return bot.destroy();
+    }
+
+    if (message.content.startsWith("/report")){
+        if (message.guild.id == scottdale.id) return
+        let rep_channel = dataserver.channels.find(c => c.name == "reports");
+        if (!rep_channel) return message.reply(`\`[ERROR] Канал ${rep_channel.name} не был найден.\nПередайте это сообщение техническим администраторам Discord:\`<@336207279412215809>, <@402092109429080066>`)
+        if (report_cooldown.has(message.author.id)) {
+            message.channel.send("`Можно использовать раз в минуту!` - " + message.author).then(msg => msg.delete(7000));
+            return message.delete();
+        }
+        if (!message.member.hasPermission("ADMINISTRATOR")){
+            report_cooldown.add(message.author.id);
+            setTimeout(() => {
+                report_cooldown.delete(message.author.id);
+            }, 60000);
+        }
+        const args = message.content.slice('/report').split(/ +/)
+        if (!args[1]){
+            message.reply(`\`вы не указали суть вашего вопроса/жалобы. /report [текст]\``).then(msg => msg.delete(7000));
+            message.delete();
+        }
+        let reportnum_message = false;
+        let rep_number = 0;
+        let report_number_message;
+        await rep_channel.fetchMessages().then(repmessages => {
+            repmessages.filter(repmessage => {
+                if (repmessage.content.startsWith(`[REPORTNUMBER]`)){
+                    rep_number = repmessage.content.slice().split('=>')[1]
+                    reportnum_message = true;
+                    report_number_message = repmessage;
+                    return
+                }
+            })
+        })
+        if (!reportnum_message){
+            await rep_channel.send(`[REPORTNUMBER]=>0`).then(msg => {
+                report_number_message = msg;
+            })
+            rep_number = 0;
+        }
+        rep_number = rep_number + 1;
+        await report_number_message.edit(`[REPORTNUMBER]=>${rep_number}`)
+        let text = args.slice(1).join(" ");
+        rep_channel.send(`REPORT=>${rep_number}=>USER=>${message.author.id}=>CONTENT_REP=>${text}`).then(hayway => {
+            await hayway.pin();
+        })
     }
 
     if (message.content.startsWith("/setadmin")){
