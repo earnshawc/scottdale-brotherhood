@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "7.1";
+let version = "7.2";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -283,6 +283,8 @@ bot.on('message', async message => {
         console.error(`Процесс завершен. Data-Server не найден.`)
         return bot.destroy();
     }
+    let reportlog = scottdale.channels.find(c => c.name == "reports-log");
+    if (!reportlog) return
 
     if (message.content == "/questions"){
 
@@ -413,6 +415,7 @@ bot.on('message', async message => {
             hayway.pin();
         })
         message.reply(`\`ваш вопрос/жалоба была успешно отправлена! Номер вашего вопроса: №${rep_number}\``).then(msg => msg.delete(35000));
+        reportlog.send(`\`[REPORT]\` <@${message.author.id}> \`отправил вопрос №${rep_number}. Суть:\` ${text}`)
         return message.delete();
     }
 
@@ -519,6 +522,7 @@ bot.on('message', async message => {
                                 }]
                             }})
                         })
+                        reportlog.send(`\`[ANSWER]\` <@${message.author.id}> \`ответил на вопрос №${_report_number} от\` <@${_report_user}>\n\`Вопрос:\` ${_report_content}\n\`Ответ:\` ${collected.first().content}`)
                         req_report_message.delete();
                         del_rep_message.delete();
                         message.delete();
@@ -529,6 +533,7 @@ bot.on('message', async message => {
                         user.sendMessage(`<@${_report_user}>, \`модератор\` <@${message.author.id}> \`отказался отвечать на ваш вопрос №${_report_number}\``).catch(() => {
                           general.send(`<@${_report_user}>, \`модератор\` <@${message.author.id}> \`отказался отвечать на ваш вопрос №${_report_number}\``)  
                         })
+                        reportlog.send(`\`[DELETE]\` <@${message.author.id}> \`отказался от вопроса №${_report_number} от\` <@${_report_user}>\n\`Вопрос:\` ${_report_content}`)
                         req_report_message.delete();
                         del_rep_message.delete();
                         message.delete();
@@ -600,7 +605,7 @@ bot.on('message', async message => {
                     if (collected.first().content != "-"){
                         let user = message.guild.members.find(m => m.id == _report_user);
                         let general = message.guild.channels.find(c => c.id == _report_channel);
-                        user.sendMessage(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
+                        user.sendMessage(`<@${_report_user}>, \`на ваш вопрос №${args[1]} поступил ответ от:\` <@${message.author.id}>`, {embed: {
                             color: 3447003,
                             fields: [{
                                 name: `Ваш вопрос, который вы задали.`,
@@ -611,7 +616,7 @@ bot.on('message', async message => {
                                 value: `${collected.first().content}`
                             }]
                         }}).catch(() => {
-                            general.send(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
+                            general.send(`<@${_report_user}>, \`на ваш вопрос №${args[1]} поступил ответ от:\` <@${message.author.id}>`, {embed: {
                                 color: 3447003,
                                 fields: [{
                                     name: `Ваш вопрос, который вы задали.`,
@@ -623,6 +628,7 @@ bot.on('message', async message => {
                                 }]
                             }})
                         })
+                        reportlog.send(`\`[ANSWER]\` <@${message.author.id}> \`ответил на вопрос №${args[1]} от\` <@${_report_user}>\n\`Вопрос:\` ${_report_content}\n\`Ответ:\` ${collected.first().content}`)
                         req_report_message.delete();
                         del_rep_message.delete();
                         message.delete();
@@ -633,6 +639,7 @@ bot.on('message', async message => {
                         user.sendMessage(`<@${_report_user}>, \`модератор\` <@${message.author.id}> \`отказался отвечать на ваш вопрос №${args[1]}\``).catch(() => {
                             general.send(`<@${_report_user}>, \`модератор\` <@${message.author.id}> \`отказался отвечать на ваш вопрос №${args[1]}\``)
                         })
+                        reportlog.send(`\`[DELETE]\` <@${message.author.id}> \`отказался от вопроса №${args[1]} от\` <@${_report_user}>\n\`Вопрос:\` ${_report_content}`)
                         req_report_message.delete();
                         del_rep_message.delete();
                         message.delete();
