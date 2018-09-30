@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.14";
+let version = "6.15";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -242,7 +242,8 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- new command: "/questions"
+- update command: "/questions"
+- пофиксил баги.
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -316,7 +317,7 @@ bot.on('message', async message => {
                                     value: `${text_questions}`
                                 }]
                             }});
-                            let num_questions = 0;
+                            num_questions = 0;
                         }
                         num_questions++
                     }
@@ -324,13 +325,15 @@ bot.on('message', async message => {
             })
         })
         if (en_questions){
-            message.channel.send(``, {embed: {
-                color: 3447003,
-                fields: [{
-                    name: `Вопросы`,
-                    value: `${text_questions}`
-                }]
-            }});
+            if (num_questions != 0){
+                message.channel.send(``, {embed: {
+                    color: 3447003,
+                    fields: [{
+                        name: `Вопросы`,
+                        value: `${text_questions}`
+                    }]
+                }});
+            }
         }else{
             message.reply(`\`активных вопросов нет.\``)
         }
