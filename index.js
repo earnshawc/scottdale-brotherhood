@@ -235,7 +235,7 @@ function hook(channel, name, message, avatar) {
 }
 
 function checkadmin(message, admin_level){
-    if (!member) return
+    if (!message) return
     if (!admin_level) return
     let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
     if (!dataserver) return
