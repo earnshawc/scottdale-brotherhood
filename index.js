@@ -9,6 +9,7 @@ let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8
 
 let version = "6.20";
 let hideobnova = true;
+let test_dostup;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -301,7 +302,6 @@ bot.on('message', async message => {
         }
     }
 
-    let test_dostup;
     let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
     let scottdale = bot.guilds.find(g => g.id == "355656045600964609");
     if (!dataserver){
