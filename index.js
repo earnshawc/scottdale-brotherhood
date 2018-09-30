@@ -7,8 +7,8 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.17";
-let hideobnova = true;
+let version = "6.18";
+let hideobnova = false;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -242,8 +242,8 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- update command: "/questions"
-- пофиксил баги.
+- update command: "/ans";
+- отказ от вопроса символом: "-";
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -437,7 +437,7 @@ bot.on('message', async message => {
             }
             _report_status = "ON EDIT"
             await del_rep_message.edit(`REPORT=>${_report_number}=>USER=>${_report_user}=>CONTENT_REP=>${_report_content}=>CHANNEL=>${_report_channel}=>STATUS=>${_report_status}`)
-            message.reply(`\`Отпишите ответ на данный вопрос в чат. Жалоба/вопрос от пользователя:\` <@${_report_user}>`, {embed: {
+            message.reply(`\`Отпишите ответ на данный вопрос в чат. Жалоба/вопрос от пользователя:\` <@${_report_user}>\n\`Отклонить вопрос => "-"\``, {embed: {
                 color: 3447003,
                 fields: [{
                     name: `Номер вопроса/жалобы: ${_report_number}`,
@@ -448,22 +448,31 @@ bot.on('message', async message => {
                     time: 60000,
                     errors: ['time'],
                 }).then((collected) => {
-                    let general = message.guild.channels.find(c => c.id == _report_channel);
-                    general.send(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
-                        color: 3447003,
-                        fields: [{
-                            name: `Ваш вопрос, который вы задали.`,
-                            value: `${_report_content}`
-                        },
-                        {
-                            name: `Ответ модератора`,
-                            value: `${collected.first().content}`
-                        }]
-                    }});
-                    req_report_message.delete();
-                    del_rep_message.delete();
-                    message.delete();
-                    collected.first().delete();
+                    if (collected.first().content != "-"){
+                        let general = message.guild.channels.find(c => c.id == _report_channel);
+                        general.send(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
+                            color: 3447003,
+                            fields: [{
+                                name: `Ваш вопрос, который вы задали.`,
+                                value: `${_report_content}`
+                            },
+                            {
+                                name: `Ответ модератора`,
+                                value: `${collected.first().content}`
+                            }]
+                        }});
+                        req_report_message.delete();
+                        del_rep_message.delete();
+                        message.delete();
+                        collected.first().delete();
+                    }else{
+                        let general = message.guild.channels.find(c => c.id == _report_channel);
+                        general.send(`<@${_report_user}>, \`модератор\` <@${message.author.id}> \`отказался отвечать на ваш вопрос №${_report_number}\``);
+                        req_report_message.delete();
+                        del_rep_message.delete();
+                        message.delete();
+                        collected.first().delete();
+                    }
                 }).catch(() => {
                     del_rep_message.edit(`REPORT=>${_report_number}=>USER=>${_report_user}=>CONTENT_REP=>${_report_content}=>CHANNEL=>${_report_channel}=>STATUS=>WAIT`)
                     message.reply('\`вы не успели ответить на данный вопрос.\`');
@@ -516,7 +525,7 @@ bot.on('message', async message => {
             }
             _report_status = "ON EDIT"
             await del_rep_message.edit(`REPORT=>${_report_number}=>USER=>${_report_user}=>CONTENT_REP=>${_report_content}=>CHANNEL=>${_report_channel}=>STATUS=>${_report_status}`)
-            message.reply(`\`Отпишите ответ на данный вопрос в чат. Жалоба/вопрос от пользователя:\` <@${_report_user}>`, {embed: {
+            message.reply(`\`Отпишите ответ на данный вопрос в чат. Жалоба/вопрос от пользователя:\` <@${_report_user}>\n\`Отклонить вопрос => "-"\``, {embed: {
                 color: 3447003,
                 fields: [{
                     name: `Номер вопроса/жалобы: ${_report_number}`,
@@ -527,22 +536,31 @@ bot.on('message', async message => {
                     time: 60000,
                     errors: ['time'],
                 }).then((collected) => {
-                    let general = message.guild.channels.find(c => c.id == _report_channel);
-                    general.send(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
-                        color: 3447003,
-                        fields: [{
-                            name: `Ваш вопрос, который вы задали.`,
-                            value: `${_report_content}`
-                        },
-                        {
-                            name: `Ответ модератора`,
-                            value: `${collected.first().content}`
-                        }]
-                    }})
-                    req_report_message.delete();
-                    del_rep_message.delete();
-                    message.delete();
-                    collected.first().delete();
+                    if (collected.first().content != "-"){
+                        let general = message.guild.channels.find(c => c.id == _report_channel);
+                        general.send(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
+                            color: 3447003,
+                            fields: [{
+                                name: `Ваш вопрос, который вы задали.`,
+                                value: `${_report_content}`
+                            },
+                            {
+                                name: `Ответ модератора`,
+                                value: `${collected.first().content}`
+                            }]
+                        }})
+                        req_report_message.delete();
+                        del_rep_message.delete();
+                        message.delete();
+                        collected.first().delete();
+                    }else{
+                        let general = message.guild.channels.find(c => c.id == _report_channel);
+                        general.send(`<@${_report_user}>, \`модератор\` <@${message.author.id}> \`отказался отвечать на ваш вопрос №${_report_number}\``);
+                        req_report_message.delete();
+                        del_rep_message.delete();
+                        message.delete();
+                        collected.first().delete();
+                    }
                 }).catch(() => {
                     del_rep_message.edit(`REPORT=>${_report_number}=>USER=>${_report_user}=>CONTENT_REP=>${_report_content}=>CHANNEL=>${_report_channel}=>STATUS=>WAIT`)
                     message.reply('\`вы не успели ответить на данный вопрос.\`');
