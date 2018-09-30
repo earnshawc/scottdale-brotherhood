@@ -375,7 +375,7 @@ bot.on('message', async message => {
                 }]}}).then(req_report_message => {
                 message.channel.awaitMessages(response => response.member.id == message.member.id, {
                     max: 1,
-                    time: 3000*_report_content.length,
+                    time: 60000,
                     errors: ['time'],
                 }).then((collected) => {
                     req_report_message.delete();
@@ -390,11 +390,9 @@ bot.on('message', async message => {
                                 value: `${collected.first().content}`
                             }]}})
                     })
-                    message.delete();
                 }).catch(() => {
                     message.reply('\`вы не успели ответить на данный вопрос.\`');
                     req_report_message.delete();
-                    message.delete();
                 });
             });
         }
