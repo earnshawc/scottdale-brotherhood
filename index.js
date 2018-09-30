@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.9";
+let version = "6.10";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -353,6 +353,7 @@ bot.on('message', async message => {
             let _report_number;
             let _report_user;
             let _report_content;
+            let del_rep_message;
             await rep_channel.fetchMessages().then(repmessages => {
                 repmessages.filter(repmessage => {
                     if (repmessage.content.startsWith(`REPORT`)){
@@ -360,6 +361,7 @@ bot.on('message', async message => {
                         _report_number = repmessage.content.slice().split('=>')[1]
                         _report_user = repmessage.content.slice().split('=>')[3]
                         _report_content = repmessage.content.slice().split('=>')[5]
+                        del_rep_message = repmessage;
                     }
                 })
             })
@@ -390,6 +392,7 @@ bot.on('message', async message => {
                             value: `${collected.first().content}`
                         }]}})
                     req_report_message.delete();
+                    del_rep_message.delete();
                 }).catch(() => {
                     message.reply('\`вы не успели ответить на данный вопрос.\`');
                     req_report_message.delete();
