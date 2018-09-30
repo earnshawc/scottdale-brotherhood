@@ -234,7 +234,7 @@ function hook(channel, name, message, avatar) {
         })
 }
 
-function checkadmin(member, admin_level){
+function checkadmin(message, admin_level){
     if (!member) return
     if (!admin_level) return
     let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
@@ -244,7 +244,7 @@ function checkadmin(member, admin_level){
     let user_admin_level;
 
     db_channel.fetchMessages().then(messages => {
-        let user_admin = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${member.id}\``))
+        let user_admin = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${message.member.id}\``))
         if (user_admin){
             const admin_lvl = user_admin.content.slice().split('ADMIN PERMISSIONS:** ');
             user_admin_level = admin_lvl[1]
@@ -254,9 +254,8 @@ function checkadmin(member, admin_level){
     });
 
     if (user_admin_level < admin_level){
-        checkadmin = false;
-    }else{
-        checkadmin = true;
+        message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
+        return message.delete();
     }
 }
 
@@ -312,10 +311,7 @@ bot.on('message', async message => {
 
     if (message.content == "/questions"){
 
-        if (!checkadmin(message.member, 1)){
-            message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
-            return message.delete();
-        }
+        checkadmin(message, 1)
 
         let en_questions = false;
         let num_questions = 0;
