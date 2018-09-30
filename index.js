@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.18";
+let version = "6.19";
 let hideobnova = false;
 
 const nrpnames = new Set();
@@ -242,8 +242,11 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- update command: "/ans";
-- отказ от вопроса символом: "-";
+- Полностью реализована система вопросов.
+- Отправить вопрос: "/report [text]";
+- Узнать текущие вопросы: "/questions";
+- Ответить на вопрос: "/ans";
+- Ответить на вопрос под определенным номером: "/ans [num]";
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -555,7 +558,7 @@ bot.on('message', async message => {
                         collected.first().delete();
                     }else{
                         let general = message.guild.channels.find(c => c.id == _report_channel);
-                        general.send(`<@${_report_user}>, \`модератор\` <@${message.author.id}> \`отказался отвечать на ваш вопрос №${_report_number}\``);
+                        general.send(`<@${_report_user}>, \`модератор\` <@${message.author.id}> \`отказался отвечать на ваш вопрос №${args[1]}\``);
                         req_report_message.delete();
                         del_rep_message.delete();
                         message.delete();
