@@ -234,7 +234,7 @@ function hook(channel, name, message, avatar) {
         })
 }
 
-function checkadmin(message, admin_level){
+function checkadmin(message, admin_level, test_dostup){
     if (!message) return
     if (!admin_level) return
     let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
@@ -242,6 +242,7 @@ function checkadmin(message, admin_level){
     let db_channel = dataserver.channels.find(c => c.name == "administration");
     if (!db_channel) return
     let user_admin_level;
+    test_dostup = true;
 
     db_channel.fetchMessages().then(messages => {
         let user_admin = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${message.member.id}\``))
@@ -254,8 +255,7 @@ function checkadmin(message, admin_level){
     });
 
     if (user_admin_level < admin_level){
-        message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
-        return message.delete();
+        test_dostup = false;
     }
 }
 
@@ -301,6 +301,7 @@ bot.on('message', async message => {
         }
     }
 
+    let test_dostup;
     let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
     let scottdale = bot.guilds.find(g => g.id == "355656045600964609");
     if (!dataserver){
@@ -311,7 +312,11 @@ bot.on('message', async message => {
 
     if (message.content == "/questions"){
 
-        checkadmin(message, 1)
+        checkadmin(message, 1, test_dostup)
+        if (!test_dostup){
+            message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
+            return message.delete();
+        }
 
         let en_questions = false;
         let num_questions = 0;
