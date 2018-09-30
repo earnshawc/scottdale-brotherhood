@@ -307,6 +307,8 @@ bot.on('message', async message => {
             return message.delete();
         }
 
+        if (message.channel.name == "general") return message.delete();
+
         let en_questions = false;
         let num_questions = 0;
         let text_questions;
@@ -415,7 +417,6 @@ bot.on('message', async message => {
     }
 
     if (message.content.startsWith(`/ans`)){
-
         let admin_level = 1;
         let db_channel = dataserver.channels.find(c => c.name == "administration");
         if (!db_channel) return
@@ -435,6 +436,8 @@ bot.on('message', async message => {
             message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
             return message.delete();
         }
+
+        if (message.channel.name == "general") return message.delete();
 
         let rep_channel = message.guild.channels.find(c => c.name == "reports");
         const args = message.content.slice('/ans').split(/ +/)
@@ -614,7 +617,8 @@ bot.on('message', async message => {
     }
 
     if (message.content.startsWith("/setadmin")){
-        if (!message.member.hasPermission("ADMINISTRATOR") && message.guild.id != scottdale.id){
+        if (message.guild.id != scottdale.id) return
+        if (!message.member.hasPermission("ADMINISTRATOR")){
             message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
             return message.delete();
         }
@@ -638,7 +642,8 @@ bot.on('message', async message => {
     }
 
     if (message.content.startsWith("/admininfo")){
-        if (!message.member.hasPermission("ADMINISTRATOR") && message.guild.id != scottdale.id){
+        if (message.guild.id != scottdale.id) return
+        if (!message.member.hasPermission("ADMINISTRATOR")){
             message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
             return message.delete();
         }
@@ -666,7 +671,8 @@ bot.on('message', async message => {
     }
 
     if (message.content.startsWith("/deladmin")){
-        if (!message.member.hasPermission("ADMINISTRATOR") && message.guild.id != scottdale.id){
+        if (message.guild.id != scottdale.id) return
+        if (!message.member.hasPermission("ADMINISTRATOR")){
             message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
             return message.delete();
         }
