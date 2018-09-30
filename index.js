@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.0";
+let version = "6.1";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -241,7 +241,8 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Система наказаний за слова в разработке.
+- Обновлена система Bad Words.
+- Добавлено автонаказание.
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -606,7 +607,7 @@ bot.on('message', async message => {
         if (checkword){
             return message.reply(`\`данная фраза уже в списке запрещенных!\``).then(msg => msg.delete(7000))
         }else{
-            bad_words_channel.send(`BAD WORD=>${text}=>PUNISHMENT=>${args[1]}\n\`Добавил: ${message.member.displayName} (${message.author.id})\``)
+            bad_words_channel.send(`BAD WORD=>${text}=>PUNISHMENT=>${args[1]}=>\`Добавил: ${message.member.displayName} (${message.author.id})\``)
             message.delete();
             return message.reply(`\`вы успешно добавили фразу:\` **${text}** \`в список запрещенных.\``).then(msg => msg.delete(10000))
         }
