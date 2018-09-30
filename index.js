@@ -367,10 +367,10 @@ bot.on('message', async message => {
                 message.reply(`\`на данный момент вопросов нет.\``).then(msg => msg.delete(7000));
                 return message.delete();
             }
-            message.reply(`\`Отпишите ответ на данный вопрос в чат. Номер вопроса/жалобы: ${_report_number}\``, {embed: {
+            message.reply(`\`Отпишите ответ на данный вопрос в чат. Жалоба/вопрос от пользователя:\` <@${_report_user}>`, {embed: {
                 color: 3447003,
                 fields: [{
-                    name: `Жалоба/Вопрос от <@${_report_user}>`,
+                    name: `Номер вопроса/жалобы: ${_report_number}`,
                     value: `${_report_content}`
                 }]}}).then(req_report_message => {
                 message.channel.awaitMessages(response => response.member.id == message.member.id, {
@@ -378,18 +378,18 @@ bot.on('message', async message => {
                     time: 60000,
                     errors: ['time'],
                 }).then((collected) => {
+                    let general = message.guild.channels.find(c => c.name == "general");
+                    general.send(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
+                        color: 3447003,
+                        fields: [{
+                            name: `Ваш вопрос, который вы задали.`,
+                            value: `${_report_content}`
+                        },
+                        {
+                            name: `Ответ модератора`,
+                            value: `${collected.first().content}`
+                        }]}})
                     req_report_message.delete();
-                    message.guild.channels.find(c => c.name == "general").then(general => {
-                        general.send(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
-                            color: 3447003,
-                            fields: [{
-                                name: `Ваш вопрос, который вы задали.`,
-                                value: `${_report_content}`
-                            },{
-                                name: `Ответ модератора`,
-                                value: `${collected.first().content}`
-                            }]}})
-                    })
                 }).catch(() => {
                     message.reply('\`вы не успели ответить на данный вопрос.\`');
                     req_report_message.delete();
