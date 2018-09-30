@@ -7,8 +7,8 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "6.5";
-let hideobnova = true;
+let version = "6.6";
+let hideobnova = false;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -286,18 +286,25 @@ bot.on('message', async message => {
         let rep_channel = message.guild.channels.find(c => c.name == "reports");
         if (!rep_channel) return message.reply(`\`[ERROR] Канал ${rep_channel.name} не был найден.\nПередайте это сообщение техническим администраторам Discord:\`<@336207279412215809>, <@402092109429080066>`)
         if (report_cooldown.has(message.author.id)) {
-            message.channel.send("`Можно использовать раз в минуту!` - " + message.author).then(msg => msg.delete(7000));
+            message.channel.send("`Можно использовать раз в 30 секунд!` - " + message.author).then(msg => msg.delete(7000));
             return message.delete();
         }
         if (!message.member.hasPermission("ADMINISTRATOR")){
-            report_cooldown.add(message.author.id);
-            setTimeout(() => {
-                report_cooldown.delete(message.author.id);
-            }, 60000);
+            if (message.guild.id != scottdale.id){
+                report_cooldown.add(message.author.id);
+                setTimeout(() => {
+                    report_cooldown.delete(message.author.id);
+                }, 30000);
+            }
         }
         const args = message.content.slice('/report').split(/ +/)
         if (!args[1]){
             message.reply(`\`вы не указали суть вашего вопроса/жалобы. /report [текст]\``).then(msg => msg.delete(7000));
+            return message.delete();
+        }
+        let text = args.slice(1).join(" ");
+        if (text.includes(`=>`)){
+            message.reply(`Ваш текст содержит запрещенный символ "=>", замените его на "->"!`).then(msg => msg.delete(7000));
             return message.delete();
         }
         let reportnum_message = false;
@@ -320,11 +327,10 @@ bot.on('message', async message => {
         }
         rep_number++
         await report_number_message.edit(`[REPORTNUMBER]=>${rep_number}`)
-        let text = args.slice(1).join(" ");
         rep_channel.send(`REPORT=>${rep_number}=>USER=>${message.author.id}=>CONTENT_REP=>${text}`).then(hayway => {
             hayway.pin();
         })
-        message.reply(`\`ваш вопрос/жалоба была успешно отправлена! Номер вашего вопроса: №${rep_number}\``);
+        message.reply(`\`ваш вопрос/жалоба была успешно отправлена! Номер вашего вопроса: №${rep_number}\``).then(msg => msg.delete(15000));
         return message.delete();
     }
 
