@@ -668,14 +668,18 @@ bot.on('message', async message => {
                 if (!role.name.includes("everyone")) userroles = userroles + `, <@&${role.id}>`
             }
         })
+        let perms;
+        if (user.permissions.hasPermission("ADMINISTRATOR")){
+            perms = "ADMINISTRATOR";
+        }else{
+            perms = user.permissions.toArray();
+        }
         const embed = new Discord.RichEmbed()
         .setColor("#FF0000")
         .setFooter(`Аккаунт пользователя: ${user.displayName}`, user.user.avatarURL)
         .setTimestamp()
-        .addField(`Дата создания аккаунта и входа на сервер`, `**Аккаунт создан:** \`${user.user.createdAt.getFullYear()}-${user.user.createdAt.getMonth()}-${user.user.createdAt.getDay()} ${user.user.createdAt.getHours()}:${user.user.createdAt.getMinutes()}:${user.user.createdAt.getSeconds()}\`\n**Вошел к нам:** \`${user.joinedAt.getFullYear()}-${user.joinedAt.getMonth()}-${user.joinedAt.getDay()} ${user.joinedAt.getHours()}:${user.joinedAt.getMinutes()}:${user.joinedAt.getSeconds()}\``)
-        .addField("Информация", 
-        `**Аккаунт создан:** ${user.user.createdAt.getFullYear()}\n` +
-        `**Роли:** ${userroles}`)
+        .addField(`Дата создания аккаунта и входа на сервер`, `**Аккаунт создан:** \`${user.user.createdAt.getFullYear()}-${user.user.createdAt.getMonth}-${user.user.createdAt.getDay()} ${user.user.createdAt.getHours()}:${user.user.createdAt.getMinutes()}:${user.user.createdAt.getSeconds()}\`\n**Вошел к нам:** \`${user.joinedAt.getFullYear()}-${user.joinedAt.getMonth()}-${user.joinedAt.getDay()} ${user.joinedAt.getHours()}:${user.joinedAt.getMinutes()}:${user.joinedAt.getSeconds()}\``)
+        .addField("Roles and Permissions", `**Роли:** ${userroles}\n**PERMISSIONS:** \`${perms}\``)
         message.reply(`**вот информация по поводу аккаунта <@${user.id}>**`, embed)
     }
 
