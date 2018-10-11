@@ -668,14 +668,13 @@ bot.on('message', async message => {
                 if (!role.name.includes("everyone")) userroles = userroles + `, <@&${role.id}>`
             }
         })
-        joinDiscord = user.user.createdAt.format('lll') + '\n*' + new Date().diff(user.user.createdAt, 'days') + ' days ago*';
         const embed = new Discord.RichEmbed()
         .setColor("#FF0000")
         .setFooter(`Информация предоставлена: ${message.member.displayName}`)
         .setTimestamp()
         .setThumbnail(user.user.defaultAvatarURL)
         .addField("Информация", 
-        `**Аккаунт создан:** ${joinDiscord}\n` +
+        `**Аккаунт создан:** ${user.user.createdAt.getFullYear()}\n` +
         `**Роли:** ${userroles}\n` +
         `**Permissions:** ${user.acknowledge.name}`)
         message.reply(`**вот информация по поводу аккаунта <@${user.id}>**`, embed)
