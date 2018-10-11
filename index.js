@@ -676,7 +676,7 @@ bot.on('message', async message => {
         .addField("Информация", 
         `**Аккаунт создан:** ${user.user.createdAt.getFullYear()}\n` +
         `**Роли:** ${userroles}\n` +
-        `**Permissions:** ${user.acknowledge.name}`)
+        `**Permissions:** ${user.permissions.toArray()}`)
         message.reply(`**вот информация по поводу аккаунта <@${user.id}>**`, embed)
     }
 
