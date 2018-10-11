@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "7.2";
+let version = "7.4";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -654,6 +654,26 @@ bot.on('message', async message => {
                 });
             });
         }
+    }
+
+    if (message.content.startsWith("/accinfo")){
+        if (!message.member.hasPermission("ADMINISTRATOR")) return
+        let user = message.guild.member(message.mentions.users.first());
+        if (!user) return
+        let userroles;
+        user.roles.filter(role => {
+            userroles = userroles + `<@&${role.id}>, `
+        })
+        const embed = new Discord.RichEmbed()
+        .setColor("#FF0000")
+        .setFooter(`Информация предоставлена: ${message.member.displayName}`)
+        .setTimestamp()
+        .setThumbnail(user.user.defaultAvatarURL)
+        .addField("Информация", 
+        `Аккаунт создан: ${user.user.createdAt}\n` +
+        `Роли: ${userroles}\n` +
+        `Permissions: ${user.permissions}`)
+        message.reply(`**вот информация по поводу аккаунта <@${user.id}>**`, embed)
     }
 
     if (message.content.startsWith("/setadmin")){
