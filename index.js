@@ -674,6 +674,9 @@ bot.on('message', async message => {
             }else{
                 perms = "У пользователя нет админ прав."
             }
+            if (userroles == undefined){
+                userroles = `отсутствуют.`
+            }
             const embed = new Discord.RichEmbed()
             .setColor("#FF0000")
             .setFooter(`Аккаунт пользователя: ${user.displayName}`, user.user.avatarURL)
@@ -709,6 +712,9 @@ bot.on('message', async message => {
                     perms = "[!] Пользователь администратор [!]";
                 }else{
                     perms = "У пользователя нет админ прав."
+                }
+                if (userroles == undefined){
+                    userroles = `отсутствуют.`
                 }
                 const embed = new Discord.RichEmbed()
                 .setColor("#FF0000")
