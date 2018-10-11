@@ -662,17 +662,22 @@ bot.on('message', async message => {
         if (!user) return
         let userroles;
         user.roles.filter(role => {
-            userroles = userroles + `<@&${role.id}>, `
+            if (userroles == undefined){
+                if (!role.name.includes("everyone")) userroles = `<@&${role.id}>`
+            }else{
+                if (!role.name.includes("everyone")) userroles = userroles + `, <@&${role.id}>`
+            }
         })
+        let date = new Date();
         const embed = new Discord.RichEmbed()
         .setColor("#FF0000")
         .setFooter(`Информация предоставлена: ${message.member.displayName}`)
         .setTimestamp()
         .setThumbnail(user.user.defaultAvatarURL)
         .addField("Информация", 
-        `Аккаунт создан: ${user.user.createdAt}\n` +
-        `Роли: ${userroles}\n` +
-        `Permissions: ${user.permissions}`)
+        `**Аккаунт создан:** ${user.user.createdAt - date}\n` +
+        `**Роли:** ${userroles}\n` +
+        `**Permissions:** ${user.acknowledge}`)
         message.reply(`**вот информация по поводу аккаунта <@${user.id}>**`, embed)
     }
 
