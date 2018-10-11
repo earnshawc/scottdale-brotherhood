@@ -677,11 +677,15 @@ bot.on('message', async message => {
             if (userroles == undefined){
                 userroles = `отсутствуют.`
             }
+            let date = user.user.createdAt;
+            let registed = `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
+            date = user.joinedAt
+            let joindate = `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
             const embed = new Discord.RichEmbed()
             .setColor("#FF0000")
             .setFooter(`Аккаунт пользователя: ${user.displayName}`, user.user.avatarURL)
             .setTimestamp()
-            .addField(`Дата создания аккаунта и входа на сервер`, `**Аккаунт создан:** ${user.user.createdAt.getVarDate()} \`${user.user.createdAt.getFullYear()}-${user.user.createdAt.getMonth()}-${user.user.createdAt.getDay()} ${user.user.createdAt.getHours()}:${user.user.createdAt.getMinutes()}:${user.user.createdAt.getSeconds()}\`\n**Вошел к нам:** \`${user.joinedAt.getFullYear()}-${user.joinedAt.getMonth()}-${user.joinedAt.getDay()} ${user.joinedAt.getHours()}:${user.joinedAt.getMinutes()}:${user.joinedAt.getSeconds()}\``)
+            .addField(`Дата создания аккаунта и входа на сервер`, `**Аккаунт создан:** \`${registed}\`\n**Вошел к нам:** \`${joindate}\``)
             .addField("Roles and Permissions", `**Роли:** ${userroles}\n**PERMISSIONS:** \`${perms}\``)
             message.reply(`**вот информация по поводу аккаунта <@${user.id}>**`, embed)
             return message.delete();
@@ -716,11 +720,15 @@ bot.on('message', async message => {
                 if (userroles == undefined){
                     userroles = `отсутствуют.`
                 }
+                let date = user.user.createdAt;
+                let registed = `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
+                date = user.joinedAt
+                let joindate = `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
                 const embed = new Discord.RichEmbed()
                 .setColor("#FF0000")
                 .setFooter(`Аккаунт пользователя: ${user.displayName}`, user.user.avatarURL)
                 .setTimestamp()
-                .addField(`Дата создания аккаунта и входа на сервер`, `**Аккаунт создан:** \`${user.user.createdAt.getFullYear()}-${user.user.createdAt.getMonth()}-${user.user.createdAt.getDay()} ${user.user.createdAt.getHours()}:${user.user.createdAt.getMinutes()}:${user.user.createdAt.getSeconds()}\`\n**Вошел к нам:** \`${user.joinedAt.getFullYear()}-${user.joinedAt.getMonth()}-${user.joinedAt.getDay()} ${user.joinedAt.getHours()}:${user.joinedAt.getMinutes()}:${user.joinedAt.getSeconds()}\``)
+                .addField(`Дата создания аккаунта и входа на сервер`, `**Аккаунт создан:** \`${registed}\`\n**Вошел к нам:** \`${joindate}\``)
                 .addField("Roles and Permissions", `**Роли:** ${userroles}\n**PERMISSIONS:** \`${perms}\``)
                 message.reply(`**вот информация по поводу аккаунта <@${user.id}>**`, embed)
             }
