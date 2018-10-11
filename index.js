@@ -668,7 +668,7 @@ bot.on('message', async message => {
                 if (!role.name.includes("everyone")) userroles = userroles + `, <@&${role.id}>`
             }
         })
-        joinDiscord = moment(user.user.createdAt).format('lll') + '\n*' + moment(new Date()).diff(user.user.createdAt, 'days') + ' days ago*';
+        joinDiscord = user.user.createdAt.format('lll') + '\n*' + new Date().diff(user.user.createdAt, 'days') + ' days ago*';
         const embed = new Discord.RichEmbed()
         .setColor("#FF0000")
         .setFooter(`Информация предоставлена: ${message.member.displayName}`)
