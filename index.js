@@ -662,16 +662,59 @@ bot.on('message', async message => {
         if (!args[1]) return
         let name = args.slice(1).join(" ");
         let userfinders = false;
+        let foundedusers;
+        let numberff = 0;
         message.guild.members.filter(userff => {
             if (userff.displayName.toLowerCase().includes(name.toLowerCase())){
-                message.reply(`Найден: <@${userff.id}> по нику.`);
-                userfinders = true;
+                if (foundedusers == null){
+                    foundedusers = `[BY NICK] <@${userff.id}>`
+                }else{
+                    foundedusers = foundedusers + `\n[BY NICK] <@${userff.id}>`
+                }
+                numberff++
+                if (numberff == 15){
+                    message.reply(`\`по вашему запросу найдена следующая информация:\``, {embed: {
+                        color: 3447003,
+                        fields: [{
+                            name: `INCLIDES: ${name}`,
+                            value: foundedusers,
+                        }]
+                    }}) 
+                    numberff = 0;
+                    foundedusers = null;
+                }
+                if (!userfinders) userfinders = true;
             }else if (userff.user.tag.toLowerCase().includes(name.toLowerCase())){
-                message.reply(`Найден: <@${userff.id}> по тэгу.`);
-                userfinders = true;
+                if (foundedusers == null){
+                    foundedusers = `[BY TAG] <@${userff.id}>`
+                }else{
+                    foundedusers = foundedusers + `\n[BY TAG] <@${userff.id}>`
+                }
+                numberff++
+                if (numberff == 15){
+                    message.reply(`\`по вашему запросу найдена следующая информация:\``, {embed: {
+                        color: 3447003,
+                        fields: [{
+                            name: `INCLIDES: ${name}`,
+                            value: foundedusers,
+                        }]
+                    }}) 
+                    numberff = 0;
+                    foundedusers = null;
+                }
+                if (!userfinders) userfinders = true;
             }
         })
         if (!userfinders) return message.reply(`я никого не нашел.`) && message.delete()
+        if (numberff != 0){
+            message.reply(`\`по вашему запросу найдена следующая информация:\``, {embed: {
+                color: 3447003,
+                fields: [{
+                    name: `INCLIDES: ${name}`,
+                    value: foundedusers,
+                }]
+            }})
+        }
     }
 
     if (message.content.startsWith("/accinfo")){
