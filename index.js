@@ -656,6 +656,25 @@ bot.on('message', async message => {
         }
     }
 
+    if (message.content.startsWith("/ffuser")){
+        if (!message.member.hasPermission("ADMINISTRATOR")) return
+        const args = message.content.slice('/ffuser').split(/ +/)
+        if (!args[1]) return
+        let name = args.slice(1).join(" ");
+        let userfinders = false;
+        message.guild.members.filter(userff => {
+            if (userff.displayName.toLowerCase().includes(name.toLowerCase())){
+                message.reply(`Найден: <@${userff.id}> по нику.`);
+                userfinders = true;
+            }
+            if (userff.user.tag.toLowerCase().includes(name.toLowerCase())){
+                message.reply(`Найден: <@${userff.id}> по тэгу.`);
+                userfinders = true;
+            }
+        })
+        if (!userfinders) return message.reply(`я никого не нашел.`) && message.delete()
+    }
+
     if (message.content.startsWith("/accinfo")){
         if (!message.member.hasPermission("ADMINISTRATOR")) return
         let user = message.guild.member(message.mentions.users.first());
@@ -728,7 +747,7 @@ bot.on('message', async message => {
                 .setColor("#FF0000")
                 .setFooter(`Аккаунт пользователя: ${user.displayName}`, user.user.avatarURL)
                 .setTimestamp()
-                .addField(`Дата создания аккаунта и входа на сервер`, `**Аккаунт создан:** \`${registed}\`\n**Вошел к нам:** \`${joindate}\``)
+                .addField(`Краткая информация`, `**Аккаунт создан:** \`${registed}\`\n**Вошел к нам:** \`${joindate}\``)
                 .addField("Roles and Permissions", `**Роли:** ${userroles}\n**PERMISSIONS:** \`${perms}\``)
                 message.reply(`**вот информация по поводу аккаунта <@${user.id}>**`, embed)
             }
