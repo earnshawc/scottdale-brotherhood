@@ -1137,7 +1137,7 @@ bot.on('message', async message => {
                 const bad_word = badmessage.content.slice().split('=>')[1]
                 const punish = badmessage.content.slice().split('=>')[3]
                 if (message.content.toLowerCase().includes(bad_word.toLowerCase())){
-                    scottdale.channels.find(c => c.name == "spectator-chat").send(`<@${message.member.id}> \`использовал запрещенную фразу "${bad_word}" в сообщении: "${message.content}".\nDEBUG: [PUNISHMENT=${punish}]\``)
+                    scottdale.channels.find(c => c.name == "bad-words-log").send(`<@${message.member.id}> \`использовал запрещенную фразу "${bad_word}" в сообщении: "${message.content}".\nDEBUG: [PUNISHMENT=${punish}]\``)
                     message.delete();
                     if (punish == "none") return
                     message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента.\`\n\`${punishment_rep[punish]}\``).then(msg => msg.delete(7000))
