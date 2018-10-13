@@ -662,58 +662,61 @@ bot.on('message', async message => {
         if (!args[1]) return
         let name = args.slice(1).join(" ");
         let userfinders = false;
-        let foundedusers;
-        let numberff = 0;
+        let foundedusers_nick;
+        let numberff_nick = 0;
+        let foundedusers_tag;
+        let numberff_tag = 0;
         message.guild.members.filter(userff => {
             if (userff.displayName.toLowerCase().includes(name.toLowerCase())){
-                if (foundedusers == null){
-                    foundedusers = `[BY NICK] <@${userff.id}>`
+                if (foundedusers_nick == null){
+                    foundedusers_nick = `<@${userff.id}>`
                 }else{
-                    foundedusers = foundedusers + `\n[BY NICK] <@${userff.id}>`
+                    foundedusers_nick = foundedusers_nick + `\n<@${userff.id}>`
                 }
-                numberff++
-                if (numberff == 15){
-                    message.reply(`\`по вашему запросу найдена следующая информация:\``, {embed: {
-                        color: 3447003,
-                        fields: [{
-                            name: `INCLIDES: ${name}`,
-                            value: foundedusers,
-                        }]
-                    }}) 
-                    numberff = 0;
-                    foundedusers = null;
+                numberff_nick++
+                if (numberff_nick == 15 || numberff_tag == 15){
+                    if (foundedusers_tag == null) foundedusers_tag = `НЕ НАЙДЕНЫ`;
+                    if (foundedusers_nick == null) foundedusers_nick = `НЕ НАЙДЕНЫ`;
+                    const embed = new Discord.RichEmbed()
+                    .addField(`BY NICKNAME`, foundedusers_nick, true)
+                    .addField("BY DISCORD TAG", foundedusers_tag, true)
+                    message.reply(`\`по вашему запросу найдена следующая информация:\``, embed); 
+                    numberff_nick = 0;
+                    numberff_tag = 0;
+                    foundedusers_tag = null;
+                    foundedusers_nick = null;
                 }
                 if (!userfinders) userfinders = true;
             }else if (userff.user.tag.toLowerCase().includes(name.toLowerCase())){
-                if (foundedusers == null){
-                    foundedusers = `[BY TAG] <@${userff.id}>`
+                if (foundedusers_tag == null){
+                    foundedusers_tag = `<@${userff.id}>`
                 }else{
-                    foundedusers = foundedusers + `\n[BY TAG] <@${userff.id}>`
+                    foundedusers_tag = foundedusers_tag + `\n<@${userff.id}>`
                 }
-                numberff++
-                if (numberff == 15){
-                    message.reply(`\`по вашему запросу найдена следующая информация:\``, {embed: {
-                        color: 3447003,
-                        fields: [{
-                            name: `INCLIDES: ${name}`,
-                            value: foundedusers,
-                        }]
-                    }}) 
-                    numberff = 0;
-                    foundedusers = null;
+                numberff_tag++
+                if (numberff_nick == 15 || numberff_tag == 15){
+                    if (foundedusers_tag == null) foundedusers_tag = `НЕ НАЙДЕНЫ`;
+                    if (foundedusers_nick == null) foundedusers_nick = `НЕ НАЙДЕНЫ`;
+                    const embed = new Discord.RichEmbed()
+                    .addField(`BY NICKNAME`, foundedusers_nick, true)
+                    .addField("BY DISCORD TAG", foundedusers_tag, true)
+                    message.reply(`\`по вашему запросу найдена следующая информация:\``, embed); 
+                    numberff_nick = 0;
+                    numberff_tag = 0;
+                    foundedusers_tag = null;
+                    foundedusers_nick = null;
                 }
                 if (!userfinders) userfinders = true;
             }
         })
         if (!userfinders) return message.reply(`я никого не нашел.`) && message.delete()
-        if (numberff != 0){
-            message.reply(`\`по вашему запросу найдена следующая информация:\``, {embed: {
-                color: 3447003,
-                fields: [{
-                    name: `INCLIDES: ${name}`,
-                    value: foundedusers,
-                }]
-            }})
+        if (numberff_nick != 0 || numberff_tag != 0){
+            if (foundedusers_tag == null) foundedusers_tag = `НЕ НАЙДЕНЫ`;
+            if (foundedusers_nick == null) foundedusers_nick = `НЕ НАЙДЕНЫ`;
+            const embed = new Discord.RichEmbed()
+            .addField(`BY NICKNAME`, foundedusers_nick, true)
+            .addField("BY DISCORD TAG", foundedusers_tag, true)
+            message.reply(`\`по вашему запросу найдена следующая информация:\``, embed); 
         }
     }
 
