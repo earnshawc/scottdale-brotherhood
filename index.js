@@ -666,8 +666,7 @@ bot.on('message', async message => {
             if (userff.displayName.toLowerCase().includes(name.toLowerCase())){
                 message.reply(`Найден: <@${userff.id}> по нику.`);
                 userfinders = true;
-            }
-            if (userff.user.tag.toLowerCase().includes(name.toLowerCase())){
+            }else if (userff.user.tag.toLowerCase().includes(name.toLowerCase())){
                 message.reply(`Найден: <@${userff.id}> по тэгу.`);
                 userfinders = true;
             }
