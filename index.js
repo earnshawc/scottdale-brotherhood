@@ -669,9 +669,9 @@ bot.on('message', async message => {
         message.guild.members.filter(userff => {
             if (userff.displayName.toLowerCase().includes(name.toLowerCase())){
                 if (foundedusers_nick == null){
-                    foundedusers_nick = `<@${userff.id}>`
+                    foundedusers_nick = `${numberff_nick + 1}) <@${userff.id}>`
                 }else{
-                    foundedusers_nick = foundedusers_nick + `\n<@${userff.id}>`
+                    foundedusers_nick = foundedusers_nick + `\n${numberff_nick + 1}) <@${userff.id}>`
                 }
                 numberff_nick++
                 if (numberff_nick == 15 || numberff_tag == 15){
@@ -689,9 +689,9 @@ bot.on('message', async message => {
                 if (!userfinders) userfinders = true;
             }else if (userff.user.tag.toLowerCase().includes(name.toLowerCase())){
                 if (foundedusers_tag == null){
-                    foundedusers_tag = `<@${userff.id}>`
+                    foundedusers_tag = `${numberff_tag + 1}) <@${userff.id}>`
                 }else{
-                    foundedusers_tag = foundedusers_tag + `\n<@${userff.id}>`
+                    foundedusers_tag = foundedusers_tag + `\n${numberff_tag + 1}) <@${userff.id}>`
                 }
                 numberff_tag++
                 if (numberff_nick == 15 || numberff_tag == 15){
