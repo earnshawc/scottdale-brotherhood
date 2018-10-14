@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "7.7";
+let version = "7.8";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -896,7 +896,7 @@ bot.on('message', async message => {
         });
     }
 
-    
+    /*
     if (message.content.toLowerCase().startsWith("привет") && message.content.toLocaleLowerCase().includes(`бот`)){
         message.reply('**привет! Как тебя зовут?**').then((nededit) => {
             message.channel.awaitMessages(response => response.member.id == message.member.id, {
@@ -910,7 +910,7 @@ bot.on('message', async message => {
             });
         });
     }
-    
+    */
 
     if (message.content.toLowerCase() == "/invalidrole"){
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.reply(`\`нет прав доступа.\``)
