@@ -904,7 +904,7 @@ bot.on('message', async message => {
                 time: 10000,
                 errors: ['time'],
             }).then((collected) => {
-                nededit.edit(`<@${message.author.id}>, **привет, ${collected.first().content}!**`)
+                nededit.edit(`<@${message.author.id}>, **привет, ${collected.first().content}!**`).then(() => collected.first().delete());
             }).catch(() => {
                 nededit.edit(`<@${message.author.id}>, **привет! А ты кто?**`)
             });
