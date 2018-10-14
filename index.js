@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "7.5";
+let version = "7.6";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -1063,7 +1063,7 @@ bot.on('message', async message => {
                     message.reply(`\`Ошибка выполнения. Канал requests-for-roles не был найден!\``)
                     return console.error(`Канал requests-for-roles не был найден!`)
                 }
-                if (message.member.roles.some(r => [rolename].includes(r.name))) return
+                if (message.member.roles.some(r => [rolename].includes(r.name))) return message.react(`➕`)
                 let nickname = message.member.displayName
                 const embed = new Discord.RichEmbed()
                 .setTitle("`Discord » Проверка на валидность ник нейма.`")
