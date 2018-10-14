@@ -8,7 +8,7 @@ let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "u
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
 let version = "7.5";
-let hideobnova = false;
+let hideobnova = true;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
