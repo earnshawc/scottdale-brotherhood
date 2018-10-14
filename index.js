@@ -7,8 +7,8 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "7.4";
-let hideobnova = true;
+let version = "7.5";
+let hideobnova = false;
 
 const nrpnames = new Set();
 const cooldowncommand = new Set();
@@ -242,11 +242,7 @@ bot.on('ready', () => {
     if (!hideobnova){
         if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
 Вышло обновление версии ${version}:
-- Полностью реализована система вопросов.
-- Отправить вопрос: "/report [text]";
-- Узнать текущие вопросы: "/questions"; [adm 1]
-- Ответить на вопрос: "/ans"; [adm 1]
-- Ответить на вопрос под определенным номером: "/ans [num]";
+- При отправки запроса на выдачу роли ставится смайлик 📨
 » Kory_McGregor.\`\`\``).then(msgdone => {
             msgdone.react(`👍`).then(() => {
                 msgdone.react(`👎`)
@@ -817,12 +813,12 @@ bot.on('message', async message => {
         await db_channel.fetchMessages().then(messages => {
             find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
         });
-        if (find_message) return message.reply(`\`он уже является администратором.\``).then(msg => msg.delete(7000));
-        if (!args[2]) return message.reply(`\`лвл администрирования не указан.\``).then(msg => msg.delete(7000));
-        if (args[2] > 3) return message.reply(`\`лвл администрирования не может быть больше 3-х.\``).then(msg => msg.delete(7000));
-        if (args[2] < 1) return message.reply(`\`лвл администрирования не может быть меньше 1-ого.\``).then(msg => msg.delete(7000));
+        if (find_message) return message.reply(`\`он уже является модератором.\``).then(msg => msg.delete(7000));
+        if (!args[2]) return message.reply(`\`лвл модератора не указан.\``).then(msg => msg.delete(7000));
+        if (args[2] > 3) return message.reply(`\`лвл модерирования не может быть больше 3-х.\``).then(msg => msg.delete(7000));
+        if (args[2] < 1) return message.reply(`\`лвл модерирования не может быть меньше 1-ого.\``).then(msg => msg.delete(7000));
         db_channel.send(`**ADMINISTRATION\nUSER-ID: \`${user.id}\`\nADMIN PERMISSIONS:** ${args[2]}`)
-        return message.reply(`\`вы назначили\` <@${user.id}> \`администратором ${args[2]} уровня.\``)
+        return message.reply(`\`вы назначили\` <@${user.id}> \`модератором ${args[2]} уровня.\``)
     }
 
     if (message.content.startsWith("/admininfo")){
@@ -846,10 +842,10 @@ bot.on('message', async message => {
                 fields: [{
                     name: `Информация о ${scottdale.members.find(m => m.id == user.id).displayName}`,
                     value: `**Пользователь:** <@${user.id}>\n` +
-                    `**Уровень администрирования:** \`${adminlvl[1]}\``
+                    `**Уровень модерирования:** \`${adminlvl[1]}\``
                 }]}})
             }else{
-                message.reply("`пользователь которого вы указали не является администратором.`").then(msg => msg.delete(7000));
+                message.reply("`пользователь которого вы указали не является модераторомыыы.`").then(msg => msg.delete(7000));
             }
         })
     }
@@ -878,10 +874,10 @@ bot.on('message', async message => {
             await db_channel.fetchMessages().then(messages => {
                 let find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
                 if (!find_message){
-                    return message.reply(`\`вы не являетесь администратором.\``)
+                    return message.reply(`\`вы не являетесь модератором.\``)
                 }else{
                     find_message.delete();
-                    return message.reply(`\`вы назначили себя 0-ым уровнем администрирования.\``)
+                    return message.reply(`\`вы назначили себя 0-ым уровнем модерирования.\``)
                 }
             });
             return
@@ -889,14 +885,14 @@ bot.on('message', async message => {
         let db_channel = dataserver.channels.find(c => c.name == "administration");
         await db_channel.fetchMessages().then(messages => {
             let find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
-            if (!find_message) return message.reply(`\`пользователь не администратор.\``);
+            if (!find_message) return message.reply(`\`пользователь не модератор.\``);
             let my_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${message.member.id}\``));
-            if (!my_message) return message.reply(`\`вы не администратор.\``)
+            if (!my_message) return message.reply(`\`вы не модератор.\``)
             const adminlvl = find_message.content.slice().split('ADMIN PERMISSIONS:** ');
             const adminlvl_my = my_message.content.slice().split('ADMIN PERMISSIONS:** ');
-            if (adminlvl[1] >= adminlvl_my[1] && message.member.id != "336207279412215809") return message.reply(`\`вы не можете убрать админа выше или равному вас по уровню.\``)
+            if (adminlvl[1] >= adminlvl_my[1] && message.member.id != "336207279412215809") return message.reply(`\`вы не можете убрать модера выше или равному вас по уровню.\``)
             find_message.delete()
-            return message.reply(`\`вы сняли администратора\` <@${user.id}> \`с adm-лвлом: ${adminlvl[1]}\``);
+            return message.reply(`\`вы сняли модератора\` <@${user.id}> \`с mod-лвлом: ${adminlvl[1]}\``);
         });
     }
 
@@ -1097,7 +1093,7 @@ bot.on('message', async message => {
                     });
                     await msgsen.pin();
                 })
-                return
+                return message.react(`📨`)
             }
         }
     }
@@ -1131,6 +1127,7 @@ bot.on('message', async message => {
             return message.reply(`\`вы успешно добавили фразу:\` **${text}** \`в список запрещенных.\``).then(msg => msg.delete(10000))
         }
     }
+
     if (!message.member.hasPermission("ADMINISTRATOR")){
         bad_words_channel.fetchMessages().then(badmessages => {
             badmessages.filter(badmessage => {
@@ -1140,7 +1137,7 @@ bot.on('message', async message => {
                     scottdale.channels.find(c => c.name == "bad-words-log").send(`<@${message.member.id}> \`использовал запрещенную фразу "${bad_word}" в сообщении: "${message.content}".\nDEBUG: [PUNISHMENT=${punish}]\``)
                     message.delete();
                     if (punish == "none") return
-                    message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента.\`\n\`${punishment_rep[punish]}\``).then(msg => msg.delete(7000))
+                    message.reply(`\`ваше сообщение было удалено из-за содержания откровенного контента.\`\n\`${punishment_rep[punish]}\``).then(msg => msg.delete(12000))
                     if (punish == "mute"){
                         let muterole = scottdale.roles.find(r => r.name == "Muted");
                         return message.member.addRole(muterole); 
