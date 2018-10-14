@@ -653,7 +653,7 @@ bot.on('message', async message => {
     }
 
     if (message.content.startsWith("/ffuser")){
-        if (!message.member.hasPermission("ADMINISTRATOR")) return
+        if (!message.member.hasPermission("MANAGE_ROLES")) return
         const args = message.content.slice('/ffuser').split(/ +/)
         if (!args[1]) return
         let name = args.slice(1).join(" ");
