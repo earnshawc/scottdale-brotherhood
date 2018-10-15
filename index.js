@@ -730,7 +730,7 @@ bot.on('message', async message => {
             })
             let perms;
             if (user.permissions.hasPermission("ADMINISTRATOR") || user.permissions.hasPermission("MANAGE_ROLES")){
-                perms = "[!] Пользователь администратор [!]";
+                perms = "[!] Пользователь модератор [!]";
             }else{
                 perms = "У пользователя нет админ прав."
             }
