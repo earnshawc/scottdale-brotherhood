@@ -1154,7 +1154,7 @@ bot.on('message', async message => {
 });
 
 bot.on('raw', async event => {
-    if (event.t == 'MEMBER_UPDATE') console.log(event);
+    if (event.t.includes ('UPDATE') console.log(event);
     if (!events.hasOwnProperty(event.t)) return;
 
     if (event.t == "MESSAGE_REACTION_ADD"){
