@@ -1154,7 +1154,7 @@ bot.on('message', async message => {
 });
 
 bot.on('raw', async event => {
-    console.log(event);
+    console.log(event.t);
     if (!events.hasOwnProperty(event.t)) return;
 
     if (event.t == "MESSAGE_REACTION_ADD"){
