@@ -717,7 +717,7 @@ bot.on('message', async message => {
     }
 
     if (message.content.startsWith("/accinfo")){
-        if (!message.member.hasPermission("ADMINISTRATOR")) return
+        if (!message.member.hasPermission("MANAGE_ROLES")) return
         let user = message.guild.member(message.mentions.users.first());
         if (user){
             let userroles;
