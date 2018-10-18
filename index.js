@@ -1067,6 +1067,7 @@ bot.on('message', async message => {
                 let nickname = message.member.displayName
                 const embed = new Discord.RichEmbed()
                 .setTitle("`Discord » Проверка на валидность ник нейма.`")
+                .setDescription(`████████████████████████████████████\n█────█────██────██────█────█─███───█\n█─██─█─██──█─██──█─██─█─██─█─███─███\n█────█─██──█─██──█────█─██─█─███───█\n█─██─█─██──█─██──█─█─██─██─█─███─███\n█─██─█────██────██─█─██────█───█───█\n████████████████████████████████████`)
                 .setColor("#FF0000")
                 .setFooter("© Support Team | by Kory_McGregor")
                 .setTimestamp()
