@@ -307,9 +307,7 @@ bot.on('message', async message => {
                             name: `${family_name}`,
                             position: message.guild.roles.find(r => r.name == `[-] Прочее [-]`).position + 1,
                         })
-                        let category = message.guild.channels.find(c => c.name == `Family ROOMS`);
                         await message.guild.createChannel(`${family_name}`, "voice").then(async (channel) => {
-                            await channel.setPosition(category.position);
                             await channel.overwritePermissions(family_role, {
                                 // GENERAL PERMISSIONS
                                 CREATE_INSTANT_INVITE: false,
@@ -343,6 +341,7 @@ bot.on('message', async message => {
                                 USE_VAD: true,
                                 PRIORITY_SPEAKER: true,
                             })
+                            await channel.setPosition(message.guild.channels.find(c => c.name == `family-chat`).position - 1);
                             await message.guild.members.find(m => m.id == family_leader).addRole(family_role);
                         })
                     }).catch(() => {
