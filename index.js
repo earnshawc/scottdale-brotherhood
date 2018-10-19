@@ -1,4 +1,4 @@
-﻿const Discord = require('discord.js');
+﻿﻿const Discord = require('discord.js');
 const bot = new Discord.Client();
 const fs = require("fs");
 const Logger = require('./objects/logger');
@@ -7,7 +7,7 @@ let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
 let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
 let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
 
-let version = "7.8";
+let version = "7.9";
 let hideobnova = true;
 
 const nrpnames = new Set();
@@ -281,6 +281,86 @@ bot.on('message', async message => {
     }
     let reportlog = scottdale.channels.find(c => c.name == "reports-log");
     if (!reportlog) return
+
+    if (message.content == '/createfamily'){
+        let family_name;
+        let family_leader;
+        await message.delete();
+        await message.channel.send(`\`[FAMILY] Название семьи: [на модерации]\n[FAMILY] Создатель семьи [ID]: [ожидание]\``).then(async delmessage0 => {
+            message.channel.awaitMessages(response => response.member.id == message.member.id, {
+                max: 1,
+                time: 60000,
+                errors: ['time'],
+            }).then(async (collected) => {
+                family_name = `${collected.first().content}`;
+                await delmessage0.edit(`\`[FAMILY] Название семьи: '${collected.first().content}'\n[FAMILY] Создатель семьи [ID]: [на модерации]\``)
+                message.channel.awaitMessages(response => response.member.id == message.member.id, {
+                    max: 1,
+                    time: 60000,
+                    errors: ['time'],
+                }).then(async (collected) => {
+                    if (!message.guild.members.find(m => m.id == collected.first().content)) return delmessage0.delete();
+                    family_leader = `${collected.first().content}`;
+                    await delmessage0.edit(`\`[FAMILY] Название семьи: '${family_name}'\n[FAMILY] Создатель семьи:\` <@${family_leader}>\n\`Создать?\``)
+                    message.channel.awaitMessages(response => response.member.id == message.member.id, {
+                        max: 1,
+                        time: 20000,
+                        errors: ['time'],
+                    }).then(async (collected) => {
+                        if (collected.first().content.toLowerCase() != 'да') return delmessage0.delete();
+                        await delmessage0.delete();
+                        let family_role = await message.guild.createRole({
+                            name: `${family_name}`,
+                            position: message.guild.roles.find(r => r.name == `[-] Прочее [-]`).position - 1,
+                        })
+                        let category = message.guild.channels.find(c => c.name == `Family ROOMS`);
+                        await category.clone(`${family_name}`, true, false, `Family Create`).then(async channel => {
+                            await channel.overwritePermissions(family_role, {
+                                // GENERAL PERMISSIONS
+                                CREATE_INSTANT_INVITE: false,
+                                MANAGE_CHANNELS: false,
+                                MANAGE_ROLES: false,
+                                MANAGE_WEBHOOKS: false,
+                                // VOICE PERMISSIONS
+                                VIEW_CHANNEL: true,
+                                CONNECT: true,
+                                SPEAK: true,
+                                MUTE_MEMBERS: false,
+                                DEAFEN_MEMBERS: false,
+                                MOVE_MEMBERS: false,
+                                USE_VAD: true,
+                                PRIORITY_SPEAKER: false,
+                            })
+
+                            await channel.overwritePermissions(message.guild.members.find(m => m.id == family_leader), {
+                                // GENERAL PERMISSIONS
+                                CREATE_INSTANT_INVITE: false,
+                                MANAGE_CHANNELS: true,
+                                MANAGE_ROLES: true,
+                                MANAGE_WEBHOOKS: false,
+                                // VOICE PERMISSIONS
+                                VIEW_CHANNEL: true,
+                                CONNECT: true,
+                                SPEAK: true,
+                                MUTE_MEMBERS: false,
+                                DEAFEN_MEMBERS: false,
+                                MOVE_MEMBERS: false,
+                                USE_VAD: true,
+                                PRIORITY_SPEAKER: true,
+                            })
+                            await message.guild.members.find(m => m.id == family_leader).addRole(family_role);
+                        })
+                    }).catch(() => {
+                        return delmessage0.delete();
+                    })
+                }).catch(() => {
+                    return delmessage0.delete();
+                })
+            }).catch(() => {
+                return delmessage0.delete();
+            })
+        })
+    }
 
     if (message.content == "/questions"){
 
