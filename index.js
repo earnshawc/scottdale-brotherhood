@@ -238,17 +238,7 @@ bot.login(process.env.token);
 
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
-    bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "general").send(`\`Я был запущен! Версия ${version}\``)
-    if (!hideobnova){
-        if (bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user")) bot.guilds.find(g => g.id == "488400983496458260").channels.find(c => c.name == "updates-bot-user").send(`**DISCORD BOT UPDATE** @everyone\n\`\`\`diff
-Вышло обновление версии ${version}:
-- При отправки запроса на выдачу роли ставится смайлик 📨
-» Kory_McGregor.\`\`\``).then(msgdone => {
-            msgdone.react(`👍`).then(() => {
-                msgdone.react(`👎`)
-            })
-        })
-    }
+    bot.user.setPresence({ game: { name: 'hacker' }, status: 'idle' })
 });
 
 bot.on('message', async message => {
@@ -294,6 +284,7 @@ bot.on('message', async message => {
             }).then(async (collected) => {
                 family_name = `${collected.first().content}`;
                 await delmessage0.edit(`\`[FAMILY] Название семьи: '${collected.first().content}'\n[FAMILY] Создатель семьи [ID]: [на модерации]\``)
+                collected.first().delete();
                 message.channel.awaitMessages(response => response.member.id == message.member.id, {
                     max: 1,
                     time: 60000,
@@ -302,19 +293,21 @@ bot.on('message', async message => {
                     if (!message.guild.members.find(m => m.id == collected.first().content)) return delmessage0.delete();
                     family_leader = `${collected.first().content}`;
                     await delmessage0.edit(`\`[FAMILY] Название семьи: '${family_name}'\n[FAMILY] Создатель семьи:\` <@${family_leader}>\n\`Создать?\``)
+                    collected.first().delete();
                     message.channel.awaitMessages(response => response.member.id == message.member.id, {
                         max: 1,
                         time: 20000,
                         errors: ['time'],
                     }).then(async (collected) => {
                         if (collected.first().content.toLowerCase() != 'да') return delmessage0.delete();
+                        collected.first().delete();
                         await delmessage0.delete();
                         let family_role = await message.guild.createRole({
                             name: `${family_name}`,
                             position: message.guild.roles.find(r => r.name == `[-] Прочее [-]`).position - 1,
                         })
                         let category = message.guild.channels.find(c => c.name == `Family ROOMS`);
-                        await category.clone(`${family_name}`, true, false, `Family Create`).then(async channel => {
+                        await category.clone(`${family_name}`, true, false).then(async (channel) => {
                             await channel.overwritePermissions(family_role, {
                                 // GENERAL PERMISSIONS
                                 CREATE_INSTANT_INVITE: false,
