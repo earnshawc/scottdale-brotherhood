@@ -274,6 +274,7 @@ bot.on('message', async message => {
 
     if (message.content == '/createfamily'){
         if (!message.member.hasPermission("ADMINISTRATOR")) return
+        let idmember = message.author.id;
         let family_name;
         let family_leader;
         await message.delete();
@@ -291,9 +292,7 @@ bot.on('message', async message => {
                     time: 60000,
                     errors: ['time'],
                 }).then(async (collected) => {
-                    if (!message.guild.members.find(m => m.id == collected.first().content)){
-                        family_leader = message.author.id
-                    }
+                    if (!message.guild.members.find(m => m.id == collected.first().content)) family_leader = idmember;
                     family_leader = `${collected.first().content}`;
                     await delmessage0.edit(`\`[FAMILY] Название семьи: '${family_name}'\n[FAMILY] Создатель семьи: ${message.guild.members.find(m => m.id == family_leader).displayName}\nСоздать семейный канал и роль [да/нет]?\``)
                     collected.first().delete();
