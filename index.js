@@ -293,7 +293,7 @@ bot.on('message', async message => {
                 }).then(async (collected) => {
                     if (!message.guild.members.find(m => m.id == collected.first().content)) return delmessage0.delete();
                     family_leader = `${collected.first().content}`;
-                    await delmessage0.edit(`\`[FAMILY] Название семьи: '${family_name}'\n[FAMILY] Создатель семьи: ${message.guild.members.find(m => m.id == family_leader).displayName}\nСоздать?\``)
+                    await delmessage0.edit(`\`[FAMILY] Название семьи: '${family_name}'\n[FAMILY] Создатель семьи: ${message.guild.members.find(m => m.id == family_leader).displayName}\nСоздать семейный канал и роль [да/нет]?\``)
                     collected.first().delete();
                     message.channel.awaitMessages(response => response.member.id == message.member.id, {
                         max: 1,
