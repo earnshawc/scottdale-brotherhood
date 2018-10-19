@@ -309,7 +309,6 @@ bot.on('message', async message => {
                         })
                         await message.guild.createChannel(`${family_name}`, "voice").then(async (channel) => {
                             await channel.setParent(message.guild.channels.find(c => c.name == `Family ROOMS`))
-                            await channel.replacePermissionOverwrites(message.guild.channels.find(c => c.name == `Family ROOMS`).permissionOverwrites)
                             await channel.overwritePermissions(family_role, {
                                 // GENERAL PERMISSIONS
                                 CREATE_INSTANT_INVITE: false,
@@ -330,8 +329,8 @@ bot.on('message', async message => {
                             await channel.overwritePermissions(message.guild.members.find(m => m.id == family_leader), {
                                 // GENERAL PERMISSIONS
                                 CREATE_INSTANT_INVITE: false,
-                                MANAGE_CHANNELS: true,
-                                MANAGE_ROLES: true,
+                                MANAGE_CHANNELS: false,
+                                MANAGE_ROLES: false,
                                 MANAGE_WEBHOOKS: false,
                                 // VOICE PERMISSIONS
                                 VIEW_CHANNEL: true,
@@ -343,6 +342,43 @@ bot.on('message', async message => {
                                 USE_VAD: true,
                                 PRIORITY_SPEAKER: true,
                             })
+
+                            await channel.overwritePermissions(message.guild.roles.find(r => r.name == `@everyone`), {
+                                // GENERAL PERMISSIONS
+                                CREATE_INSTANT_INVITE: false,
+                                MANAGE_CHANNELS: false,
+                                MANAGE_ROLES: false,
+                                MANAGE_WEBHOOKS: false,
+                                // VOICE PERMISSIONS
+                                VIEW_CHANNEL: false,
+                                CONNECT: false,
+                                SPEAK: false,
+                                MUTE_MEMBERS: false,
+                                DEAFEN_MEMBERS: false,
+                                MOVE_MEMBERS: false,
+                                USE_VAD: false,
+                                PRIORITY_SPEAKER: false,
+                            })
+                            if (message.guild.channels.find(c => c.name == `family-chat`)){
+                                await message.guild.channels.find(c => c.name == `family-chat`).overwritePermissions(family_role, {
+                                    // GENERAL PERMISSIONS
+                                    CREATE_INSTANT_INVITE: false,
+                                    MANAGE_CHANNELS: false,
+                                    MANAGE_ROLES: false,
+                                    MANAGE_WEBHOOKS: false,
+                                    // TEXT PERMISSIONS
+                                    VIEW_CHANNEL: true,
+                                    SEND_MESSAGES: true,
+                                    SEND_TTS_MESSAGES: false,
+                                    MANAGE_MESSAGES: false,
+                                    EMBED_LINKS: true,
+                                    ATTACH_FILES: true,
+                                    READ_MESSAGE_HISTORY: true,
+                                    MENTION_EVERYONE: false,
+                                    USE_EXTERNAL_EMOJIS: true,
+                                    ADD_REACTIONS: true,
+                                })
+                            }
                             await message.guild.members.find(m => m.id == family_leader).addRole(family_role);
                             if (message.guild.channels.find(c => c.name == `general`)){
                                 message.guild.channels.find(c => c.name == `general`).send(`<@${family_leader}>, \`модератор\` <@${message.author.id}> \`назначил вас лидером семьи: ${family_name}\nДоступ к семейным каналам был выдан! Роль была выдана!\``)
