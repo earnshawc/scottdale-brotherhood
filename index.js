@@ -273,6 +273,7 @@ bot.on('message', async message => {
     if (!reportlog) return
 
     if (message.content == '/createfamily'){
+        if (!message.member.hasPermission("ADMINISTRATOR")) return
         let family_name;
         let family_leader;
         await message.delete();
@@ -307,7 +308,7 @@ bot.on('message', async message => {
                             position: message.guild.roles.find(r => r.name == `[-] Прочее [-]`).position + 1,
                         })
                         let category = message.guild.channels.find(c => c.name == `Family ROOMS`);
-                        await message.guild.createChannel(`${family_name}`, `text`).then(async (channel) => {
+                        await message.guild.createChannel(`${family_name}`, "voice").then(async (channel) => {
                             await channel.setPosition(category.position);
                             await channel.overwritePermissions(family_role, {
                                 // GENERAL PERMISSIONS
