@@ -341,7 +341,7 @@ bot.on('message', async message => {
                                 USE_VAD: true,
                                 PRIORITY_SPEAKER: true,
                             })
-                            await channel.setPosition(message.guild.channels.find(c => c.name == `family-chat`).position + 2);
+                            channel.setParent(message.guild.channels.find(c => c.name == `family-chat`))
                             await message.guild.members.find(m => m.id == family_leader).addRole(family_role);
                             if (message.guild.channels.find(c => c.name == `general`)){
                                 message.guild.channels.find(c => c.name == `general`).send(`<@${family_leader}>, \`модератор\` <@${message.author.id}> \`назначил вас лидером семьи: ${family_name}\nДоступ к семейным каналам был выдан! Роль была выдана!\``)
