@@ -304,10 +304,11 @@ bot.on('message', async message => {
                         await delmessage0.delete();
                         let family_role = await message.guild.createRole({
                             name: `${family_name}`,
-                            position: message.guild.roles.find(r => r.name == `[-] Прочее [-]`).position - 1,
+                            position: message.guild.roles.find(r => r.name == `[-] Прочее [-]`).position,
                         })
                         let category = message.guild.channels.find(c => c.name == `Family ROOMS`);
-                        await category.clone(`${family_name}`, true, false).then(async (channel) => {
+                        await message.guild.createChannel(`${family_name}`, `text`).then(async (channel) => {
+                        // await category.clone(`${family_name}`, true, false).then(async (channel) => {
                             await channel.overwritePermissions(family_role, {
                                 // GENERAL PERMISSIONS
                                 CREATE_INSTANT_INVITE: false,
