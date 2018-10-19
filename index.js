@@ -293,7 +293,7 @@ bot.on('message', async message => {
                 }).then(async (collected) => {
                     if (!message.guild.members.find(m => m.id == collected.first().content)) return delmessage0.delete();
                     family_leader = `${collected.first().content}`;
-                    await delmessage0.edit(`\`[FAMILY] Название семьи: '${family_name}'\n[FAMILY] Создатель семьи:\` <@${family_leader}>\n\`Создать?\``)
+                    await delmessage0.edit(`\`[FAMILY] Название семьи: '${family_name}'\n[FAMILY] Создатель семьи: ${message.guild.members.find(m => m.id == family_leader).displayName}\nСоздать?\``)
                     collected.first().delete();
                     message.channel.awaitMessages(response => response.member.id == message.member.id, {
                         max: 1,
@@ -341,8 +341,11 @@ bot.on('message', async message => {
                                 USE_VAD: true,
                                 PRIORITY_SPEAKER: true,
                             })
-                            await channel.setPosition(message.guild.channels.find(c => c.name == `family-chat`).position - 1);
+                            await channel.setPosition(message.guild.channels.find(c => c.name == `family-chat`).position - 1, true);
                             await message.guild.members.find(m => m.id == family_leader).addRole(family_role);
+                            if (message.guild.channels.find(c => c.name == `general`)){
+                                message.guild.channels.find(c => c.name == `general`).send(`<@${family_leader}>, \`модератор\` <@${message.author.id}> \`назначил вас лидером семьи: ${family_name}\nДоступ к семейным каналам был выдан! Роль была выдана!\``)
+                            }
                         })
                     }).catch(() => {
                         return delmessage0.delete();
