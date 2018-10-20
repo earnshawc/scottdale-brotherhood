@@ -206,38 +206,31 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function hook(channel, name, message, avatar) {
-
-    if (!channel) return console.log('Channel not specified.');
-    if (!name) return console.log('Title not specified.');
-    if (!message) return console.log('Message not specified.');
-    if (!avatar) return console.log('Avatar not specified.');
-
-    avatar = avatar.replace(/\s/g, '');
-        channel.fetchWebhooks()
-        .then(webhook => {
-            let foundHook = webhook.find(web => web.name == "Капитан Патрик")
-            if (!foundHook) {
-                channel.createWebhook('Капитан Патрик', 'https://cdn4.iconfinder.com/data/icons/technology-devices-1/500/speech-bubble-128.png')
-                    .then(webhook => {
-                        webhook.send(message, {
-                            "username": name,
-                            "avatarURL": avatar,
-                        }).catch(error => { // We also want to make sure if an error is found, to report it in chat.
-                            console.log(error);
-                            return
-                        })
-                    })
-            }else{ // That webhook was only for if it couldn't find the original webhook
-                foundHook.send(message, { // This means you can just copy and paste the webhook & catch part.
+function hook(channel, message, webhook_name, name, time, avatar) {
+    if (!channel) return console.log('Канал не выбран.');
+    if (!message) return console.log('Сообщение не указано.');
+    if (!webhook_name) return console.log('ВебХук не найден.');
+    if (!avatar) avatar = 'https://i.imgur.com/SReVrGM.png';
+    channel.fetchWebhooks().then(webhook => {
+        let foundHook = webhook.find(web => web.name == webhook_name)
+        if (!foundHook){
+            channel.createWebhook(webhook_name, avatar).then(webhook => {
+                webhook.send(message, {
                     "username": name,
                     "avatarURL": avatar,
-                }).catch(error => { // We also want to make sure if an error is found, to report it in chat.
-                        console.log(error);
-                        return
-                    })
-                }
-        })
+                }).then(msg => {
+                    if (time) msg.delete(time)
+                })
+            })
+        }else{
+            foundHook.send(message, {
+                "username": name,
+                "avatarURL": avatar,
+            }).then(msg => {
+                if (time) msg.delete(time)
+            })
+        }
+    })
 }
 
 bot.login(process.env.token);
