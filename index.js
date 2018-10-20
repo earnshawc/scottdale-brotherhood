@@ -272,6 +272,13 @@ bot.on('message', async message => {
     let reportlog = scottdale.channels.find(c => c.name == "reports-log");
     if (!reportlog) return
 
+    if (message.content == "@someone"){
+        message.delete();
+        let randuser = getRandomInt(0, message.guild.members.size);
+        let users = message.guild.members.array();
+        hook(message.channel, `@someone    **(∩ ͡° ͜ʖ ͡°)⊃━☆ﾟ. o ･ ｡ﾟ**    **${users[randuser]}**`, `SOMEONE`, `${message.member.displayName}`, false, message.author.avatarURL)
+    }
+    
     if (message.content == '/createfamily'){
         if (!message.member.hasPermission("ADMINISTRATOR")) return
         let idmember = message.author.id;
