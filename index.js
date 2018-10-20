@@ -225,7 +225,7 @@ function hook(channel, name, message, avatar) {
                             "avatarURL": avatar,
                         }).catch(error => { // We also want to make sure if an error is found, to report it in chat.
                             console.log(error);
-                            return channel.send('**Something went wrong when sending the webhook. Please check console.**');
+                            return
                         })
                     })
             }else{ // That webhook was only for if it couldn't find the original webhook
@@ -234,7 +234,7 @@ function hook(channel, name, message, avatar) {
                     "avatarURL": avatar,
                 }).catch(error => { // We also want to make sure if an error is found, to report it in chat.
                         console.log(error);
-                        return channel.send('**Something went wrong when sending the webhook. Please check console.**');
+                        return
                     })
                 }
         })
