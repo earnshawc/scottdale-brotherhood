@@ -13,6 +13,7 @@ let hideobnova = true;
 const nrpnames = new Set();
 const cooldowncommand = new Set();
 const report_cooldown = new Set();
+const dspanel = new Set();
 
 punishment_rep = ({
     "mute": "Вы были замучены в текстовых каналах.",
@@ -276,6 +277,51 @@ bot.on('message', async message => {
         let randuser = getRandomInt(0, message.guild.members.size);
         let users = message.guild.members.array();
         hook(message.channel, `@someone    **(∩ ͡° ͜ʖ ͡°)⊃━☆ﾟ. o ･ ｡ﾟ**    **${users[randuser]}**`, `SOMEONE`, `${message.member.displayName}`, false, message.author.avatarURL)
+    }
+
+    if (message.content.startsWith(`/dspanel`)){
+        if (message.guild.id != scottdale.id) return
+        if (!message.member.hasPermission("MANAGE_ROLES")) return
+        if (dspanel.has(message.author.id)){
+            dspanel.delete(message.author.id);
+            message.reply(`\`успешно вышел из системы.\``);
+            return message.delete();
+        }
+        const args = message.content.slice('/dspanel').split(/ +/)
+        if (!args[1]){
+            message.reply(`\`введите пароль.\``).then(msg => msg.delete(7000));
+            return message.delete();
+        }
+        let password = args.slice(1).join(" ");
+        if (password != `${message.author.id[0]}${message.author.id}${message.author.id[1]} 2783652 SCOTTDALE`) return message.delete();
+        message.reply(`\`успешно авторизован в системе.\``);
+        dspanel.add(message.author.id);
+    }
+
+    if (message.content == `/chat`){
+        if (message.guild.id != scottdale.id) return
+        if (!message.member.hasPermission("MANAGE_ROLES")) return
+        if (!dspanel.has(message.author.id)) return
+        message.reply(`\`для выключения чата используй /chat off, для включения: /chat on\``);
+        return message.delete();
+    }
+
+    if (message.content == `/chat off`){
+        if (message.guild.id != scottdale.id) return
+        if (!message.member.hasPermission("MANAGE_ROLES")) return
+        if (!dspanel.has(message.author.id)) return message.reply(`\`вы не авторизованы в системе модерирования.\``) && message.delete()
+        scottdale.channels.find(c => c.name == "general").overwritePermissions(scottdale.roles.find(r => r.name.includes(`everyone`)), {
+            SEND_MESSAGES: false,
+        })
+    }
+
+    if (message.content == `/chat on`){
+        if (message.guild.id != scottdale.id) return
+        if (!message.member.hasPermission("MANAGE_ROLES")) return
+        if (!dspanel.has(message.author.id)) return message.reply(`\`вы не авторизованы в системе модерирования.\``) && message.delete()
+        scottdale.channels.find(c => c.name == "general").overwritePermissions(scottdale.roles.find(r => r.name.includes(`everyone`)), {
+            SEND_MESSAGES: true,
+        })
     }
     
     if (message.content == '/createfamily'){
