@@ -296,12 +296,13 @@ bot.on('message', async message => {
         if (password != `${message.author.id[0]}${message.author.id}${message.author.id[1]} 2783652 SCOTTDALE`) return message.delete();
         message.reply(`\`успешно авторизован в системе.\``);
         dspanel.add(message.author.id);
+        return message.delete();
     }
 
     if (message.content == `/chat`){
         if (message.guild.id != scottdale.id) return
         if (!message.member.hasPermission("MANAGE_ROLES")) return
-        if (!dspanel.has(message.author.id)) return
+        if (!dspanel.has(message.author.id)) return message.reply(`\`вы не авторизованы в системе модерирования.\``) && message.delete()
         message.reply(`\`для выключения чата используй /chat off, для включения: /chat on\``);
         return message.delete();
     }
@@ -313,6 +314,9 @@ bot.on('message', async message => {
         scottdale.channels.find(c => c.name == "general").overwritePermissions(scottdale.roles.find(r => r.name.includes(`everyone`)), {
             SEND_MESSAGES: false,
         })
+        scottdale.channels.find(c => c.name == "spectator-chat").send(`\`Модератор <@${message.member.displayName}> отключил чат:\` <#${scottdale.channels.find(c => c.name == "general").id}>`)
+        message.reply(`\`вы успешно отключили чат!\``)
+        return messages.delete();
     }
 
     if (message.content == `/chat on`){
@@ -322,6 +326,9 @@ bot.on('message', async message => {
         scottdale.channels.find(c => c.name == "general").overwritePermissions(scottdale.roles.find(r => r.name.includes(`everyone`)), {
             SEND_MESSAGES: true,
         })
+        scottdale.channels.find(c => c.name == "spectator-chat").send(`\`Модератор <@${message.member.displayName}> включил чат:\` <#${scottdale.channels.find(c => c.name == "general").id}>`)
+        message.reply(`\`вы успешно включили чат!\``)
+        return messages.delete();
     }
     
     if (message.content == '/createfamily'){
