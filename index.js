@@ -314,7 +314,7 @@ bot.on('message', async message => {
         scottdale.channels.find(c => c.name == "general").overwritePermissions(scottdale.roles.find(r => r.name.includes(`everyone`)), {
             SEND_MESSAGES: false,
         })
-        scottdale.channels.find(c => c.name == "spectator-chat").send(`\`Модератор <@${message.member.displayName}> отключил чат:\` <#${scottdale.channels.find(c => c.name == "general").id}>`)
+        scottdale.channels.find(c => c.name == "spectator-chat").send(`\`Модератор ${message.member.displayName} отключил чат:\` <#${scottdale.channels.find(c => c.name == "general").id}>`)
         message.reply(`\`вы успешно отключили чат!\``)
         return messages.delete();
     }
@@ -326,7 +326,7 @@ bot.on('message', async message => {
         scottdale.channels.find(c => c.name == "general").overwritePermissions(scottdale.roles.find(r => r.name.includes(`everyone`)), {
             SEND_MESSAGES: true,
         })
-        scottdale.channels.find(c => c.name == "spectator-chat").send(`\`Модератор <@${message.member.displayName}> включил чат:\` <#${scottdale.channels.find(c => c.name == "general").id}>`)
+        scottdale.channels.find(c => c.name == "spectator-chat").send(`\`Модератор ${message.member.displayName} включил чат:\` <#${scottdale.channels.find(c => c.name == "general").id}>`)
         message.reply(`\`вы успешно включили чат!\``)
         return messages.delete();
     }
