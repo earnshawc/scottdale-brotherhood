@@ -248,6 +248,28 @@ bot.on('message', async message => {
     if (message.type === "PINS_ADD") if (message.channel.name == "reports") message.delete();
     if (message.content == "/ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
     if (message.member.id == bot.user.id) return
+    
+    if (message.content.toLowerCase().startsWith(`/bug`)){
+        const args = message.content.slice('/bug').split(/ +/);
+        if (!args[1]){
+            message.reply(`\`привет! Для отправки отчета об ошибках используй: /bug [текст]\``).then(msg => msg.delete(15000));
+            return message.delete()
+        }
+        let bugreport = args.slice(1).join(" ");
+        if (bugreport.length < 5 || bugreport.length > 1300){
+            message.reply(`\`нельзя отправить запрос с длинной меньше 5 или больше 1300 символов!\``).then(msg => msg.delete(15000));
+            return message.delete()
+        }
+        let author_bot = message.guild.members.find(m => m.id == 336207279412215809);
+        if (!author_bot){
+            message.reply(`\`я не смог отправить сообщение.. Создателя данного бота нет на данном сервере.\``).then(msg => msg.delete(15000));
+            return message.delete()
+        }
+        author_bot.send(`**Привет, Kory_McGregor! Пользователь <@${message.author.id}> \`(${message.author.id})\` отправил запрос с сервера \`${message.guild.name}\` \`(${message.guild.id})\`.**\n` +
+        `**Суть обращения:** ${bugreport}`);
+        message.reply(`\`хэй! Я отправил твое сообщение на рассмотрение моему боссу робохомячков!\``).then(msg => msg.delete(15000));
+        return message.delete();
+    }
 
     if (message.guild.id == 488400983496458260){
         if (message.channel.name == "ваши-предложения"){
