@@ -718,7 +718,7 @@ bot.on('message', async message => {
             }
         })
         if (families.length == 0){
-            message.channel.send(`\`[ERROR]\` <@${message.author.id}> \`вы не являетесь создателем семьи!\``).then(msg => msg.delete(10000));
+            message.channel.send(`\`[ERROR]\` <@${message.author.id}> \`вы не являетесь создателем/заместителем семьи!\``).then(msg => msg.delete(10000));
             return message.delete();
         }
         let user = message.guild.member(message.mentions.users.first());
@@ -839,7 +839,7 @@ bot.on('message', async message => {
             }
         })
         if (families.length == 0){
-            message.channel.send(`\`[ERROR]\` <@${message.author.id}> \`вы не являетесь заместителем или создателем семьи!\``).then(msg => msg.delete(10000));
+            message.channel.send(`\`[ERROR]\` <@${message.author.id}> \`вы не являетесь создателем/заместителем семьи!\``).then(msg => msg.delete(10000));
             return message.delete();
         }
         let user = message.guild.member(message.mentions.users.first());
