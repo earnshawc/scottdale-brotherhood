@@ -16,6 +16,8 @@ const report_cooldown = new Set();
 const dspanel = new Set();
 const sened = new Set ();
 
+let serverid = '355656045600964609'
+
 punishment_rep = ({
     "mute": "Вы были замучены в текстовых каналах.",
     "kick": "Вы были отключены от Discord-сервера.",
