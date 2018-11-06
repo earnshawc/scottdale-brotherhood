@@ -14,6 +14,7 @@ const nrpnames = new Set();
 const cooldowncommand = new Set();
 const report_cooldown = new Set();
 const dspanel = new Set();
+const sened = new Set ();
 
 punishment_rep = ({
     "mute": "Вы были замучены в текстовых каналах.",
