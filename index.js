@@ -1880,27 +1880,41 @@ bot.on('message', async message => {
         }
         let roleremove = user.roles.find(r => rolesgg.includes(r.name));
         if (!roleremove) return message.react(`📛`)
-        const embed = new Discord.RichEmbed()
-        .setTitle("`Discord » Запрос о снятии роли.`")
-        .setColor("#483D8B")
-        .addField("Отправитель", `\`Пользователь:\` <@${message.author.id}>`)
-        .addField("Кому снять роль", `\`Пользователь:\` <@${user.id}>`)
-        .addField("Роль для снятия", `\`Роль для снятия:\` <@&${roleremove.id}>`)
-        .addField("Отправлено с канала", `<#${message.channel.id}>`)
-        .addField("Информация", `\`[✔] - снять роль\`\n` + `\`[❌] - отказать в снятии роли\`\n` + `\`[D] - удалить сообщение\``)
-        .setFooter("© Support Team | by Kory_McGregor")
-        .setTimestamp()
-        reqchat.send(embed).then(async msgsen => {
-            await msgsen.react('✔')
-            await msgsen.react('❌')
-            await msgsen.react('🇩')
-            await msgsen.pin();
-        })
-        snyatie.add(message.author.id + `=>` + user.id)
-        return message.react(`📨`);
+
+        message.reply(`\`напишите причину снятия роли.\``).then(answer => {
+            message.channel.awaitMessages(response => response.member.id == message.member.id, {
+                max: 1,
+                time: 60000,
+                errors: ['time'],
+            }).then((collected) => {
+                const embed = new Discord.RichEmbed()
+                .setTitle("`Discord » Запрос о снятии роли.`")
+                .setColor("#483D8B")
+                .addField("Отправитель", `\`Пользователь:\` <@${message.author.id}>`)
+                .addField("Кому снять роль", `\`Пользователь:\` <@${user.id}>`)
+                .addField("Роль для снятия", `\`Роль для снятия:\` <@&${roleremove.id}>`)
+                .addField("Отправлено с канала", `<#${message.channel.id}>`)
+                .addField("Причина снятия роли", `${collected.first().content}`)
+                .addField("Информация", `\`[✔] - снять роль\`\n` + `\`[❌] - отказать в снятии роли\`\n` + `\`[D] - удалить сообщение\``)
+                .setFooter("© Support Team | by Kory_McGregor")
+                .setTimestamp()
+                reqchat.send(embed).then(async msgsen => {
+                    answer.delete();
+                    collected.delete();
+                    await msgsen.react('✔')
+                    await msgsen.react('❌')
+                    await msgsen.react('🇩')
+                    await msgsen.pin();
+                })
+                snyatie.add(message.author.id + `=>` + user.id)
+                return message.react(`📨`);
+            }).catch(() => {
+                return answer.delete()
+            });
+        });
     }
-    
-    if (message.content.toLowerCase().includes("роль")){
+
+    if (message.content.toLowerCase().includes("роль") && !message.content.toLowerCase().includes(`сними`) && !message.content.toLowerCase().includes(`снять`)){
         // Проверить невалидный ли ник.
         if (nrpnames.has(message.member.displayName)){
             if(message.member.roles.some(r=>rolesgg.includes(r.name)) ) {
