@@ -1900,7 +1900,7 @@ bot.on('message', async message => {
                 .setTimestamp()
                 reqchat.send(embed).then(async msgsen => {
                     answer.delete();
-                    collected.delete();
+                    collected.first().delete();
                     await msgsen.react('✔')
                     await msgsen.react('❌')
                     await msgsen.react('🇩')
