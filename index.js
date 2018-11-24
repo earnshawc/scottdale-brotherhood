@@ -254,7 +254,7 @@ bot.on('message', async message => {
     if (message.content == "/ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
     if (message.member.id == bot.user.id) return
     
-    if (message.content.startsWith(`/run`){
+    if (message.content.startsWith(`/run`)){
         if (!message.member.hasPermission("ADMINISTRATOR") return message.delete();
         const args = message.content.slice(`/run`).split(/ +/);
         let cmdrun = args.slice(1).join(" ");
