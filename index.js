@@ -271,7 +271,7 @@ if (message.channel.name == "support"){
                 `**Количество вопросов за все время: 0**\n` +
                 `**Необработанных модераторами: 0**\n` +
                 `**Вопросы на рассмотрении: 0**\n` +
-                `**Закрытых: 0**`).then(msg => {
+                `**Закрытых: 0**`).then(async msg => {
                     db_channel.send(`MESSAGEID: ${msg.id}`)
                     rep_message = await message.channel.fetchMessage(msg.id);
                 });
