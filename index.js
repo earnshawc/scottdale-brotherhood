@@ -259,7 +259,7 @@ if (message.channel.name == "support"){
     let db_server = bot.guilds.find(g => g.id == "493459379878625320");
     let db_channel = db_server.channels.find(c => c.name == "config");
     await db_channel.fetchMessages().then(async messages => {
-        let db_msg = messages.find(m => m.content.startsWith(`MESSAGEID:`);
+        let db_msg = messages.find(m => m.content.startsWith(`MESSAGEID:`));
         if (db_msg){
             let id_mm = db_msg.content.slince().split('MESSAGEID: ')[1];
             rep_message = await message.channel.fetchMessage(id_mm);
