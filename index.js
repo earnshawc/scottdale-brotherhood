@@ -255,6 +255,7 @@ bot.on('message', async message => {
     if (message.content == "/ping") return message.reply("`я онлайн!`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
     if (message.member.id == bot.user.id) return
     
+    let re = /(\d+(\.\d)*)/i;
 if (message.channel.name == "support"){
   if (message.member.bot) return message.delete();
   if (support_cooldown.has(message.author.id)) {
@@ -264,7 +265,6 @@ if (message.channel.name == "support"){
   setTimeout(() => {
     if (support_cooldown.has(message.author.id)) support_cooldown.delete(message.author.id);
   }, 900000);
-  let re = /(\d+(\.\d)*)/i;
   let id_mm
   let rep_message;
   let db_server = bot.guilds.find(g => g.id == "493459379878625320");
