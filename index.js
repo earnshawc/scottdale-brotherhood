@@ -261,7 +261,7 @@ if (message.channel.name == "support"){
     await db_channel.fetchMessages().then(async messages => {
         let db_msg = messages.find(m => m.content.startsWith(`MESSAGEID:`));
         if (db_msg){
-            let id_mm = db_msg.content.slince().split('MESSAGEID: ')[1];
+            let id_mm = db_msg.content.slice().split('MESSAGEID: ')[1];
             rep_message = await message.channel.fetchMessage(id_mm);
             if (!rep_message){
                 db_msg.delete();
@@ -282,7 +282,7 @@ if (message.channel.name == "support"){
             info_rep.push(rep_message.content.split('\n')[4].match(re)[0]);
             info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
             info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
-            message.channel.send(info_rep[0] + ' ' + infO_rep[1] + ' ' + info_rep[2] + ' ' + info_rep[3])
+            message.channel.send(info_rep[0] + ' ' + info_rep[1] + ' ' + info_rep[2] + ' ' + info_rep[3])
         }
     });
 }
