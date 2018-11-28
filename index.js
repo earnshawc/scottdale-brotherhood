@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const Discord = require('discord.js'); // by Artemka076#6715
 const bot = new Discord.Client();
 const fs = require("fs");
 const Logger = require('./objects/logger');
