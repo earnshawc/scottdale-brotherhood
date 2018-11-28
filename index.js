@@ -316,7 +316,6 @@ if (message.channel.name == "support"){
         name: "Суть обращения",
         value: `${message.content}`,
       },
-      timestamp: new Date(),
       footer: {
         text: "by Support Team",
       },
