@@ -15,6 +15,7 @@ const report_cooldown = new Set();
 const dspanel = new Set();
 const nrpnames = new Set(); // Невалидные ники будут записаны в nrpnames
 const sened = new Set(); // Уже отправленные запросы будут записаны в sened
+const support_cooldown = new Set(); // Запросы от игроков.
 const snyatie = new Set(); // Уже отправленные запросы на снятие роли быдут записаны в snyatie
 
 let serverid = '355656045600964609'
@@ -255,6 +256,13 @@ bot.on('message', async message => {
     if (message.member.id == bot.user.id) return
     
 if (message.channel.name == "support"){
+  if (support_cooldown.has(message.author.id)) {
+    return message.delete();
+  }
+  support_cooldown.add(message.author.id);
+  setTimeout(() => {
+    if (support_cooldown.has(message.author.id)) support_cooldown.delete(message.author.id);
+  }, 900000);
   let re = /(\d+(\.\d)*)/i;
   let id_mm
   let rep_message;
@@ -293,6 +301,13 @@ if (message.channel.name == "support"){
     `**Необработанных модераторами: ${+info_rep[1] + 1}**\n` +
     `**Вопросы на рассмотрении: ${info_rep[2]}**\n` +
     `**Закрытых: ${info_rep[3]}**`)
+  let s_category = message.guild.channels.find(c => c.name == "SUP REP PLUS");
+  if (!s_category) return message.delete(3000);
+  message.guild.createChannel(`ticket-${+info_rep[1] + 1}`, 'text', {parent: s_category}).then(channel => {
+    let sp_chat_get = message.guild.channel.find(c => c.name == "spectator-chat");
+    sp_chat_get.send(`Создана новая жалоба <#${channel.id}> от пользователя <@${message.author.id}>`);
+    message.delete();
+  });
 }
     
     if (message.content.startsWith(`/run`)){
