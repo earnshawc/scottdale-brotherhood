@@ -251,8 +251,41 @@ bot.on('message', async message => {
     if (message.guild.id != serverid && message.guild.id != "493459379878625320") return
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
     if (message.type === "PINS_ADD") if (message.channel.name == "reports") message.delete();
-    if (message.content == "/ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
+    if (message.content == "/ping") return message.reply("`я онлайн!`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
     if (message.member.id == bot.user.id) return
+    
+if (message.channel.name == "support"){
+    let rep_message;
+    let db_server = bot.guilds.find(g => g.id == "493459379878625320");
+    let db_channel = db_server.channels.find(c => c.name == "config");
+    await db_channel.fetchMessages().then(async messages => {
+        let db_msg = messages.find(m => m.content.startsWith(`MESSAGEID:`);
+        if (db_msg){
+            let id_mm = db_msg.content.slince().split('MESSAGEID: ')[1];
+            rep_message = await message.channel.fetchMessage(id_mm);
+            if (!rep_message){
+                db_msg.delete();
+                await message.channel.send(`` +
+                `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
+                `**Тут Вы сможете задать вопрос модераторам или администраторам сервера!**\n\n` +
+                `**Количество вопросов за все время: 0**\n` +
+                `**Необработанных модераторами: 0**\n` +
+                `**Вопросы на рассмотрении: 0**\n` +
+                `**Закрытых: 0**`).then(msg => {
+                    db_channel.send(`MESSAGEID: ${msg.id}`)
+                    rep_message = await message.channel.fetchMessage(msg.id);
+                });
+            }
+            let re = /(\d+(\.\d)*)/i;
+            let info_rep = [];
+            info_rep.push(rep_message.content.split('\n')[3].match(re)[0]);
+            info_rep.push(rep_message.content.split('\n')[4].match(re)[0]);
+            info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
+            info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
+            message.channel.send(info_rep[0] + ' ' + infO_rep[1] + ' ' + info_rep[2] + ' ' + info_rep[3])
+        }
+    });
+}
     
     if (message.content.startsWith(`/run`)){
         if (!message.member.hasPermission("ADMINISTRATOR")) return message.delete();
