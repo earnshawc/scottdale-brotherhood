@@ -269,7 +269,6 @@ if (message.channel.name == "support"){
       });
     }
   });
-  message.channel.send('TEST: ' + id_mm);
   if (!rep_message){
     await message.channel.send(`` +
     `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
@@ -287,7 +286,13 @@ if (message.channel.name == "support"){
   info_rep.push(rep_message.content.split('\n')[4].match(re)[0]);
   info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
   info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
-  message.channel.send(info_rep[0] + ' ' + info_rep[1] + ' ' + info_rep[2] + ' ' + info_rep[3])
+  rep_message.edit(`` +
+    `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
+    `**Тут Вы сможете задать вопрос модераторам или администраторам сервера!**\n\n` +
+    `**Количество вопросов за все время: ${+info_rep[0] + 1}**\n` +
+    `**Необработанных модераторами: ${+info_rep[1] + 1}**\n` +
+    `**Вопросы на рассмотрении: ${info_rep[2]}**\n` +
+    `**Закрытых: ${info_rep[3]}**`)
 }
     
     if (message.content.startsWith(`/run`)){
