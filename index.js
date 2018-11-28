@@ -263,7 +263,7 @@ if (message.channel.name == "support"){
     if (db_msg){
       let id_mm = db_msg.content.slice().split('MESSAGEID: ')[1];
       message.channel.fetchMessages().then(async messagestwo => {
-        let rep_message = messagestwo.find(m => m.id == id_mm);
+        rep_message = messagestwo.find(m => m.id == id_mm);
       });
     }
   });
