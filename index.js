@@ -315,10 +315,7 @@ if (message.channel.name == "support"){
       },{
         name: "Суть обращения",
         value: `${message.content}`,
-      },
-      footer: {
-        text: "by Support Team",
-      },
+      }]
     }
     });
     let sp_chat_get = message.guild.channels.find(c => c.name == "spectator-chat");
