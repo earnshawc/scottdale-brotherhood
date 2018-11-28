@@ -303,7 +303,7 @@ if (message.channel.name == "support"){
     `**Закрытых: ${info_rep[3]}**`)
   let s_category = message.guild.channels.find(c => c.name == "SUP REP PLUS");
   if (!s_category) return message.delete(3000);
-  await message.guild.createChannel(`ticket-${+info_rep[1] + 1}`, 'text').then(async channel => {
+  await message.guild.createChannel(`ticket-${+info_rep[1] + 1}`).then(async channel => {
     await channel.setParent(s_category.id)
     let sp_chat_get = message.guild.channel.find(c => c.name == "spectator-chat");
     await sp_chat_get.send(`Создана новая жалоба <#${channel.id}> от пользователя <@${message.author.id}>`);
