@@ -268,7 +268,6 @@ if (message.channel.name == "support"){
     }
   });
   if (!rep_message){
-    db_msg.delete();
     await message.channel.send(`` +
     `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
     `**Тут Вы сможете задать вопрос модераторам или администраторам сервера!**\n\n` +
