@@ -255,13 +255,14 @@ bot.on('message', async message => {
     if (message.member.id == bot.user.id) return
     
 if (message.channel.name == "support"){
+  let re = /(\d+(\.\d)*)/i;
   let rep_message;
   let db_server = bot.guilds.find(g => g.id == "493459379878625320");
   let db_channel = db_server.channels.find(c => c.name == "config");
   await db_channel.fetchMessages().then(async messages => {
     let db_msg = messages.find(m => m.content.startsWith(`MESSAGEID:`));
     if (db_msg){
-      let id_mm = db_msg.content.slice().split('MESSAGEID: ')[1];
+      let id_mm = db_msg.content.match(re)[0]
       message.channel.fetchMessages().then(async messagestwo => {
         rep_message = messagestwo.find(m => m.id == id_mm);
       });
@@ -279,14 +280,14 @@ if (message.channel.name == "support"){
       rep_message = await message.channel.fetchMessage(msg.id);
     });
   }
-  let re = /(\d+(\.\d)*)/i;
   let info_rep = [];
   info_rep.push(rep_message.content.split('\n')[3].match(re)[0]);
   info_rep.push(rep_message.content.split('\n')[4].match(re)[0]);
   info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
   info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
   message.channel.send(info_rep[0] + ' ' + info_rep[1] + ' ' + info_rep[2] + ' ' + info_rep[3])
-}    
+}
+    
     if (message.content.startsWith(`/run`)){
         if (!message.member.hasPermission("ADMINISTRATOR")) return message.delete();
         const args = message.content.slice(`/run`).split(/ +/);
