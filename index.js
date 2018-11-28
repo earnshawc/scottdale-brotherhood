@@ -345,6 +345,24 @@ if (message.channel.name == "support"){
       USE_EXTERNAL_EMOJIS: false,
       ADD_REACTIONS: false,
     })  
+    await channel.overwritePermissions(message.guild.roles.find(r => r.name == "@everyone"), {
+      // GENERAL PERMISSIONS
+      CREATE_INSTANT_INVITE: false,
+      MANAGE_CHANNELS: false,
+      MANAGE_ROLES: false,
+      MANAGE_WEBHOOKS: false,
+      // TEXT PERMISSIONS
+      VIEW_CHANNEL: false,
+      SEND_MESSAGES: false,
+      SEND_TTS_MESSAGES: false,
+      MANAGE_MESSAGES: false,
+      EMBED_LINKS: false,
+      ATTACH_FILES: false,
+      READ_MESSAGE_HISTORY: false,
+      MENTION_EVERYONE: false,
+      USE_EXTERNAL_EMOJIS: false,
+      ADD_REACTIONS: false,
+    })  
     channel.send({embed: {
       color: 3447003,
       title: "Обращение к поддержке Discord",
