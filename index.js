@@ -254,7 +254,7 @@ bot.on('message', async message => {
     if (message.content == "/ping") return message.reply("`я онлайн!`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
     if (message.member.id == bot.user.id) return
     
-if (message.channel.name == "support){
+if (message.channel.name == "support"){
   let rep_message;
   let db_server = bot.guilds.find(g => g.id == "493459379878625320");
   let db_channel = db_server.channels.find(c => c.name == "config");
