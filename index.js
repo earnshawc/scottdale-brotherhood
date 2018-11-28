@@ -304,10 +304,26 @@ if (message.channel.name == "support"){
   let s_category = message.guild.channels.find(c => c.name == "SUP REP PLUS");
   if (!s_category) return message.delete(3000);
   await message.guild.createChannel(`ticket-${+info_rep[1] + 1}`).then(async channel => {
-    await channel.setParent(s_category.id)
-    let sp_chat_get = message.guild.channel.find(c => c.name == "spectator-chat");
+    message.delete();    
+    await channel.setParent(s_category.id)    
+    channel.send({embed: {
+      color: 3447003,
+      title: "Обращение к поддержке Discord",
+      fields: [{
+        name: "Отправитель",
+        value: `Пользователь: <@${message.author.id}>`,
+      },{
+        name: "Суть обращения",
+        value: `${message.content}`,
+      },
+      timestamp: new Date(),
+      footer: {
+        text: "by Support Team",
+      },
+    }
+    });
+    let sp_chat_get = message.guild.channels.find(c => c.name == "spectator-chat");
     await sp_chat_get.send(`Создана новая жалоба <#${channel.id}> от пользователя <@${message.author.id}>`);
-    message.delete();
   });
 }
     
