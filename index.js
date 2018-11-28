@@ -380,7 +380,8 @@ if (message.content == '/close'){
     let db_msg = messages.find(m => m.content.startsWith(`MESSAGEID:`));
     if (db_msg){
       id_mm = db_msg.content.match(re)[0]
-      await message.channel.fetchMessages().then(async messagestwo => {
+      let ticket_channel = message.guild.channels.find(c => c.name == 'support');
+      await ticket_channel.fetchMessages().then(async messagestwo => {
         rep_message = await messagestwo.find(m => m.id == id_mm);
       });
     }
@@ -456,7 +457,8 @@ if (message.content == '/wait'){
     let db_msg = messages.find(m => m.content.startsWith(`MESSAGEID:`));
     if (db_msg){
       id_mm = db_msg.content.match(re)[0]
-      await message.channel.fetchMessages().then(async messagestwo => {
+      let ticket_channel = message.guild.channels.find(c => c.name == 'support');
+      await ticket_channel.fetchMessages().then(async messagestwo => {
         rep_message = await messagestwo.find(m => m.id == id_mm);
       });
     }
@@ -497,7 +499,8 @@ if (message.content == '/unwait'){
     let db_msg = messages.find(m => m.content.startsWith(`MESSAGEID:`));
     if (db_msg){
       id_mm = db_msg.content.match(re)[0]
-      await message.channel.fetchMessages().then(async messagestwo => {
+      let ticket_channel = message.guild.channels.find(c => c.name == 'support');
+      await ticket_channel.fetchMessages().then(async messagestwo => {
         rep_message = await messagestwo.find(m => m.id == id_mm);
       });
     }
