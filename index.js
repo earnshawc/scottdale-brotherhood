@@ -256,18 +256,20 @@ bot.on('message', async message => {
     
 if (message.channel.name == "support"){
   let re = /(\d+(\.\d)*)/i;
+  let id_mm
   let rep_message;
   let db_server = bot.guilds.find(g => g.id == "493459379878625320");
   let db_channel = db_server.channels.find(c => c.name == "config");
   await db_channel.fetchMessages().then(async messages => {
     let db_msg = messages.find(m => m.content.startsWith(`MESSAGEID:`));
     if (db_msg){
-      let id_mm = db_msg.content.match(re)[0]
-      message.channel.fetchMessages().then(async messagestwo => {
-        rep_message = messagestwo.find(m => m.id == id_mm);
+      id_mm = db_msg.content.match(re)[0]
+      await message.channel.fetchMessages().then(async messagestwo => {
+        rep_message = await messagestwo.find(m => m.id == id_mm);
       });
     }
   });
+  message.channel.send('TEST: ' + id_mm);
   if (!rep_message){
     await message.channel.send(`` +
     `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
