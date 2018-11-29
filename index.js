@@ -260,6 +260,7 @@ bot.on('message', async message => {
     let s_now = new Date().valueOf();
 if (s_now > +s_later + 15000){ // 3600000
   s_later = s_now;
+  message.guild.channel.find(c => c.name == "spectator-chat").send(`Прошло 15 секунд.`);
   message.guilds.channels.forEach(channel => {
     if (channel.name.startsWith('ticket-')){
       if (channel.parent == 'Корзина'){
