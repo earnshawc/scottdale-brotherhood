@@ -260,7 +260,7 @@ bot.on('message', async message => {
 if (message.content == '/waittest'){
   message.guild.channels.forEach(channel => {
     if (channel.name.startsWith('ticket-')){
-      if (channel.parent == 'Корзина'){
+      if (message.guild.channels.find(c => c.id == channel.parentID).name == 'Корзина'){
         message.reply(`<#${channel.id}>`);
         channel.fetchMessages({limit: 1}).then(messages => {
           if (messages.size == 1){
