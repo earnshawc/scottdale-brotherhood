@@ -260,14 +260,15 @@ bot.on('message', async message => {
 if (message.content == '/waittest'){
   message.guild.channels.forEach(channel => {
     if (channel.name.startsWith('ticket-') && channel.parent == 'Корзина'){
+      message.reply(`<#${channel.id}>`);
       channel.fetchMessages({limit: 1}).then(messages => {
         if (messages.size == 1){
           messages.forEach(msg => {
             let s_now = new Date().valueOf();
             if (msg.createdAt.valueOf() < s_now + 120000){
-              message.reply(`Сообщение: ${msg.content} уже лежит больше двух минут.`);
+              message.guild.channels.find(c => c.name == "spectator-chat").send(`Сообщение: ${msg.content} уже лежит больше двух минут.`);
             }else{
-              message.reply(`Сообщение: ${msg.content} лежит меньше двух минут.`);
+              message.guild.channels.find(c => c.name == "spectator-chat").send(`Сообщение: ${msg.content} лежит меньше двух минут.`);
             }
           });
         }
