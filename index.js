@@ -252,7 +252,7 @@ bot.on('message', async message => {
     if (message.guild.id != serverid && message.guild.id != "493459379878625320") return
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
     if (message.type === "PINS_ADD") if (message.channel.name == "reports") message.delete();
-    if (message.content == "/ping") return message.reply("`я онлайн!`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
+    if (message.content == "/ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
     if (message.member.id == bot.user.id) return
     
     let re = /(\d+(\.\d)*)/i;
@@ -264,10 +264,12 @@ if (s_now > s_later + 15000){ // 3600000
     if (channel.name.startsWith('ticket-')){
       if (channel.parent == 'Корзина'){
         channel.fetchMessages({limit: 1}).then(msgr => {
-          if (msgr[0].createdAt.valueOf() > s_now + 120000){
-            message.guild.channel.find(c => c.name == "spectator-chat").send(`Сообщение: ${msgr[0].content} уже лежит больше двух минут.\nДата: ${msgr[0].createdAt.valueOf()}`);
-          }else{
-            message.guild.channel.find(c => c.name == "spectator-chat").send(`Сообщение: ${msgr[0].content} лежит меньше двух минут.\nДата: ${msgr[0].createdAt.valueOf()}`);
+          msgr.forEach(msg_s => {
+            if (msg_s.createdAt.valueOf() > s_now + 120000){
+              message.guild.channel.find(c => c.name == "spectator-chat").send(`Сообщение: ${msg_s.content} уже лежит больше двух минут.\nДата: ${msg_s.createdAt.valueOf()}`);
+            }else{
+              message.guild.channel.find(c => c.name == "spectator-chat").send(`Сообщение: ${msg_s.content} лежит меньше двух минут.\nДата: ${msg_s.createdAt.valueOf()}`);
+            }
           }
         });
       }
