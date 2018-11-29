@@ -522,7 +522,7 @@ if (message.content == '/toadmin'){
       memberid = await perm.id;
     }
   });
-  await channel.overwritePermissions(message.guild.roles.find(r => r.name == 'Support Team'), {
+  await message.channel.overwritePermissions(message.guild.roles.find(r => r.name == 'Support Team'), {
     // GENERAL PERMISSIONS
     CREATE_INSTANT_INVITE: false,
     MANAGE_CHANNELS: false,
@@ -541,7 +541,7 @@ if (message.content == '/toadmin'){
     ADD_REACTIONS: false,
   })  
 
-  await channel.overwritePermissions(message.guild.roles.find(r => r.name.includes('Administrator')), {
+  await message.channel.overwritePermissions(message.guild.roles.find(r => r.name.includes('Administrator')), {
     // GENERAL PERMISSIONS
     CREATE_INSTANT_INVITE: false,
     MANAGE_CHANNELS: false,
@@ -560,7 +560,7 @@ if (message.content == '/toadmin'){
     ADD_REACTIONS: false,
   })  
 
-  await channel.overwritePermissions(message.guild.roles.find(r => r.name.includes('Jr.Administrator')), {
+  await message.channel.overwritePermissions(message.guild.roles.find(r => r.name.includes('Jr.Administrator')), {
     // GENERAL PERMISSIONS
     CREATE_INSTANT_INVITE: false,
     MANAGE_CHANNELS: false,
@@ -579,7 +579,7 @@ if (message.content == '/toadmin'){
     ADD_REACTIONS: false,
   })  
 
-  await channel.overwritePermissions(message.guild.roles.find(r => r.name.includes('Helper')), {
+  await message.channel.overwritePermissions(message.guild.roles.find(r => r.name.includes('Helper')), {
     // GENERAL PERMISSIONS
     CREATE_INSTANT_INVITE: false,
     MANAGE_CHANNELS: false,
