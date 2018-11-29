@@ -411,9 +411,6 @@ if (message.channel.name == "support"){
       },{
         name: "Суть обращения",
         value: `${message.content}`,
-      },{
-        name: "Информация",
-        value: `Для отправки жалобы администрации, используйте '/admin'`,
       }]
     }
     });
@@ -587,13 +584,6 @@ if (message.content == '/close'){
   message.channel.send(`\`[STATUS]\` \`Вашей жалобе был установлен статус: 'Закрыта'. Источник: ${message.member.displayName}\``);
   sp_chat_get.send(`\`[CLOSE]\` \`Модератор ${message.member.displayName} установил жалобе\` <#${message.channel.id}> \`статус 'Закрыта'.\``);
   message.delete();
-}
-
-if (message.content == '/del'){
-  if (!message.member.hasPermission("ADMINISTRATOR")) return message.delete();
-  if (!message.channel.name.startsWith('ticket-')) return message.delete();
-  if (message.channel.topic != 'Жалоба закрыта.') return message.delete();
-  message.channel.delete();
 }
     
     if (message.content.startsWith(`/run`)){
