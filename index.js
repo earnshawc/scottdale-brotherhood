@@ -257,19 +257,24 @@ bot.on('message', async message => {
     
     let re = /(\d+(\.\d)*)/i;
     
-if (message.content == '/waittest'){
+if (!support_loop.has(message.guild.id)){
+  support_loop.add(message.guild.id)
+  setTimeout(() => {
+    if (support_loop.has(message.guild.id)) support_loop.delete(message.guild.id);
+  }, 300000);
+  let log_channel = message.guild.channels.find(c => c.name == "spectator-chat");
+  log_channel.send(`\`[SYSTEM]\` \`Запускаю проверку на закрытие канала.\``)
   message.guild.channels.forEach(channel => {
     if (channel.name.startsWith('ticket-')){
       if (message.guild.channels.find(c => c.id == channel.parentID).name == 'Корзина'){
-        message.reply(`<#${channel.id}>`);
         channel.fetchMessages({limit: 1}).then(messages => {
           if (messages.size == 1){
             messages.forEach(msg => {
               let s_now = new Date().valueOf() - 120000;
               if (msg.createdAt.valueOf() < s_now){
-                message.guild.channels.find(c => c.name == "spectator-chat").send(`Сообщение: ${msg.content} уже лежит больше двух минут.`);
+                log_channel.send(`\`[SYSTEM]\` \`Канал\` <#${channel.id}> \`был удален. [2 минуты в корзине]\``);
               }else{
-                message.guild.channels.find(c => c.name == "spectator-chat").send(`Сообщение: ${msg.content} лежит меньше двух минут.`);
+                log_channel.send(`\`[SYSTEM]\` \`Канал\` <#${channel.id}> \`был проигнорирован. [менее 2-ух минут в корзине]\``);
               }
             });
           }
