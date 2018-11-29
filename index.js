@@ -511,6 +511,97 @@ if (message.content == '/active'){
   sp_chat_get.send(`\`[UNWAIT]\` \`Модератор ${message.member.displayName} убрал жалобе\` <#${message.channel.id}> \`статус 'На рассмотрении'.\``);
   message.delete();
 }
+    
+if (message.content == '/toadmin'){
+  if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
+  if (!message.channel.name.startsWith('ticket-')) return message.delete();
+  if (message.channel.topic == 'Жалоба закрыта.') return message.delete();
+  let memberid;
+  await message.channel.permissionOverwrites.forEach(async perm => {
+    if (perm.type == `member`){
+      memberid = await perm.id;
+    }
+  });
+  await channel.overwritePermissions(message.guild.roles.find(r => r.name == 'Support Team'), {
+    // GENERAL PERMISSIONS
+    CREATE_INSTANT_INVITE: false,
+    MANAGE_CHANNELS: false,
+    MANAGE_ROLES: false,
+    MANAGE_WEBHOOKS: false,
+    // TEXT PERMISSIONS
+    VIEW_CHANNEL: false,
+    SEND_MESSAGES: false,
+    SEND_TTS_MESSAGES: false,
+    MANAGE_MESSAGES: false,
+    EMBED_LINKS: false,
+    ATTACH_FILES: false,
+    READ_MESSAGE_HISTORY: false,
+    MENTION_EVERYONE: false,
+    USE_EXTERNAL_EMOJIS: false,
+    ADD_REACTIONS: false,
+  })  
+
+  await channel.overwritePermissions(message.guild.roles.find(r => r.name.includes('Administrator')), {
+    // GENERAL PERMISSIONS
+    CREATE_INSTANT_INVITE: false,
+    MANAGE_CHANNELS: false,
+    MANAGE_ROLES: false,
+    MANAGE_WEBHOOKS: false,
+    // TEXT PERMISSIONS
+    VIEW_CHANNEL: true,
+    SEND_MESSAGES: true,
+    SEND_TTS_MESSAGES: false,
+    MANAGE_MESSAGES: false,
+    EMBED_LINKS: true,
+    ATTACH_FILES: true,
+    READ_MESSAGE_HISTORY: true,
+    MENTION_EVERYONE: false,
+    USE_EXTERNAL_EMOJIS: false,
+    ADD_REACTIONS: false,
+  })  
+
+  await channel.overwritePermissions(message.guild.roles.find(r => r.name.includes('Jr.Administrator')), {
+    // GENERAL PERMISSIONS
+    CREATE_INSTANT_INVITE: false,
+    MANAGE_CHANNELS: false,
+    MANAGE_ROLES: false,
+    MANAGE_WEBHOOKS: false,
+    // TEXT PERMISSIONS
+    VIEW_CHANNEL: true,
+    SEND_MESSAGES: true,
+    SEND_TTS_MESSAGES: false,
+    MANAGE_MESSAGES: false,
+    EMBED_LINKS: true,
+    ATTACH_FILES: true,
+    READ_MESSAGE_HISTORY: true,
+    MENTION_EVERYONE: false,
+    USE_EXTERNAL_EMOJIS: false,
+    ADD_REACTIONS: false,
+  })  
+
+  await channel.overwritePermissions(message.guild.roles.find(r => r.name.includes('Helper')), {
+    // GENERAL PERMISSIONS
+    CREATE_INSTANT_INVITE: false,
+    MANAGE_CHANNELS: false,
+    MANAGE_ROLES: false,
+    MANAGE_WEBHOOKS: false,
+    // TEXT PERMISSIONS
+    VIEW_CHANNEL: true,
+    SEND_MESSAGES: true,
+    SEND_TTS_MESSAGES: false,
+    MANAGE_MESSAGES: false,
+    EMBED_LINKS: true,
+    ATTACH_FILES: true,
+    READ_MESSAGE_HISTORY: true,
+    MENTION_EVERYONE: false,
+    USE_EXTERNAL_EMOJIS: false,
+    ADD_REACTIONS: false,
+  })  
+  let sp_chat_get = message.guild.channels.find(c => c.name == "reports-log");
+  message.channel.send(`\`[STATUS]\` \`Ваша жалоба была передана администрации. Источник: ${message.member.displayName}\``);
+  sp_chat_get.send(`\`[ADMIN]\` \`Модератор ${message.member.displayName} передал жалобу\` <#${message.channel.id}> \`администрации.\``);
+  message.delete();
+}
 
 if (message.content == '/close'){
   if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
