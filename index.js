@@ -241,7 +241,7 @@ function hook(channel, message, webhook_name, name, time, avatar) {
 }
 
 bot.login(process.env.token);
-let s_later = new Date().valueOf();
+var s_later = new Date().valueOf();
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
     bot.user.setPresence({ game: { name: 'hacker' }, status: 'idle' })
@@ -252,25 +252,24 @@ bot.on('message', async message => {
     if (message.guild.id != serverid && message.guild.id != "493459379878625320") return
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
     if (message.type === "PINS_ADD") if (message.channel.name == "reports") message.delete();
-    if (message.content == "/ping") return message.reply("`я онлайн!`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
+    if (message.content == "/ping") return message.reply("`я онлайн.`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
     if (message.member.id == bot.user.id) return
     
     let re = /(\d+(\.\d)*)/i;
     
     let s_now = new Date().valueOf();
-if (s_now > s_later + 15000){ // 3600000
+if (s_now > +s_later + 15000){ // 3600000
   s_later = s_now;
   message.guilds.channels.forEach(channel => {
     if (channel.name.startsWith('ticket-')){
       if (channel.parent == 'Корзина'){
         channel.fetchMessages({limit: 1}).then(msgr => {
           msgr.forEach(msg_s => {
-            if (msg_s.createdAt.valueOf() > s_now + 120000){
+            if (msg_s.createdAt.valueOf() > +s_now + 120000){
               message.guild.channel.find(c => c.name == "spectator-chat").send(`Сообщение: ${msg_s.content} уже лежит больше двух минут.\nДата: ${msg_s.createdAt.valueOf()}`);
             }else{
               message.guild.channel.find(c => c.name == "spectator-chat").send(`Сообщение: ${msg_s.content} лежит меньше двух минут.\nДата: ${msg_s.createdAt.valueOf()}`);
             }
-            message.guild.channel.find(c => c.name == "spectator-chat").send(msg_s.createdAt);
           });
         });
       }
