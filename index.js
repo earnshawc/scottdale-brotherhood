@@ -264,8 +264,8 @@ if (message.channel.name == "support"){
   support_cooldown.add(message.author.id);
   setTimeout(() => {
     if (support_cooldown.has(message.author.id)) support_cooldown.delete(message.author.id);
-  }, 900000);
-  let id_mm
+  }, 300000);
+  let id_mm;
   let rep_message;
   let db_server = bot.guilds.find(g => g.id == "493459379878625320");
   let db_channel = db_server.channels.find(c => c.name == "config");
@@ -363,7 +363,7 @@ if (message.channel.name == "support"){
       USE_EXTERNAL_EMOJIS: false,
       ADD_REACTIONS: false,
     })  
-    channel.send({embed: {
+    channel.send(`<@${message.author.id}> \`для\` <@&${moderator_role.id}>`, {embed: {
       color: 3447003,
       title: "Обращение к поддержке Discord",
       fields: [{
@@ -375,8 +375,8 @@ if (message.channel.name == "support"){
       }]
     }
     });
-    let sp_chat_get = message.guild.channels.find(c => c.name == "spectator-chat");
-    await sp_chat_get.send(`**Создано новое обращение <#${channel.id}> от пользователя <@${message.author.id}>**`);
+    let sp_chat_get = message.guild.channels.find(c => c.name == "reports-log");
+    await sp_chat_get.send(`\`[CREATE]\` <@${message.author.id}> \`создал обращение:\` <#${channel.id}>`);
   });
 }
 
@@ -444,10 +444,10 @@ if (message.content == '/close'){
       USE_EXTERNAL_EMOJIS: false,
       ADD_REACTIONS: false,
     })  
-  let sp_chat_get = message.guild.channels.find(c => c.name == "spectator-chat");
+  let sp_chat_get = message.guild.channels.find(c => c.name == "reports-log");
   message.channel.setTopic('Жалоба закрыта.');
-  message.channel.send(`**<@${memberid}>, ваше обращение рассмотрено! Источник: <@${message.author.id}>**`);
-  sp_chat_get.send(`**Модератор <@${message.author.id}> закрыл жалобу <#${message.channel.id}>.**`);
+  message.channel.send(`\`[STATUS]\` \`Установлен статус: 'Закрыта'. Источник: ${message.member.displayName}\``);
+  sp_chat_get.send(`\`[CLOSE]\` \`Модератор ${message.member.displayName} установил жалобе\` <#${message.channel.id}> \`статус 'Закрыта'.\``);
   message.delete();
 }
 
@@ -493,10 +493,10 @@ if (message.content == '/wait'){
     `**Необработанных модераторами: ${+info_rep[1] - 1}**\n` +
     `**Вопросы на рассмотрении: ${+info_rep[2] + 1}**\n` +
     `**Закрытых: ${info_rep[3]}**`)
-  let sp_chat_get = message.guild.channels.find(c => c.name == "spectator-chat");
+  let sp_chat_get = message.guild.channels.find(c => c.name == "reports-log");
   message.channel.setTopic('Жалоба на рассмотрении.')
-  message.channel.send(`**<@${memberid}>, ваше обращение на рассмотрении! Источник: <@${message.author.id}>**`);
-  sp_chat_get.send(`**Модератор <@${message.author.id}> установил жалобе <#${message.channel.id}> статус \`'На рассмотрении'\`.**`);
+  message.channel.send(`\`[STATUS]\` \`Установлен статус: 'На рассмотрении'. Источник: ${message.member.displayName}\``);
+  sp_chat_get.send(`\`[WAIT]\` \`Модератор ${message.member.displayName} установил жалобе\` <#${message.channel.id}> \`статус 'На рассмотрении'.\``);
   message.delete();
 }
 
@@ -535,9 +535,10 @@ if (message.content == '/unwait'){
     `**Необработанных модераторами: ${+info_rep[1] + 1}**\n` +
     `**Вопросы на рассмотрении: ${+info_rep[2] - 1}**\n` +
     `**Закрытых: ${info_rep[3]}**`)
-  let sp_chat_get = message.guild.channels.find(c => c.name == "spectator-chat");
+  let sp_chat_get = message.guild.channels.find(c => c.name == "reports-log");
   message.channel.setTopic('Жалоба в обработке.');
-  sp_chat_get.send(`**Модератор <@${message.author.id}> снял у жалобы <#${message.channel.id}> статус \`'На рассмотрении'\`.**`);
+  message.channel.send(`\`[STATUS]\` \`Убран статус: 'На рассмотрении'. Источник: ${message.member.displayName}\``);
+  sp_chat_get.send(`\`[UNWAIT]\` \`Модератор ${message.member.displayName} убрал жалобе\` <#${message.channel.id}> \`статус 'На рассмотрении'.\``);
   message.delete();
 }
     
