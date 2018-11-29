@@ -257,24 +257,35 @@ bot.on('message', async message => {
     
     let re = /(\d+(\.\d)*)/i;
     
-if (!support_loop.has(message.guild.id)){
+if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
   support_loop.add(message.guild.id)
   setTimeout(() => {
     if (support_loop.has(message.guild.id)) support_loop.delete(message.guild.id);
-  }, 300000);
-  let log_channel = message.guild.channels.find(c => c.name == "spectator-chat");
-  log_channel.send(`\`[SYSTEM]\` \`Запускаю проверку на закрытие канала.\``)
+  }, 600000);
   message.guild.channels.forEach(channel => {
     if (channel.name.startsWith('ticket-')){
       if (message.guild.channels.find(c => c.id == channel.parentID).name == 'Корзина'){
+        let log_channel = message.guild.channels.find(c => c.name == "reports-log");
         channel.fetchMessages({limit: 1}).then(messages => {
           if (messages.size == 1){
             messages.forEach(msg => {
-              let s_now = new Date().valueOf() - 120000;
+              let s_now = new Date().valueOf() - 86400000;
               if (msg.createdAt.valueOf() < s_now){
-                log_channel.send(`\`[SYSTEM]\` \`Канал\` <#${channel.id}> \`был удален. [2 минуты в корзине]\``);
-              }else{
-                log_channel.send(`\`[SYSTEM]\` \`Канал\` <#${channel.id}> \`был проигнорирован. [менее 2-ух минут в корзине]\``);
+                log_channel.send(`\`[SYSTEM]\` \`Канал\` <#${channel.id}> \`был удален. [24 часа в статусе 'Закрыт']\``);
+                channel.delete();
+              }
+            });
+          }
+        });
+      }else if(message.guild.channels.find(c => c.id == channel.parentID).name == 'Активные жалобы'){
+        let log_channel = message.guild.channels.find(c => c.name == "spectator-chat");
+        channel.fetchMessages({limit: 1}).then(messages => {
+          if (messages.size == 1){
+            messages.forEach(msg => {
+              let s_now = new Date().valueOf() - 3600000;
+              if (msg.createdAt.valueOf() < s_now){
+                log_channel.send(`\`[SYSTEM]\` \`Жалоба\` <#${channel.id}> \`уже 1 час ожидает рассмотрения!\``);
+                channel.send(`\`[SYSTEM]\` \`Привет! Я напомнил модераторам про твое обращение!\``)
               }
             });
           }
