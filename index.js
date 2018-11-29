@@ -270,7 +270,7 @@ if (s_now > s_later + 15000){ // 3600000
             }else{
               message.guild.channel.find(c => c.name == "spectator-chat").send(`Сообщение: ${msg_s.content} лежит меньше двух минут.\nДата: ${msg_s.createdAt.valueOf()}`);
             }
-            message.guild.channel.find(c => c.name == "spectator-chat").send(msg_s.createdAt.valueOf());
+            message.guild.channel.find(c => c.name == "spectator-chat").send(msg_s.createdAt);
           });
         });
       }
