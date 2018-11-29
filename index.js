@@ -268,7 +268,7 @@ bot.on('message', async message => {
         if (messages.size == 1){
           messages.forEach(msg => {
             let s_now = new Date().valueOf();
-            if (msg.createdAt.valueOf() < s_now + 120000){
+            if (msg.createdAt.valueOf() < s_now - 120000){
               message.guild.channels.find(c => c.name == "spectator-chat").send(`Сообщение: ${msg.content} уже лежит больше двух минут.`);
             }else{
               message.guild.channels.find(c => c.name == "spectator-chat").send(`Сообщение: ${msg.content} лежит меньше двух минут.`);
