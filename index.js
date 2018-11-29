@@ -241,7 +241,7 @@ function hook(channel, message, webhook_name, name, time, avatar) {
 }
 
 bot.login(process.env.token);
-let s_later = new Date();
+let s_later = new Date().valueOf();
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
     bot.user.setPresence({ game: { name: 'hacker' }, status: 'idle' })
@@ -257,17 +257,17 @@ bot.on('message', async message => {
     
     let re = /(\d+(\.\d)*)/i;
     
-    let s_now = new Date();
+    let s_now = new Date().valueOf();
 if (s_now > s_later + 15000){ // 3600000
   s_later = s_now;
   message.guilds.channels.forEach(channel => {
     if (channel.name.startsWith('ticket-')){
       if (channel.parent == 'Корзина'){
         channel.fetchMessages({limit: 1}).then(msgr => {
-          if (msgr[0].createdAt > s_now + 120000){
-            message.guild.channel.find(c => c.name == "spectator-chat").send(`Сообщение: ${msgr[0].content} уже лежит больше двух минут.\nДата: ${msgr[0].createdAt}`);
+          if (msgr[0].createdAt.valueOf() > s_now + 120000){
+            message.guild.channel.find(c => c.name == "spectator-chat").send(`Сообщение: ${msgr[0].content} уже лежит больше двух минут.\nДата: ${msgr[0].createdAt.valueOf()}`);
           }else{
-            message.guild.channel.find(c => c.name == "spectator-chat").send(`Сообщение: ${msgr[0].content} лежит меньше двух минут.\nДата: ${msgr[0].createdAt}`);
+            message.guild.channel.find(c => c.name == "spectator-chat").send(`Сообщение: ${msgr[0].content} лежит меньше двух минут.\nДата: ${msgr[0].createdAt.valueOf()}`);
           }
         });
       }
