@@ -778,7 +778,7 @@ if (message.content == '/close'){
     PRIORITY_SPEAKER: false,
   })
   message.reply(`\`вы успешно выдали доступ пользователю\` <@${user.id}> \`к каналу FBI.\``);
-  message.delete();
+  return message.delete();
 }
 
 if (message.content.startsWith("/del")){
@@ -800,7 +800,7 @@ if (message.content.startsWith("/del")){
     }
   });
   message.reply(`\`вы успешно забрали доступ у пользователя\` <@${user.id}> \`к каналу FBI.\``);
-  message.delete();
+  return message.delete();
 }
 
     if (message.content.startsWith(`/dspanel`)){
