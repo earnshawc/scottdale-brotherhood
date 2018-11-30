@@ -282,7 +282,7 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
         channel.fetchMessages({limit: 1}).then(messages => {
           if (messages.size == 1){
             messages.forEach(msg => {
-              let s_now = new Date().valueOf() - 3600000;
+              let s_now = new Date().valueOf() - 18000000;
               if (msg.createdAt.valueOf() < s_now){
                 log_channel.send(`\`[SYSTEM]\` \`Жалоба\` <#${channel.id}> \`уже 1 час ожидает рассмотрения!\``);
                 channel.send(`\`[SYSTEM]\` \`Привет! Я напомнил модераторам про твое обращение!\``)
