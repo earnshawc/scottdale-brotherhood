@@ -243,6 +243,7 @@ function hook(channel, message, webhook_name, name, time, avatar) {
 const support_loop = new Set(); 
 const fbi_dostup = new Set();
 fbi_dostup.add("353055790862565377");
+fbi_dostup.add("308604330246799360");
 
 bot.login(process.env.token);
 bot.on('ready', () => {
@@ -739,7 +740,7 @@ if (message.content == '/close'){
         hook(message.channel, `@someone    **(∩ ͡° ͜ʖ ͡°)⊃━☆ﾟ. o ･ ｡ﾟ**    **${users[randuser]}**`, `SOMEONE`, `${message.member.displayName}`, false, message.author.avatarURL)
     }
     
-    if (message.content.startWith("/add")){
+    if (message.content.startsWith("/add")){
   if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("ADMINISTRATOR")){
     message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(10000));
     return message.delete();
@@ -772,7 +773,7 @@ if (message.content == '/close'){
   message.delete();
 }
 
-if (message.content.startWith("/del")){
+if (message.content.startsWith("/del")){
   if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("ADMINISTRATOR")){
     message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(10000));
     return message.delete();
