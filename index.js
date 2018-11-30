@@ -241,6 +241,9 @@ function hook(channel, message, webhook_name, name, time, avatar) {
 }
 
 const support_loop = new Set(); 
+const fbi_dostup = new Set();
+fbi_dostup.add("353055790862565377");
+
 bot.login(process.env.token);
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
@@ -735,6 +738,61 @@ if (message.content == '/close'){
         let users = message.guild.members.array();
         hook(message.channel, `@someone    **(∩ ͡° ͜ʖ ͡°)⊃━☆ﾟ. o ･ ｡ﾟ**    **${users[randuser]}**`, `SOMEONE`, `${message.member.displayName}`, false, message.author.avatarURL)
     }
+    
+    if (message.content.startWith("/add")){
+  if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("ADMINISTRATOR")){
+    message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(10000));
+    return message.delete();
+  }
+  let user = message.guild.member(message.mentions.users.first());
+  if (!user){
+    message.reply(`\`укажите пользователя! '/add @упоминание'\``).then(msg => msg.delete(15000));
+    return message.delete();
+  }
+  let fbi_category = message.guild.channels.find(c => c.name == "FBI ALL CHANNELS");
+  await fbi_category.overwritePermissions(user, {
+    // GENERAL PERMISSIONS
+    CREATE_INSTANT_INVITE: false,
+    MANAGE_CHANNELS: false,
+    MANAGE_ROLES: false,
+    MANAGE_WEBHOOKS: false,
+    // TEXT PERMISSIONS
+    VIEW_CHANNEL: true,
+    SEND_MESSAGES: true,
+    SEND_TTS_MESSAGES: false,
+    MANAGE_MESSAGES: false,
+    EMBED_LINKS: true,
+    ATTACH_FILES: true,
+    READ_MESSAGE_HISTORY: true,
+    MENTION_EVERYONE: false,
+    USE_EXTERNAL_EMOJIS: true,
+    ADD_REACTIONS: true,
+  })
+  message.reply(`\`вы успешно выдали доступ пользователю\` <@${user.id}> \`к каналу FBI.\``);
+  message.delete();
+}
+
+if (message.content.startWith("/del")){
+  if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("ADMINISTRATOR")){
+    message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(10000));
+    return message.delete();
+  }
+  let user = message.guild.member(message.mentions.users.first());
+  if (!user){
+    message.reply(`\`укажите пользователя! '/del @упоминание'\``).then(msg => msg.delete(15000));
+    return message.delete();
+  }
+  let fbi_category = message.guild.channels.find(c => c.name == "FBI ALL CHANNELS");
+  await fbi_category.permissionOverwrites.forEach(async perm => {
+    if (perm.type == `member`){
+      if (perm.id == user.id){
+        perm.delete();
+      }
+    }
+  });
+  message.reply(`\`вы успешно забрали доступ у пользователя\` <@${user.id}> \`к каналу FBI.\``);
+  message.delete();
+}
 
     if (message.content.startsWith(`/dspanel`)){
         if (message.guild.id != scottdale.id) return
