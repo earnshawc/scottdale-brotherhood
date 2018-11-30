@@ -255,7 +255,6 @@ bot.on('message', async message => {
     if (message.channel.type == "dm") return // Если в ЛС, то выход.
     if (message.guild.id != serverid && message.guild.id != "493459379878625320") return
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
-    if (message.type === "PINS_ADD") if (message.channel.name == "reports") message.delete();
     if (message.content == "/ping") return message.reply("`я онлайн!`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
     if (message.member.id == bot.user.id) return
     
@@ -465,7 +464,7 @@ if (message.content == '/hold'){
   await message.channel.setParent(s_category.id);
   let sp_chat_get = message.guild.channels.find(c => c.name == "reports-log");
   message.channel.setTopic('Жалоба на рассмотрении.')
-  message.channel.send(`\`[STATUS]\` \`Вашей жалобе был установлен статус: 'На рассмотрении'. Источник: ${message.member.displayName}\``);
+  message.channel.send(`\`[STATUS]\` <@${memberid}>, \`вашей жалобе был установлен статус: 'На рассмотрении'. Источник: ${message.member.displayName}\``);
   sp_chat_get.send(`\`[HOLD]\` \`Модератор ${message.member.displayName} установил жалобе\` <#${message.channel.id}> \`статус 'На рассмотрении'.\``);
   message.delete();
 }
@@ -511,7 +510,7 @@ if (message.content == '/active'){
   await message.channel.setParent(s_category.id);
   let sp_chat_get = message.guild.channels.find(c => c.name == "reports-log");
   message.channel.setTopic('Жалоба в обработке.');
-  message.channel.send(`\`[STATUS]\` \`Вашей жалобе был установлен статус: 'В обработке'. Источник: ${message.member.displayName}\``);
+  message.channel.send(`\`[STATUS]\` <@${memberid}>, \`вашей жалобе был установлен статус: 'В обработке'. Источник: ${message.member.displayName}\``);
   sp_chat_get.send(`\`[UNWAIT]\` \`Модератор ${message.member.displayName} убрал жалобе\` <#${message.channel.id}> \`статус 'На рассмотрении'.\``);
   message.delete();
 }
@@ -602,7 +601,7 @@ if (message.content == '/toadmin'){
     ADD_REACTIONS: false,
   })  
   let sp_chat_get = message.guild.channels.find(c => c.name == "reports-log");
-  message.channel.send(`\`[STATUS]\` \`Ваша жалоба была передана администрации. Источник: ${message.member.displayName}\``);
+  message.channel.send(`\`[STATUS]\` <@${memberid}>, \`ваше обращение было передано администрации. Источник: ${message.member.displayName}\``);
   sp_chat_get.send(`\`[ADMIN]\` \`Модератор ${message.member.displayName} передал жалобу\` <#${message.channel.id}> \`администрации.\``);
   message.delete();
 }
@@ -673,10 +672,10 @@ if (message.content == '/close'){
       MENTION_EVERYONE: false,
       USE_EXTERNAL_EMOJIS: false,
       ADD_REACTIONS: false,
-    })  
+    }) 
   let sp_chat_get = message.guild.channels.find(c => c.name == "reports-log");
   message.channel.setTopic('Жалоба закрыта.');
-  message.channel.send(`\`[STATUS]\` \`Вашей жалобе был установлен статус: 'Закрыта'. Источник: ${message.member.displayName}\``);
+  message.channel.send(`\`[STATUS]\` <@${memberid}>, \`вашей жалобе был установлен статус: 'Закрыта'. Источник: ${message.member.displayName}\``);
   sp_chat_get.send(`\`[CLOSE]\` \`Модератор ${message.member.displayName} установил жалобе\` <#${message.channel.id}> \`статус 'Закрыта'.\``);
   message.delete();
 }
@@ -710,34 +709,12 @@ if (message.content == '/close'){
         return message.delete();
     }
 
-    if (message.guild.id == 488400983496458260){
-        if (message.channel.name == "ваши-предложения"){
-            if (!message) return
-            message.react(`✔`).then(() => {
-                if (!message) return
-                message.react(`❌`).then(() => {
-                    if (!message) return
-                    message.react(`🌿`)
-                })
-            })
-        }
-    }
-
     let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
     let scottdale = bot.guilds.find(g => g.id == "355656045600964609");
     if (!dataserver){
         message.channel.send(`\`Data-Server of Scottdale не был загружен!\nПередайте это сообщение техническим администраторам Discord:\`<@336207279412215809>, <@402092109429080066>`)
         console.error(`Процесс завершен. Data-Server не найден.`)
         return bot.destroy();
-    }
-    let reportlog = scottdale.channels.find(c => c.name == "reports-log");
-    if (!reportlog) return
-
-    if (message.content == "@someone"){
-        message.delete();
-        let randuser = getRandomInt(0, message.guild.members.size);
-        let users = message.guild.members.array();
-        hook(message.channel, `@someone    **(∩ ͡° ͜ʖ ͡°)⊃━☆ﾟ. o ･ ｡ﾟ**    **${users[randuser]}**`, `SOMEONE`, `${message.member.displayName}`, false, message.author.avatarURL)
     }
     
     if (message.content.startsWith("/add")){
@@ -853,88 +830,6 @@ if (message.content.startsWith("/del")){
         scottdale.channels.find(c => c.name == "spectator-chat").send(`\`Модератор ${message.member.displayName} включил чат:\` <#${scottdale.channels.find(c => c.name == "general").id}>`)
         message.reply(`\`вы успешно включили чат!\``)
         return messages.delete();
-    }
-
-    if (message.content == "/questions"){
-
-        
-        let admin_level = 1;
-        let db_channel = dataserver.channels.find(c => c.name == "administration");
-        if (!db_channel) return
-        let user_admin_level;
-
-        await db_channel.fetchMessages().then(messages => {
-            let user_admin = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${message.member.id}\``))
-            if (user_admin){
-                const admin_lvl = user_admin.content.slice().split('ADMIN PERMISSIONS:** ');
-                user_admin_level = admin_lvl[1]
-            }else{
-                user_admin_level = 0;
-            }
-        });
-
-        if (user_admin_level < admin_level){
-            message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
-            return message.delete();
-        }
-
-        if (message.channel.name == "general") return message.delete();
-
-        let en_questions = false;
-        let num_questions = 0;
-        let text_questions;
-        let rep_channel = message.guild.channels.find(c => c.name == "reports");
-
-        let _report_number;
-        let _report_user;
-        let _report_content;
-        let _report_channel;
-        let _report_status;
-
-        await rep_channel.fetchMessages().then(repmessages => {
-            repmessages.filter(repmessage => {
-                if (repmessage.content.startsWith(`REPORT`)){
-                    _report_status = repmessage.content.slice().split('=>')[9]
-                    if (_report_status == "WAIT"){
-                        en_questions = true;
-                        _report_number = repmessage.content.slice().split('=>')[1]
-                        _report_user = repmessage.content.slice().split('=>')[3]
-                        _report_content = repmessage.content.slice().split('=>')[5]
-                        _report_channel = repmessage.content.slice().split('=>')[7]
-                        if (num_questions == 0){
-                            text_questions = `[№${_report_number}] ${_report_content}`
-                        }else{
-                            text_questions = `[№${_report_number}] ${_report_content}\n` + text_questions
-                        }
-                        if (num_questions == 7){
-                            message.channel.send(``, {embed: {
-                                color: 3447003,
-                                fields: [{
-                                    name: `Вопросы`,
-                                    value: `${text_questions}`
-                                }]
-                            }});
-                            num_questions = 0;
-                        }
-                        num_questions++
-                    }
-                }
-            })
-        })
-        if (en_questions){
-            if (num_questions != 0){
-                message.channel.send(``, {embed: {
-                    color: 3447003,
-                    fields: [{
-                        name: `Активные вопросы`,
-                        value: `${text_questions}`
-                    }]
-                }});
-            }
-        }else{
-            message.reply(`\`активных вопросов нет.\``)
-        }
-        message.delete();
     }
     
         if (message.content.toLowerCase() == '/famhelp'){
@@ -1737,294 +1632,6 @@ if (message.content.startsWith("/del")){
         }
     }
 
-    if (message.content.startsWith("/report")){
-        let rep_channel = message.guild.channels.find(c => c.name == "reports");
-        if (!rep_channel) return message.reply(`\`[ERROR] Канал ${rep_channel.name} не был найден.\nПередайте это сообщение техническим администраторам Discord:\`<@336207279412215809>, <@402092109429080066>`)
-        if (report_cooldown.has(message.author.id)) {
-            message.channel.send("`Можно использовать раз в минуту!` - " + message.author).then(msg => msg.delete(7000));
-            return message.delete();
-        }
-        if (!message.member.hasPermission("ADMINISTRATOR")){
-            report_cooldown.add(message.author.id);
-            setTimeout(() => {
-                report_cooldown.delete(message.author.id);
-            }, 60000);
-        }
-        const args = message.content.slice('/report').split(/ +/)
-        if (!args[1]){
-            message.reply(`\`вы не указали суть вашего вопроса/жалобы. /report [текст]\``).then(msg => msg.delete(7000));
-            return message.delete();
-        }
-        let text = args.slice(1).join(" ");
-        if (text.includes(`=>`)){
-            message.reply(`\`ваш текст содержит запрещенный символ "=>", замените его на "->".\``).then(msg => msg.delete(10000));
-            return message.delete();
-        }
-        let reportnum_message = false;
-        let rep_number = 0;
-        let report_number_message;
-        await rep_channel.fetchMessages().then(repmessages => {
-            repmessages.filter(repmessage => {
-                if (repmessage.content.startsWith(`[REPORTNUMBER]`)){
-                    rep_number = repmessage.content.slice().split('=>')[1]
-                    reportnum_message = true;
-                    report_number_message = repmessage;
-                }
-            })
-        })
-        if (!reportnum_message){
-            await rep_channel.send(`[REPORTNUMBER]=>0`).then(msg => {
-                report_number_message = msg;
-            })
-            rep_number = 0;
-        }
-        rep_number++
-        await report_number_message.edit(`[REPORTNUMBER]=>${rep_number}`)
-        rep_channel.send(`REPORT=>${rep_number}=>USER=>${message.author.id}=>CONTENT_REP=>${text}=>CHANNEL=>${message.channel.id}=>STATUS=>WAIT`).then(hayway => {
-            hayway.pin();
-        })
-        message.reply(`\`ваш вопрос/жалоба была успешно отправлена! Номер вашего вопроса: №${rep_number}\``).then(msg => msg.delete(35000));
-        reportlog.send(`\`[REPORT]\` <@${message.author.id}> \`отправил вопрос №${rep_number}. Суть:\` ${text}`)
-        message.delete();
-        return message.guild.channels.find(c => c.name == "spectator-chat").send(`\`Появился новый вопрос №${rep_number}. Используйте '/ans' что бы ответить. '/questions' - список активных вопросов.\``).then(msg => msg.delete(120000))
-    }
-
-    if (message.content.startsWith(`/ans`)){
-        let admin_level = 1;
-        let db_channel = dataserver.channels.find(c => c.name == "administration");
-        if (!db_channel) return
-        let user_admin_level;
-
-        await db_channel.fetchMessages().then(messages => {
-            let user_admin = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${message.member.id}\``))
-            if (user_admin){
-                const admin_lvl = user_admin.content.slice().split('ADMIN PERMISSIONS:** ');
-                user_admin_level = admin_lvl[1]
-            }else{
-                user_admin_level = 0;
-            }
-        });
-
-        if (user_admin_level < admin_level){
-            message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
-            return message.delete();
-        }
-
-        if (message.channel.name == "general") return message.delete();
-
-        let rep_channel = message.guild.channels.find(c => c.name == "reports");
-        const args = message.content.slice('/ans').split(/ +/)
-        if (!args[1]){
-            let reportnum_message = false;
-            await rep_channel.fetchMessages().then(repmessages => {
-                repmessages.filter(repmessage => {
-                    if (repmessage.content.startsWith(`[REPORTNUMBER]`)){
-                        reportnum_message = true;
-                    }
-                })
-            })
-            if (!reportnum_message){
-                message.reply(`\`на данный момент вопросов нет.\``).then(msg => msg.delete(7000));
-                return message.delete();
-            }
-            let reportmessageid = false;
-            let _report_number;
-            let _report_user;
-            let _report_content;
-            let _report_channel;
-            let _report_status;
-            let del_rep_message;
-            await rep_channel.fetchMessages().then(repmessages => {
-                repmessages.filter(repmessage => {
-                    if (repmessage.content.startsWith(`REPORT`)){
-                        _report_status = repmessage.content.slice().split('=>')[9]
-                        if (_report_status == "WAIT"){
-                            reportmessageid = true;
-                            _report_number = repmessage.content.slice().split('=>')[1]
-                            _report_user = repmessage.content.slice().split('=>')[3]
-                            _report_content = repmessage.content.slice().split('=>')[5]
-                            _report_channel = repmessage.content.slice().split('=>')[7]
-                            del_rep_message = repmessage;
-                        }
-                    }
-                })
-            })
-            if (!reportmessageid){
-                message.reply(`\`на данный момент вопросов нет.\``).then(msg => msg.delete(7000));
-                return message.delete();
-            }
-            _report_status = "ON EDIT"
-            await del_rep_message.edit(`REPORT=>${_report_number}=>USER=>${_report_user}=>CONTENT_REP=>${_report_content}=>CHANNEL=>${_report_channel}=>STATUS=>${_report_status}`)
-            message.reply(`\`Отпишите ответ на данный вопрос в чат. Жалоба/вопрос от пользователя:\` <@${_report_user}>\n\`Отклонить вопрос => "-"\``, {embed: {
-                color: 3447003,
-                fields: [{
-                    name: `Номер вопроса/жалобы: ${_report_number}`,
-                    value: `${_report_content}`
-                }]}}).then(req_report_message => {
-                message.channel.awaitMessages(response => response.member.id == message.member.id, {
-                    max: 1,
-                    time: 60000,
-                    errors: ['time'],
-                }).then((collected) => {
-                    if (collected.first().content != "-"){
-                        let user = message.guild.members.find(m => m.id == _report_user);
-                        let general = message.guild.channels.find(c => c.id == _report_channel);
-                        user.sendMessage(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
-                            color: 3447003,
-                            fields: [{
-                                name: `Ваш вопрос, который вы задали.`,
-                                value: `${_report_content}`
-                            },
-                            {
-                                name: `Ответ модератора`,
-                                value: `${collected.first().content}`
-                            }]
-                        }}).catch(() => {
-                            general.send(`<@${_report_user}>, \`на ваш вопрос №${_report_number} поступил ответ от:\` <@${message.author.id}>`, {embed: {
-                                color: 3447003,
-                                fields: [{
-                                    name: `Ваш вопрос, который вы задали.`,
-                                    value: `${_report_content}`
-                                },
-                                {
-                                    name: `Ответ модератора`,
-                                    value: `${collected.first().content}`
-                                }]
-                            }})
-                        })
-                        reportlog.send(`\`[ANSWER]\` <@${message.author.id}> \`ответил на вопрос №${_report_number} от\` <@${_report_user}>\n\`Вопрос:\` ${_report_content}\n\`Ответ:\` ${collected.first().content}`)
-                        req_report_message.delete();
-                        del_rep_message.delete();
-                        message.delete();
-                        collected.first().delete();
-                    }else{
-                        let user = message.guild.members.find(m => m.id == _report_user);
-                        let general = message.guild.channels.find(c => c.id == _report_channel);
-                        user.sendMessage(`<@${_report_user}>, \`модератор\` <@${message.author.id}> \`отказался отвечать на ваш вопрос №${_report_number}\``).catch(() => {
-                          general.send(`<@${_report_user}>, \`модератор\` <@${message.author.id}> \`отказался отвечать на ваш вопрос №${_report_number}\``)  
-                        })
-                        reportlog.send(`\`[DELETE]\` <@${message.author.id}> \`отказался от вопроса №${_report_number} от\` <@${_report_user}>\n\`Вопрос:\` ${_report_content}`)
-                        req_report_message.delete();
-                        del_rep_message.delete();
-                        message.delete();
-                        collected.first().delete();
-                    }
-                }).catch(() => {
-                    del_rep_message.edit(`REPORT=>${_report_number}=>USER=>${_report_user}=>CONTENT_REP=>${_report_content}=>CHANNEL=>${_report_channel}=>STATUS=>WAIT`)
-                    message.reply('\`вы не успели ответить на данный вопрос.\`');
-                    req_report_message.delete();
-                    message.delete();
-                });
-            });
-        }else{
-            let reportnum_message = false;
-            await rep_channel.fetchMessages().then(repmessages => {
-                repmessages.filter(repmessage => {
-                    if (repmessage.content.startsWith(`[REPORTNUMBER]`)){
-                        reportnum_message = true;
-                    }
-                })
-            })
-            if (!reportnum_message){
-                message.reply(`\`на данный момент вопросов нет.\``).then(msg => msg.delete(7000));
-                return message.delete();
-            }
-            let reportmessageid = false;
-            let _report_number;
-            let _report_user;
-            let _report_content;
-            let _report_channel;
-            let _report_status;
-            let del_rep_message;
-            await rep_channel.fetchMessages().then(repmessages => {
-                repmessages.filter(repmessage => {
-                    if (repmessage.content.startsWith(`REPORT`)){
-                        _report_number = repmessage.content.slice().split('=>')[1]
-                        if (args[1] == _report_number){
-                            reportmessageid = true;
-                            _report_user = repmessage.content.slice().split('=>')[3]
-                            _report_content = repmessage.content.slice().split('=>')[5]
-                            _report_channel = repmessage.content.slice().split('=>')[7]
-                            _report_status = repmessage.content.slice().split('=>')[9]
-                            del_rep_message = repmessage;
-                        }
-                    }
-                })
-            })
-            if (!reportmessageid){
-                message.reply(`\`данного вопроса не существует.\``).then(msg => msg.delete(7000));
-                return message.delete();
-            }
-            if (_report_status != "WAIT"){
-                message.reply(`\`на данный вопрос уже отвечают.\``).then(msg => msg.delete(7000))
-                return message.delete();
-            }
-            _report_status = "ON EDIT"
-            await del_rep_message.edit(`REPORT=>${_report_number}=>USER=>${_report_user}=>CONTENT_REP=>${_report_content}=>CHANNEL=>${_report_channel}=>STATUS=>${_report_status}`)
-            message.reply(`\`Отпишите ответ на данный вопрос в чат. Жалоба/вопрос от пользователя:\` <@${_report_user}>\n\`Отклонить вопрос => "-"\``, {embed: {
-                color: 3447003,
-                fields: [{
-                    name: `Номер вопроса/жалобы: ${_report_number}`,
-                    value: `${_report_content}`
-                }]}}).then(req_report_message => {
-                message.channel.awaitMessages(response => response.member.id == message.member.id, {
-                    max: 1,
-                    time: 60000,
-                    errors: ['time'],
-                }).then((collected) => {
-                    if (collected.first().content != "-"){
-                        let user = message.guild.members.find(m => m.id == _report_user);
-                        let general = message.guild.channels.find(c => c.id == _report_channel);
-                        user.sendMessage(`<@${_report_user}>, \`на ваш вопрос №${args[1]} поступил ответ от:\` <@${message.author.id}>`, {embed: {
-                            color: 3447003,
-                            fields: [{
-                                name: `Ваш вопрос, который вы задали.`,
-                                value: `${_report_content}`
-                            },
-                            {
-                                name: `Ответ модератора`,
-                                value: `${collected.first().content}`
-                            }]
-                        }}).catch(() => {
-                            general.send(`<@${_report_user}>, \`на ваш вопрос №${args[1]} поступил ответ от:\` <@${message.author.id}>`, {embed: {
-                                color: 3447003,
-                                fields: [{
-                                    name: `Ваш вопрос, который вы задали.`,
-                                    value: `${_report_content}`
-                                },
-                                {
-                                    name: `Ответ модератора`,
-                                    value: `${collected.first().content}`
-                                }]
-                            }})
-                        })
-                        reportlog.send(`\`[ANSWER]\` <@${message.author.id}> \`ответил на вопрос №${args[1]} от\` <@${_report_user}>\n\`Вопрос:\` ${_report_content}\n\`Ответ:\` ${collected.first().content}`)
-                        req_report_message.delete();
-                        del_rep_message.delete();
-                        message.delete();
-                        collected.first().delete();
-                    }else{
-                        let user = message.guild.members.find(m => m.id == _report_user);
-                        let general = message.guild.channels.find(c => c.id == _report_channel);
-                        user.sendMessage(`<@${_report_user}>, \`модератор\` <@${message.author.id}> \`отказался отвечать на ваш вопрос №${args[1]}\``).catch(() => {
-                            general.send(`<@${_report_user}>, \`модератор\` <@${message.author.id}> \`отказался отвечать на ваш вопрос №${args[1]}\``)
-                        })
-                        reportlog.send(`\`[DELETE]\` <@${message.author.id}> \`отказался от вопроса №${args[1]} от\` <@${_report_user}>\n\`Вопрос:\` ${_report_content}`)
-                        req_report_message.delete();
-                        del_rep_message.delete();
-                        message.delete();
-                        collected.first().delete();
-                    }
-                }).catch(() => {
-                    del_rep_message.edit(`REPORT=>${_report_number}=>USER=>${_report_user}=>CONTENT_REP=>${_report_content}=>CHANNEL=>${_report_channel}=>STATUS=>WAIT`)
-                    message.reply('\`вы не успели ответить на данный вопрос.\`');
-                    req_report_message.delete();
-                    message.delete();
-                });
-            });
-        }
-    }
-
     if (message.content.startsWith("/ffuser")){
         if (!message.member.hasPermission("MANAGE_ROLES")) return
         const args = message.content.slice('/ffuser').split(/ +/)
@@ -2169,106 +1776,6 @@ if (message.content.startsWith("/del")){
         }
     }
 
-    if (message.content.startsWith("/setadmin")){
-        if (message.guild.id != scottdale.id) return
-        if (!message.member.hasPermission("ADMINISTRATOR")){
-            message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
-            return message.delete();
-        }
-        let user = message.guild.member(message.mentions.users.first());
-        if (!user){
-            message.delete();
-            return message.reply(`\`пользователь не указан. /setadmin [USER] [LVL]\``).then(msg => msg.delete(7000));
-        }  
-        const args = message.content.slice('/setadmin').split(/ +/)
-        let db_channel = dataserver.channels.find(c => c.name == "administration");
-        let find_message;
-        await db_channel.fetchMessages().then(messages => {
-            find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
-        });
-        if (find_message) return message.reply(`\`он уже является модератором.\``).then(msg => msg.delete(7000));
-        if (!args[2]) return message.reply(`\`лвл модератора не указан.\``).then(msg => msg.delete(7000));
-        if (args[2] > 3) return message.reply(`\`лвл модерирования не может быть больше 3-х.\``).then(msg => msg.delete(7000));
-        if (args[2] < 1) return message.reply(`\`лвл модерирования не может быть меньше 1-ого.\``).then(msg => msg.delete(7000));
-        db_channel.send(`**ADMINISTRATION\nUSER-ID: \`${user.id}\`\nADMIN PERMISSIONS:** ${args[2]}`)
-        return message.reply(`\`вы назначили\` <@${user.id}> \`модератором ${args[2]} уровня.\``)
-    }
-
-    if (message.content.startsWith("/admininfo")){
-        if (message.guild.id != scottdale.id) return
-        if (!message.member.hasPermission("ADMINISTRATOR")){
-            message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
-            return message.delete();
-        }
-        let user = message.guild.member(message.mentions.users.first());
-        if (!user){
-            message.delete();
-            return message.reply(`\`вы не указали пользователя! /admininfo [USER]\``).then(msg => msg.delete(7000));
-        }  
-        let db_channel = dataserver.channels.find(c => c.name == "administration");
-        db_channel.fetchMessages().then(messages => {
-            let msgconst = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``))
-            if (msgconst){
-                const adminlvl = msgconst.content.slice().split('ADMIN PERMISSIONS:** ');
-                message.reply(`\`по вашему запросу найдена следующая информация:\``, {embed: {
-                color: 3447003,
-                fields: [{
-                    name: `Информация о ${scottdale.members.find(m => m.id == user.id).displayName}`,
-                    value: `**Пользователь:** <@${user.id}>\n` +
-                    `**Уровень модерирования:** \`${adminlvl[1]}\``
-                }]}})
-            }else{
-                message.reply("`пользователь которого вы указали не является модераторомыыы.`").then(msg => msg.delete(7000));
-            }
-        })
-    }
-
-    if (message.content.startsWith("/deladmin")){
-        if (message.guild.id != scottdale.id) return
-        if (!message.member.hasPermission("ADMINISTRATOR")){
-            message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(5000));
-            return message.delete();
-        }
-        const args = message.content.slice('/deladmin').split(/ +/)
-        let user = message.guild.member(message.mentions.users.first());
-        if (!user){
-            let userfind = false;
-            if (args[1]){
-                userfind = message.guild.members.find(m => m.id == args[1]);
-                user = message.guild.members.find(m => m.id == args[1]);
-            }
-            if (!userfind){
-            message.delete();
-            return message.reply(`\`вы не указали пользователя! /deladmin [USER]\``).then(msg => msg.delete(7000));
-            }
-        }
-        if (user == message.member){
-            let db_channel = dataserver.channels.find(c => c.name == "administration");
-            await db_channel.fetchMessages().then(messages => {
-                let find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
-                if (!find_message){
-                    return message.reply(`\`вы не являетесь модератором.\``)
-                }else{
-                    find_message.delete();
-                    return message.reply(`\`вы назначили себя 0-ым уровнем модерирования.\``)
-                }
-            });
-            return
-        }
-        let db_channel = dataserver.channels.find(c => c.name == "administration");
-        await db_channel.fetchMessages().then(messages => {
-            let find_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${user.id}\``));
-            if (!find_message) return message.reply(`\`пользователь не модератор.\``);
-            let my_message = messages.find(m => m.content.startsWith(`**ADMINISTRATION\nUSER-ID: \`${message.member.id}\``));
-            if (!my_message) return message.reply(`\`вы не модератор.\``)
-            const adminlvl = find_message.content.slice().split('ADMIN PERMISSIONS:** ');
-            const adminlvl_my = my_message.content.slice().split('ADMIN PERMISSIONS:** ');
-            if (adminlvl[1] >= adminlvl_my[1] && message.member.id != "336207279412215809") return message.reply(`\`вы не можете убрать модера выше или равному вас по уровню.\``)
-            find_message.delete()
-            return message.reply(`\`вы сняли модератора\` <@${user.id}> \`с mod-лвлом: ${adminlvl[1]}\``);
-        });
-    }
-
     /*
     if (message.content.toLowerCase().startsWith("привет") && message.content.toLocaleLowerCase().includes(`бот`)){
         message.reply('**привет! Как тебя зовут?**').then((nededit) => {
@@ -2284,63 +1791,6 @@ if (message.content.startsWith("/del")){
         });
     }
     */
-
-    if (message.content.toLowerCase() == "/invalidrole"){
-        if (!message.member.hasPermission("MANAGE_ROLES")) return message.reply(`\`нет прав доступа.\``)
-        if (cooldowncommand.has(message.guild.id)) {
-            return message.channel.send("`Можно использовать раз в две минуты!` - " + message.author);
-        }
-        cooldowncommand.add(message.guild.id);
-        setTimeout(() => {
-            cooldowncommand.delete(message.guild.id);
-        }, 120000);
-        let noformnick;
-        await bot.guilds.find(g => g.id == message.guild.id).members.forEach(member => {
-            checknick(member, "⋆ The Board of State ⋆", 0, 3, bot, message);
-            checknick(member, "⋆ Department of Justice ⋆", 4, 15, bot, message);
-            checknick(member, "⋆ Department of Defence ⋆", 16, 25, bot, message);
-            checknick(member, "⋆ Department of Health ⋆", 26, 31, bot, message);
-            checknick(member, "⋆ Mass Media ⋆", 32, 43, bot, message);
-            checknick(member, "⋆ Warlock MC ⋆", 44, 45, bot, message);
-            checknick(member, "⋆ Russian Mafia ⋆", 46, 47, bot, message);
-            checknick(member, "⋆ La Cosa Nostra ⋆", 48, 49, bot, message);
-            checknick(member, "⋆ Yakuza ⋆", 50, 51, bot, message);
-            checknick(member, "⋆ Grove Street Gang ⋆", 52, 53, bot, message);
-            checknick(member, "⋆ East Side Ballas Gang ⋆", 54, 55, bot, message);
-            checknick(member, "⋆ Vagos Gang ⋆", 56, 57, bot, message);
-            checknick(member, "⋆ Aztecas Gang ⋆", 58, 59, bot, message);
-            checknick(member, "⋆ Rifa Gang ⋆", 60, 61, bot, message);
-            checknick(member, "⋆ Night Wolfs ⋆", 62, 63, bot, message);
-        })
-        let nrpsend;
-        let nrpnamesget = 0;
-        let allservernonrpnames = false;
-        await bot.guilds.find(g => g.id == message.guild.id).members.forEach(newmember => {
-            if (nrpnames.has(newmember.id)){
-                allservernonrpnames = true;
-                if (nrpnamesget == 0){
-                    nrpsend = `<@${newmember.id}>`;
-                }else{
-                    nrpsend = nrpsend + `\n<@${newmember.id}>`;
-                }
-                nrpnamesget = nrpnamesget + 1;
-                nrpnames.delete(newmember.id);
-                if (nrpnamesget == 15){
-                    bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\`\n\n**${nrpsend}**\n\`Я автоматически забрал у них роли.\``)
-                    nrpnamesget = 0;
-                    nrpsend = null;
-                }
-            }
-        })
-        if (!allservernonrpnames){
-            return message.reply(`Невалидных ников нет.`)
-        }else{
-            if (nrpsend == null) return
-            bot.guilds.find(g => g.id == message.guild.id).channels.find(c => c.id == message.channel.id).send(`<@${message.author.id}> \`вот, держи невалидные ники.\`\n\n**${nrpsend}**\n\`Я автоматически забрал у них роли.\``)
-            nrpnamesget = 0;
-            nrpsend = null;
-        }
-    }
 
     if (message.content.toLowerCase().startsWith("/itester")){
         if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
