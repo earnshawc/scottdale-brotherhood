@@ -768,6 +768,14 @@ if (message.content == '/close'){
     MENTION_EVERYONE: false,
     USE_EXTERNAL_EMOJIS: true,
     ADD_REACTIONS: true,
+      
+    CONNECT: true,
+    SPEAK: true,
+    MUTE_MEMBERS: false,
+    DEAFEN_MEMBERS: false,
+    MOVE_MEMBERS: false,
+    USE_VAD: true,
+    PRIORITY_SPEAKER: false,
   })
   message.reply(`\`вы успешно выдали доступ пользователю\` <@${user.id}> \`к каналу FBI.\``);
   message.delete();
