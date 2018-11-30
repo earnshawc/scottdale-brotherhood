@@ -274,7 +274,7 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
             messages.forEach(msg => {
               let s_now = new Date().valueOf() - 86400000;
               if (msg.createdAt.valueOf() < s_now){
-                log_channel.send(`\`[SYSTEM]\` \`Канал\` <#${channel.id}> \`был удален. [24 часа в статусе 'Закрыт']\``);
+                log_channel.send(`\`[SYSTEM]\` \`Канал ${channel.name} был удален. [24 часа в статусе 'Закрыт']\``);
                 channel.delete();
               }
             });
