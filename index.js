@@ -284,7 +284,7 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
             messages.forEach(msg => {
               let s_now = new Date().valueOf() - 18000000;
               if (msg.createdAt.valueOf() < s_now){
-                log_channel.send(`\`[SYSTEM]\` \`Жалоба\` <#${channel.id}> \`уже 1 час ожидает рассмотрения!\``);
+                log_channel.send(`\`[SYSTEM]\` \`Жалоба\` <#${channel.id}> \`уже более 5-ти часов ожидает проверки!\``);
                 channel.send(`\`[SYSTEM]\` \`Привет! Я напомнил модераторам про твое обращение!\``)
               }
             });
