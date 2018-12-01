@@ -298,9 +298,9 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
                   await fs.appendFileSync(`./${channel.name}.txt`, `${archive_messages[i]}\n`);
                   i--
                 }
-                await log_channel.send(`\`[SYSTEM]\` \`Канал ${channel.name} был удален. [24 часа в статусе 'Закрыт']\``, { files: [ `./${message.channel.name}.txt` ] });
+                await log_channel.send(`\`[SYSTEM]\` \`Канал ${channel.name} был удален. [24 часа в статусе 'Закрыт']\``, { files: [ `./${channel.name}.txt` ] });
                 channel.delete();
-                fs.unlinkSync(`./${message.channel.name}.txt`);
+                fs.unlinkSync(`./${channel.name}.txt`);
               }
             });
           }
