@@ -1106,7 +1106,7 @@ if (message.content == '/archive'){
       `${date.getHours().toString().padStart(2, '0')}-` + 
       `${date.getMinutes().toString().padStart(2, '0')}-` + 
       `${date.getSeconds().toString().padStart(2, '0')}]`;
-      if (!msg.embeds[0])
+      if (!msg.embeds[0]){
         archive_messages.push(`${formate_date} ${msg.member.displayName}: ${msg.content}`);
       }else{
         archive_messages.push(`[К СООБЩЕНИЮ БЫЛО ДОБАВЛЕНО] ${msg.embeds[0].fields[1]}`);
