@@ -1097,17 +1097,24 @@ if (message.content.startsWith("/del")){
     
     if (message.content == '/archive'){
 let archive_messages = [];
-await message.channel.fetchMessages({limit: 30}).then(messages => {
+await message.channel.fetchMessages({limit: 1000}).then(messages => {
 messages.forEach(msg => {
-archive_messages.push(`${msg.member.displayName}: ${msg.content}`);
+let date = msg.createdAt;
+let dformat = `[${date.getFullYear()}-` + 
+`${(date.getMonth() + 1).toString().padStart(2, '0')}-` +
+`${date.getDate().toString().padStart(2, '0')} ` + 
+`${date.getHours().toString().padStart(2, '0')}-` + 
+`${date.getMinutes().toString().padStart(2, '0')}-` + 
+`${date.getSeconds().toString().padStart(2, '0')}]`;
+archive_messages.push(`${dformat} ${msg.member.displayName}: ${msg.content}`);
 })
 });
-let i = archive_messages.length;
+let i = archive_messages.length - 1;
 while (i>=0){
-await fs.appendFileSync(`./archive.txt`, `${archive_messages[i]}`);
+await fs.appendFileSync(`./${message.channel.name}.txt`, `${archive_messages[i]}`);
 i--
 }
-message.channel.send('архив сообщений', { files: [ "./archive.txt" ] })
+message.channel.send('архив сообщений', { files: [ "./${message.channel.name}.txt" ] })
 }
 
     if (message.content.startsWith(`/faminvite`)){
