@@ -1094,6 +1094,21 @@ if (message.content.startsWith("/del")){
             })
         })
     }
+    
+    if (message.content == '/archive'){
+let archive_messages = [];
+await message.channel.fetchMessages({limit: 30}).then(messages => {
+messages.forEach(msg => {
+archive_messages.push(`${msg.member.displayName}: ${msg.content}`);
+})
+});
+let i = archive_messages.size;
+while (i>=0){
+await fs.appendFileSync(`./archive.txt`, `${archive_messages[i]}`);
+i--
+}
+message.channel.send('архив сообщений', { files: [ "./archive.txt" ] })
+}
 
     if (message.content.startsWith(`/faminvite`)){
         if (message.content == `/faminvite`){
