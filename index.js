@@ -1114,7 +1114,7 @@ while (i>=0){
 await fs.appendFileSync(`./${message.channel.name}.txt`, `${archive_messages[i]}`);
 i--
 }
-message.channel.send('архив сообщений', { files: [ "./${message.channel.name}.txt" ] })
+message.channel.send('архив сообщений', { files: [ `./${message.channel.name}.txt` ] })
 }
 
     if (message.content.startsWith(`/faminvite`)){
