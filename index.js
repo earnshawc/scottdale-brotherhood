@@ -274,8 +274,33 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
             messages.forEach(msg => {
               let s_now = new Date().valueOf() - 86400000;
               if (msg.createdAt.valueOf() < s_now){
-                log_channel.send(`\`[SYSTEM]\` \`Канал ${channel.name} был удален. [24 часа в статусе 'Закрыт']\``);
+                let archive_messages = [];
+                await channel.fetchMessages({limit: 100}).then(messages => {
+                  messages.forEach(msgcopy => {
+                    let date = msgcopy.createdAt;
+                    let formate_date = `[${date.getFullYear()}-` + 
+                    `${(date.getMonth() + 1).toString().padStart(2, '0')}-` +
+                    `${date.getDate().toString().padStart(2, '0')} ` + 
+                    `${date.getHours().toString().padStart(2, '0')}-` + 
+                    `${date.getMinutes().toString().padStart(2, '0')}-` + 
+                    `${date.getSeconds().toString().padStart(2, '0')}]`;
+                    if (!msgcopy.embeds[0]){
+                      archive_messages.push(`${formate_date} ${msgcopy.member.displayName}: ${msgcopy.content}`);
+                    }else{
+                      archive_messages.push(`[К СООБЩЕНИЮ БЫЛО ДОБАВЛЕНО] ${msgcopy.embeds[0].fields[1].value}`);
+                      archive_messages.push(`[К СООБЩЕНИЮ БЫЛО ДОБАВЛЕНО] ${msgcopy.embeds[0].fields[0].value}`);
+                      archive_messages.push(`${formate_date} ${msgcopy.member.displayName}: ${msgcopy.content}`);
+                    }
+                  });
+                });
+                let i = archive_messages.length - 1;
+                while (i>=0){
+                  await fs.appendFileSync(`./${channel.name}.txt`, `${archive_messages[i]}\n`);
+                  i--
+                }
+                await log_channel.send(`\`[SYSTEM]\` \`Канал ${channel.name} был удален. [24 часа в статусе 'Закрыт']\``, { files: [ `./${message.channel.name}.txt` ] });
                 channel.delete();
+                fs.unlinkSync(`./${message.channel.name}.txt`);
               }
             });
           }
