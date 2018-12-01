@@ -1109,8 +1109,8 @@ if (message.content == '/archive'){
       if (!msg.embeds[0]){
         archive_messages.push(`${formate_date} ${msg.member.displayName}: ${msg.content}`);
       }else{
-        archive_messages.push(`[К СООБЩЕНИЮ БЫЛО ДОБАВЛЕНО] ${msg.embeds[0].fields[1]}`);
-        archive_messages.push(`[К СООБЩЕНИЮ БЫЛО ДОБАВЛЕНО] ${msg.embeds[0].fields[0]}`);
+        archive_messages.push(`[К СООБЩЕНИЮ БЫЛО ДОБАВЛЕНО] ${msg.embeds[0].fields[1].value}`);
+        archive_messages.push(`[К СООБЩЕНИЮ БЫЛО ДОБАВЛЕНО] ${msg.embeds[0].fields[0].value}`);
         archive_messages.push(`${formate_date} ${msg.member.displayName}: ${msg.content}`);
       }
     })
