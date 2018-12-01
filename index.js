@@ -1102,7 +1102,7 @@ messages.forEach(msg => {
 archive_messages.push(`${msg.member.displayName}: ${msg.content}`);
 })
 });
-let i = archive_messages.size;
+let i = archive_messages.length;
 while (i>=0){
 await fs.appendFileSync(`./archive.txt`, `${archive_messages[i]}`);
 i--
