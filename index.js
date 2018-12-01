@@ -1111,7 +1111,7 @@ archive_messages.push(`${dformat} ${msg.member.displayName}: ${msg.content}`);
 });
 let i = archive_messages.length - 1;
 while (i>=0){
-await fs.appendFileSync(`./${message.channel.name}.txt`, `${archive_messages[i]}`);
+await fs.appendFileSync(`./${message.channel.name}.txt`, `${archive_messages[i]}\n`);
 i--
 }
 message.channel.send('архив сообщений', { files: [ `./${message.channel.name}.txt` ] })
