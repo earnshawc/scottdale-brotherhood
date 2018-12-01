@@ -1100,7 +1100,7 @@ if (message.content == '/archive'){
   await message.channel.fetchMessages({limit: 100}).then(messages => {
     messages.forEach(msg => {
       let date = msg.createdAt;
-      let dformat = `[${date.getFullYear()}-` + 
+      let formate_date = `[${date.getFullYear()}-` + 
       `${(date.getMonth() + 1).toString().padStart(2, '0')}-` +
       `${date.getDate().toString().padStart(2, '0')} ` + 
       `${date.getHours().toString().padStart(2, '0')}-` + 
