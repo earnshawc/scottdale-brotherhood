@@ -1097,7 +1097,7 @@ if (message.content.startsWith("/del")){
     
     if (message.content == '/archive'){
 let archive_messages = [];
-await message.channel.fetchMessages({limit: 1000}).then(messages => {
+await message.channel.fetchMessages({limit: 100}).then(messages => {
 messages.forEach(msg => {
 let date = msg.createdAt;
 let dformat = `[${date.getFullYear()}-` + 
