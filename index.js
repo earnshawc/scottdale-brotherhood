@@ -265,18 +265,18 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
   setTimeout(() => {
     if (support_loop.has(message.guild.id)) support_loop.delete(message.guild.id);
   }, 600000);
-  message.guild.channels.forEach(channel => {
+  message.guild.channels.forEach(async channel => {
     if (channel.name.startsWith('ticket-')){
       if (message.guild.channels.find(c => c.id == channel.parentID).name == 'Корзина'){
         let log_channel = message.guild.channels.find(c => c.name == "reports-log");
-        channel.fetchMessages({limit: 1}).then(messages => {
+        channel.fetchMessages({limit: 1}).then(async messages => {
           if (messages.size == 1){
-            messages.forEach(msg => {
+            messages.forEach(async msg => {
               let s_now = new Date().valueOf() - 86400000;
               if (msg.createdAt.valueOf() < s_now){
                 let archive_messages = [];
-                await channel.fetchMessages({limit: 100}).then(messages => {
-                  messages.forEach(msgcopy => {
+                await channel.fetchMessages({limit: 100}).then(async messagestwo => {
+                  messagestwo.forEach(async msgcopy => {
                     let date = msgcopy.createdAt;
                     let formate_date = `[${date.getFullYear()}-` + 
                     `${(date.getMonth() + 1).toString().padStart(2, '0')}-` +
