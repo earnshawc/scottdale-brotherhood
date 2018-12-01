@@ -1095,27 +1095,33 @@ if (message.content.startsWith("/del")){
         })
     }
     
-    if (message.content == '/archive'){
-let archive_messages = [];
-await message.channel.fetchMessages({limit: 100}).then(messages => {
-messages.forEach(msg => {
-let date = msg.createdAt;
-let dformat = `[${date.getFullYear()}-` + 
-`${(date.getMonth() + 1).toString().padStart(2, '0')}-` +
-`${date.getDate().toString().padStart(2, '0')} ` + 
-`${date.getHours().toString().padStart(2, '0')}-` + 
-`${date.getMinutes().toString().padStart(2, '0')}-` + 
-`${date.getSeconds().toString().padStart(2, '0')}]`;
-archive_messages.push(`${dformat} ${msg.member.displayName}: ${msg.content}`);
-})
-});
-let i = archive_messages.length - 1;
-while (i>=0){
-await fs.appendFileSync(`./${message.channel.name}.txt`, `${archive_messages[i]}\n`);
-i--
-}
-await message.channel.send('архив сообщений', { files: [ `./${message.channel.name}.txt` ] })
-fs.unlinkSync(`./${message.channel.name}.txt`);
+if (message.content == '/archive'){
+  let archive_messages = [];
+  await message.channel.fetchMessages({limit: 100}).then(messages => {
+    messages.forEach(msg => {
+      let date = msg.createdAt;
+      let dformat = `[${date.getFullYear()}-` + 
+      `${(date.getMonth() + 1).toString().padStart(2, '0')}-` +
+      `${date.getDate().toString().padStart(2, '0')} ` + 
+      `${date.getHours().toString().padStart(2, '0')}-` + 
+      `${date.getMinutes().toString().padStart(2, '0')}-` + 
+      `${date.getSeconds().toString().padStart(2, '0')}]`;
+      if (!msg.embeds[0])
+        archive_messages.push(`${formate_date} ${msg.member.displayName}: ${msg.content}`);
+      }else{
+        archive_messages.push(`[К СООБЩЕНИЮ БЫЛО ДОБАВЛЕНО] ${msg.embeds[0].fields[1]}`);
+        archive_messages.push(`[К СООБЩЕНИЮ БЫЛО ДОБАВЛЕНО] ${msg.embeds[0].fields[0]}`);
+        archive_messages.push(`${formate_date} ${msg.member.displayName}: ${msg.content}`);
+      }
+    })
+  });
+  let i = archive_messages.length - 1;
+  while (i>=0){
+    await fs.appendFileSync(`./${message.channel.name}.txt`, `${archive_messages[i]}\n`);
+    i--
+  }
+  await message.channel.send('архив сообщений', { files: [ `./${message.channel.name}.txt` ] })
+  fs.unlinkSync(`./${message.channel.name}.txt`);
 }
 
     if (message.content.startsWith(`/faminvite`)){
