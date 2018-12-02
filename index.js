@@ -821,7 +821,7 @@ if (message.content.startsWith("/warn")){
   let db_parent = db_server.channels.find(c => c.name == 'db_users');
   let acc = db_server.channels.find(c => {c.name == user.id && c.parent == db_parent});
   if (!acc){
-    await db_server.createChannel(user.id).then(chan => {
+    await db_server.createChannel(user.id).then(async chan => {
       await chan.setParent(db_parent.id);
       acc = chan;
     });
