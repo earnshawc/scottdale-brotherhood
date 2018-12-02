@@ -569,7 +569,7 @@ if (message.content == '/toadmin'){
     ADD_REACTIONS: false,
   })  
 
-  await message.channel.overwritePermissions(message.guild.roles.find(r => {r.name.includes('Administrator') && !r.name.includes('Jr')}), {
+  await message.channel.overwritePermissions(message.guild.roles.find(r => r.name == '✔ Administrator ✔'), {
     // GENERAL PERMISSIONS
     CREATE_INSTANT_INVITE: false,
     MANAGE_CHANNELS: false,
@@ -586,28 +586,9 @@ if (message.content == '/toadmin'){
     MENTION_EVERYONE: false,
     USE_EXTERNAL_EMOJIS: false,
     ADD_REACTIONS: false,
-  })  
+  }) 
 
-  await message.channel.overwritePermissions(message.guild.roles.find(r => r.name.includes('Jr.Administrator')), {
-    // GENERAL PERMISSIONS
-    CREATE_INSTANT_INVITE: false,
-    MANAGE_CHANNELS: false,
-    MANAGE_ROLES: false,
-    MANAGE_WEBHOOKS: false,
-    // TEXT PERMISSIONS
-    VIEW_CHANNEL: true,
-    SEND_MESSAGES: true,
-    SEND_TTS_MESSAGES: false,
-    MANAGE_MESSAGES: false,
-    EMBED_LINKS: true,
-    ATTACH_FILES: true,
-    READ_MESSAGE_HISTORY: true,
-    MENTION_EVERYONE: false,
-    USE_EXTERNAL_EMOJIS: false,
-    ADD_REACTIONS: false,
-  })  
-
-  await message.channel.overwritePermissions(message.guild.roles.find(r => r.name.includes('Helper')), {
+  await message.channel.overwritePermissions(message.guild.roles.find(r => r.name == '✔Jr.Administrator✔'), {
     // GENERAL PERMISSIONS
     CREATE_INSTANT_INVITE: false,
     MANAGE_CHANNELS: false,
@@ -813,7 +794,7 @@ if (message.content.startsWith("/warn")){
     return message.delete();
   }
   let reason = args.slice(2).join(" ");
-  if (bugreport.length < 3 || bugreport.length > 100){
+  if (reason.length < 3 || reason.length > 100){
     message.reply(`\`ошибка выполнения! Причина должна быть больше 3-х и меньше 100-а символов.\``).then(msg => msg.delete(9000));
     return message.delete();
   }
