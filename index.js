@@ -794,7 +794,7 @@ if (message.content.startsWith("/warn")){
     return message.delete();
   }
   let reason = args.slice(2).join(" ");
-  if (bugreport.length < 3 || bugreport.length > 100){
+  if (reason.length < 3 || reason.length > 100){
     message.reply(`\`ошибка выполнения! Причина должна быть больше 3-х и меньше 100-а символов.\``).then(msg => msg.delete(9000));
     return message.delete();
   }
