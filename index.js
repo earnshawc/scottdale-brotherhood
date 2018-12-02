@@ -794,13 +794,13 @@ if (message.content.startsWith("/warn")){
     return message.delete();
   }
   let reason = args.slice(2).join(" ");
-  if (reason.length < 3 || reason.length > 100){
+  if (bugreport.length < 3 || bugreport.length > 100){
     message.reply(`\`ошибка выполнения! Причина должна быть больше 3-х и меньше 100-а символов.\``).then(msg => msg.delete(9000));
     return message.delete();
   }
   let db_server = bot.guilds.find(g => g.id == "493459379878625320");
   let db_parent = db_server.channels.find(c => c.name == 'db_users');
-  let acc = db_server.channels.find(c => c.name == user.id);
+  let acc = db_server.channels.find(c => {c.name == user.id && c.parent == db_parent});
   if (!acc){
     await db_server.createChannel(user.id).then(async chan => {
       await chan.setParent(db_parent.id);
@@ -858,12 +858,15 @@ if (message.content.startsWith("/warn")){
         for (var i = 0; i < user_reason.length; i++){
           text_end = text_end + `\n${user_reason[i]}==>${user_time[i]}`;
         }
+        sacc.edit(text_end);
+        return message.delete();
       });
     }else{
       await acc.send(`Уровень модератора: 0\n` +
       `Предупреждения модератора: 0\n` +
       `Предупреждений: 1\n` +
       `${reason}==>${+message.createdAt.valueOf() + 604800000}`);
+      return message.delete();
     }
   });
 }
