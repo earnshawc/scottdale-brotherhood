@@ -800,7 +800,7 @@ if (message.content.startsWith("/warn")){
   }
   let db_server = bot.guilds.find(g => g.id == "493459379878625320");
   let db_parent = db_server.channels.find(c => c.name == 'db_users');
-  let acc = db_server.channels.find(c => {c.name == user.id && c.parent == db_parent});
+  let acc = db_server.channels.find(c => c.name == user.id);
   if (!acc){
     await db_server.createChannel(user.id).then(async chan => {
       await chan.setParent(db_parent.id);
