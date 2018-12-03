@@ -277,7 +277,7 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
                 let archive_messages = [];
                 await channel.fetchMessages({limit: 100}).then(async messagestwo => {
                   messagestwo.forEach(async msgcopy => {
-                    let date = msgcopy.createdAt;
+                    let date = new Date(+msgcopy.createdAt.valueOf() + 10800000);
                     let formate_date = `[${date.getFullYear()}-` + 
                     `${(date.getMonth() + 1).toString().padStart(2, '0')}-` +
                     `${date.getDate().toString().padStart(2, '0')} ` + 
