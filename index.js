@@ -835,8 +835,8 @@ if (message.content.startsWith("/warn")){
 
         circle = 0;
         while (+user_warns > circle){
-          user_reason.push(str.split('\n')[+circle + +modeartion_warns + 3].split('==>')[0]);
-          let temp_time = str.split('\n')[+circle + +modeartion_warns + 3].split('==>')[1]
+          user_reason.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[0]);
+          let temp_time = str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1]
           let temp_formate_date = `[${temp_time.getFullYear()}-` + 
           `${(temp_time.getMonth() + 1).toString().padStart(2, '0')}-` +
           `${temp_time.getDate().toString().padStart(2, '0')} ` + 
