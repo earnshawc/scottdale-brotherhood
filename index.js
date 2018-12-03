@@ -787,6 +787,7 @@ if (message.content.startsWith("/del")){
 }
     
 if (message.content.startsWith("/warn")){
+  if (!message.member.hasPermission("MANAGE_ROLES")) return
   let user = message.guild.member(message.mentions.users.first());
   const args = message.content.slice(`/warn`).split(/ +/);
   if (!user || !args[2]){
@@ -794,8 +795,12 @@ if (message.content.startsWith("/warn")){
     return message.delete();
   }
   let reason = args.slice(2).join(" ");
-  if (reason.length < 3 || reason.length > 100){
-    message.reply(`\`ошибка выполнения! Причина должна быть больше 3-х и меньше 100-а символов.\``).then(msg => msg.delete(9000));
+  if (reason.length < 3 || reason.length > 70){
+    message.reply(`\`ошибка выполнения! Причина должна быть больше 3-х и меньше 70-и символов.\``).then(msg => msg.delete(9000));
+    return message.delete();
+  }
+  if (reason.includes("==>")){
+    message.reply(`\`ошибка выполнения! Вы использовали запрещенный символ!\``).then(msg => msg.delete(9000));
     return message.delete();
   }
   let db_server = bot.guilds.find(g => g.id == "493459379878625320");
@@ -818,52 +823,61 @@ if (message.content.startsWith("/warn")){
         let user_reason = [];
         let moderation_time = [];
         let user_time = [];
+        let moderation_give = [];
+        let user_give = [];
         
         let circle = 0;
         while (+moderation_warns > circle){
           moderation_reason.push(str.split('\n')[+circle + 2].split('==>')[0]);
-          let temp_time = str.split('\n')[+circle + 2].split('==>')[1]
-          moderation_time.push(temp_time);
+          moderation_time.push(str.split('\n')[+circle + 2].split('==>')[1]);
+          moderation_give.push(str.split('\n')[+circle + 2].split('==>')[2]);
           circle++;
         }
 
         circle = 0;
         while (+user_warns > circle){
           user_reason.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[0]);
-          let temp_time = str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1]
-          user_time.push(temp_time);
+          user_time.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1]);
+          user_give.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]);
           circle++;
         }
         
-        user_reason.push(`${reason}`);
-        user_time.push(+message.createdAt.valueOf() + 604800000);
+        user_reason.push(reason);
+        user_time.push(259200000 * +user_warns + 259200000 + +message.createdAt.valueOf());
+        user_give.push(message.member.displayName);
         
         let text_end = `Уровень модератора: ${moderation_level}\n` + 
         `Предупреждения модератора: ${moderation_warns}`;
         for (var i = 0; i < moderation_reason.length; i++){
-          text_end = text_end + `\n${moderation_reason[i]}==>${moderation_time[i]}`;
+          text_end = text_end + `\n${moderation_reason[i]}==>${moderation_time[i]}==>${moderation_give[i]}`;
         }
         text_end = text_end + `\nПредупреждений: ${+user_warns + 1}`;
         for (var i = 0; i < user_reason.length; i++){
-          text_end = text_end + `\n${user_reason[i]}==>${user_time[i]}`;
+          text_end = text_end + `\n${user_reason[i]}==>${user_time[i]}==>${user_give[i]}`;
         }
-        sacc.edit(text_end);
-        return message.delete();
+        if (+user_warns + 1 < 3){
+          sacc.edit(text_end);
+          let ann = message.guild.channels.find(c => c.name == "general");
+          ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение. Причина: ${reason}\nЕсли вы не согласны с модератором, вы можете написать в нашу поддержку\` <#${message.guild.channels.find(c => c.name == "support").id}>`);
+          return message.delete();
+        }else{
+          await fs.appendFileSync(`./ban.txt`, `${text_end}`);
+	  await message.guild.channels.find(c => c.name == "spectator-chat").send(`\`Привет! Я тут чела за нарушение правил забанил!\``, { files: [ `./ban.txt` ] });
+          fs.unlinkSync(`./ban.txt`);
+          acc.delete();
+          let ann = message.guild.channels.find(c => c.name == "general");
+          await ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение. Причина: ${reason}\nВам была выдана блокировка за нарушение правил (3/3)!\``);
+          user.ban("Максимальное количество предупреждений");
+          return message.delete();
+        }
       });
     }else{
       await acc.send(`Уровень модератора: 0\n` +
       `Предупреждения модератора: 0\n` +
       `Предупреждений: 1\n` +
-      `${reason}==>${+message.createdAt.valueOf() + 604800000}`);
-      let wdate = new Date(+message.createdAt.valueOf() + 604800000 + 10800000);
-      let w_date = `${wdate.getFullYear()}-` + 
-                   `${(wdate.getMonth() + 1).toString().padStart(2, '0')}-` +
-                   `${wdate.getDate().toString().padStart(2, '0')} ` + 
-                   `${wdate.getHours().toString().padStart(2, '0')}-` + 
-                   `${wdate.getMinutes().toString().padStart(2, '0')}-` + 
-                   `${wdate.getSeconds().toString().padStart(2, '0')}`;
+      `${reason}==>${+message.createdAt.valueOf() + 259200000}==>${message.member.displayName}`);
       let ann = message.guild.channels.find(c => c.name == "general");
-      ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение. Причина: ${reason}\nИстекает: ${w_date}\``);
+      ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение. Причина: ${reason}\nЕсли вы не согласны с модератором, вы можете написать в нашу поддержку\` <#${message.guild.channels.find(c => c.name == "support").id}>`);
       return message.delete();
     }
   });
