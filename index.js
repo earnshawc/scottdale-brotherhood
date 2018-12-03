@@ -855,6 +855,15 @@ if (message.content.startsWith("/warn")){
       `Предупреждения модератора: 0\n` +
       `Предупреждений: 1\n` +
       `${reason}==>${+message.createdAt.valueOf() + 604800000}`);
+      let wdate = new Date(+message.createdAt.valueOf() + 604800000 + 10800000);
+      let w_date = `${wdate.getFullYear()}-` + 
+                   `${(wdate.getMonth() + 1).toString().padStart(2, '0')}-` +
+                   `${wdate.getDate().toString().padStart(2, '0')} ` + 
+                   `${wdate.getHours().toString().padStart(2, '0')}-` + 
+                   `${wdate.getMinutes().toString().padStart(2, '0')}-` + 
+                   `${wdate.getSeconds().toString().padStart(2, '0')}`;
+      let ann = message.guild.channels.find(c => c.name == "general");
+      ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение. Причина: ${reason}\nИстекает: ${w_date}\``);
       return message.delete();
     }
   });
