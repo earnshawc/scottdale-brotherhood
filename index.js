@@ -372,7 +372,7 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
             text_end = text_end + `\n${user_reason[i]}==>${user_time[i]}==>${user_give[i]}`;
           }
           if (+moderation_level == 0 && +moderation_warns == 0 && +user_warns == 0){
-            acc.delete();
+            channel.delete();
           }else{
             sacc.edit(text_end);
           }
