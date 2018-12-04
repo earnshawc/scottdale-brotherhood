@@ -322,7 +322,7 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
     }
   });
   // UNWARN SYSTEM
-  let dataserver = message.guilds.find(g => g.id == "493459379878625320");
+  let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
   dateserver.channels.forEach(async channel => {
     if (dataserver.channels.find(c => c.id == channel.parentID).name == 'db_users'){
       await channel.fetchMessages({limit: 1}).then(async messages => {
