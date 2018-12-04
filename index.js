@@ -324,6 +324,7 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
   // UNWARN SYSTEM
   let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
   dataserver.channels.forEach(async channel => {
+  if (channel.type=="text"){
     if (dataserver.channels.find(c => c.id == channel.parentID).name == 'db_users'){
       await channel.fetchMessages({limit: 1}).then(async messages => {
       if (messages.size == 1){
@@ -378,7 +379,7 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
         });
       }});
     }
-  });
+  }});
 }
     
 if (message.channel.name == "support"){
