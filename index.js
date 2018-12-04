@@ -2353,7 +2353,7 @@ bot.on('raw', async event => {
         }else if (event_emoji_name == "✔"){
             if (message.embeds[0].title == '`Discord » Проверка на валидность ник нейма.`'){
                 if (message.reactions.size != 3){
-                    return channel.send(`\`[ERROR]\` \`Не торопись! Сообщение еще загружается!\``)
+                    // return channel.send(`\`[ERROR]\` \`Не торопись! Сообщение еще загружается!\``)
                 }
                 let field_user = server.members.find(m => "<@" + m.id + ">" == message.embeds[0].fields[0].value.split(/ +/)[1]);
                 let field_nickname = message.embeds[0].fields[1].value.split(`\`Ник:\` `)[1];
@@ -2392,7 +2392,7 @@ bot.on('raw', async event => {
                 return message.delete();
             }else if (message.embeds[0].title == '`Discord » Запрос о снятии роли.`'){
                 if (message.reactions.size != 3){
-                    return channel.send(`\`[ERROR]\` \`Не торопись! Сообщение еще загружается!\``)
+                    // return channel.send(`\`[ERROR]\` \`Не торопись! Сообщение еще загружается!\``)
                 }
                 let field_author = server.members.find(m => "<@" + m.id + ">" == message.embeds[0].fields[0].value.split(/ +/)[1]);
                 let field_user = server.members.find(m => "<@" + m.id + ">" == message.embeds[0].fields[1].value.split(/ +/)[1]);
