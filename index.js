@@ -876,12 +876,13 @@ if (message.content.startsWith("/mwarn")){
           for (var i = 0; i < user_reason.length; i++){
             text_end = text_end + `\n${user_reason[i]}==>${user_time[i]}==>${user_give[i]}`;
           }
-          if (user.roles.some(r => ["Spectator™"].includes(r.name))){
+          if (user.roles.some(r => ["Support Team"].includes(r.name))){
             await fs.appendFileSync(`./spwarn.txt`, `${text_end}`); // { files: [ `./ban.txt` ] }
             let ann = message.guild.channels.find(c => c.name == "spectator-chat");
-	    await ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение (${moderation_warns}/3). Причина: ${reason}\`\n\`Вы были сняты с должности Spectator'а.\``, { files: [ `./spwarn.txt` ] });
+	    await ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение (${moderation_warns}/3). Причина: ${reason}\`\n\`Вы были понижены с должности Support Team на должность Spectator'а.\``, { files: [ `./spwarn.txt` ] });
             fs.unlinkSync(`./spwarn.txt`);
-            user.removeRole(message.guild.roles.find(r => r.name == "Spectator™"))
+            user.removeRole(message.guild.roles.find(r => r.name == "Support Team"))
+            if (!user.roles.some(r => ["Spectator™"].includes(r.name))) user.addRole(message.guild.roles.find(r => r.name == "Spectator™"))
             if (user_warns == 0 && moderation_level == 0){ 
               acc.delete();
             }else{
@@ -901,13 +902,12 @@ if (message.content.startsWith("/mwarn")){
               sacc.edit(text_end);
             }
             return message.delete();
-          }else if (user.roles.some(r => ["Support Team"].includes(r.name))){
+          }else if (user.roles.some(r => ["Spectator™"].includes(r.name))){
             await fs.appendFileSync(`./spwarn.txt`, `${text_end}`); // { files: [ `./ban.txt` ] }
             let ann = message.guild.channels.find(c => c.name == "spectator-chat");
-	    await ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение (${moderation_warns}/3). Причина: ${reason}\`\n\`Вы были понижены с должности Support Team на должность Spectator'а.\``, { files: [ `./spwarn.txt` ] });
+	    await ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение (${moderation_warns}/3). Причина: ${reason}\`\n\`Вы были сняты с должности Spectator'а.\``, { files: [ `./spwarn.txt` ] });
             fs.unlinkSync(`./spwarn.txt`);
-            user.removeRole(message.guild.roles.find(r => r.name == "Support Team"))
-            if (!user.roles.some(r => ["Spectator™"].includes(r.name))) user.addRole(message.guild.roles.find(r => r.name == "Spectator™"))
+            user.removeRole(message.guild.roles.find(r => r.name == "Spectator™"))
             if (user_warns == 0 && moderation_level == 0){ 
               acc.delete();
             }else{
@@ -935,8 +935,8 @@ if (message.content.startsWith("/mwarn")){
       `Предупреждения модератора: 1\n` +
       `${reason}==>${+message.createdAt.valueOf() + 604800000}==>${message.member.displayName}\n` +
       `Предупреждений: 0`);
-      let ann = message.guild.channels.find(c => c.name == "general");
-      ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение. Причина: ${reason}\nЕсли вы не согласны с модератором, вы можете написать в нашу поддержку\` <#${message.guild.channels.find(c => c.name == "support").id}>`);
+      let ann = message.guild.channels.find(c => c.name == "spectator-chat");
+      ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение (1/3). Причина: ${reason}\``);
       return message.delete();
     }
   });
