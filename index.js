@@ -358,7 +358,7 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
             }else{
               user_warns--
               let genchannel = message.guild.channels.find(c => c.name == "general");
-              genchannel.send(`<@${channel.id}>, \`вам было снято одно предупреждение. [Прошло 3 дня]\``);
+              genchannel.send(`<@${channel.name}>, \`вам было снято одно предупреждение. [Прошло 3 дня]\``);
             }
             circle++;
           }
