@@ -346,7 +346,7 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
             moderation_give.push(str.split('\n')[+circle + 2].split('==>')[2]);
             circle++;
           }
-  
+               
           circle = 0;
           while (+user_warns > circle){
             let myDate = new Date().valueOf();
@@ -376,7 +376,7 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
             sacc.edit(text_end);
           }
         });
-      });
+      }});
     }
   });
 }
