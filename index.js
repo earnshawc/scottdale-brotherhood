@@ -321,6 +321,64 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
       }
     }
   });
+  // UNWARN SYSTEM
+  let dataserver = message.guilds.find(g => g.id == "493459379878625320");
+  dateserver.channels.forEach(async channel => {
+    if (dataserver.channels.find(c => c.id == channel.parentID).name == 'db_users'){
+      await channel.fetchMessages({limit: 1}).then(async messages => {
+      if (messages.size == 1){
+        messages.forEach(async sacc => {
+          let str = sacc.content;
+          let moderation_level = str.split('\n')[0].match(re)[0];
+          let moderation_warns = str.split('\n')[1].match(re)[0];
+          let user_warns = str.split('\n')[+moderation_warns + 2].match(re)[0];
+          let moderation_reason = [];
+          let user_reason = [];
+          let moderation_time = [];
+          let user_time = [];
+          let moderation_give = [];
+          let user_give = [];
+          
+          let circle = 0;
+          while (+moderation_warns > circle){
+            moderation_reason.push(str.split('\n')[+circle + 2].split('==>')[0]);
+            moderation_time.push(str.split('\n')[+circle + 2].split('==>')[1]);
+            moderation_give.push(str.split('\n')[+circle + 2].split('==>')[2]);
+            circle++;
+          }
+  
+          circle = 0;
+          while (+user_warns > circle){
+            let myDate = new Date().valueOf();
+            if (+str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1] > myDate){
+              user_reason.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[0]);
+              user_time.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1]);
+              user_give.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]);
+            }else{
+              user_warns--
+              let genchannel = message.guild.channels.find(c => c.name == "general");
+              genchannel.send(`<@${channel.id}>, \`вам было снято одно предупреждение. [Прошло 3 дня]\``);
+            }
+            circle++;
+          }
+          let text_end = `Уровень модератора: ${moderation_level}\n` + 
+          `Предупреждения модератора: ${moderation_warns}`;
+          for (var i = 0; i < moderation_reason.length; i++){
+            text_end = text_end + `\n${moderation_reason[i]}==>${moderation_time[i]}==>${moderation_give[i]}`;
+          }
+          text_end = text_end + `\nПредупреждений: ${+user_warns}`;
+          for (var i = 0; i < user_reason.length; i++){
+            text_end = text_end + `\n${user_reason[i]}==>${user_time[i]}==>${user_give[i]}`;
+          }
+          if (+moderation_level == 0 && +moderation_warns == 0 && +user_warns == 0){
+            acc.delete();
+          }else{
+            sacc.edit(text_end);
+          }
+        }
+      }
+    }
+  });
 }
     
 if (message.channel.name == "support"){
