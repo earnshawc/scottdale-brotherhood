@@ -375,8 +375,8 @@ if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
           }else{
             sacc.edit(text_end);
           }
-        }
-      }
+        });
+      });
     }
   });
 }
