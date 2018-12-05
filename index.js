@@ -1052,7 +1052,7 @@ if (message.content.startsWith("/getwarns")){
             `${date.getHours().toString().padStart(2, '0')}:` + 
             `${date.getMinutes().toString().padStart(2, '0')}:` + 
             `${date.getSeconds().toString().padStart(2, '0')}`;
-            text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${user_give[i]}\`. Причина: \`${user_reason[i]}\`\n[#${i}] Истекает: ${formate_date}**\n`;
+            text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${user_give[i]}\`. Причина: \`${user_reason[i]}\`\n[#${+i + 1}] Истекает: ${formate_date}**\n`;
           }
           message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`);
           return message.delete();
@@ -1111,7 +1111,7 @@ if (message.content.startsWith("/getwarns")){
             `${date.getHours().toString().padStart(2, '0')}:` + 
             `${date.getMinutes().toString().padStart(2, '0')}:` + 
             `${date.getSeconds().toString().padStart(2, '0')}`;
-            text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${user_give[i]}\`. Причина: \`${user_reason[i]}\`\n[#${i}] Истекает: ${formate_date}**\n`;
+            text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${user_give[i]}\`. Причина: \`${user_reason[i]}\`\n[#${+i + 1}] Истекает: ${formate_date}**\n`;
           }
           message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`);
           return message.delete();
