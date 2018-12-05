@@ -1045,14 +1045,14 @@ if (message.content.startsWith("/getwarns")){
           }
           let text_end = `Предупреждений: ${user_warns}`;
           for (var i = 0; i < user_reason.length; i++){
-            let date = new Date(user_time[i]);
+            let date = new Date(+user_time[i]);
             let formate_date = `${date.getFullYear()}.` + 
             `${(date.getMonth() + 1).toString().padStart(2, '0')}.` +
             `${date.getDate().toString().padStart(2, '0')} в ` + 
             `${date.getHours().toString().padStart(2, '0')}:` + 
             `${date.getMinutes().toString().padStart(2, '0')}:` + 
             `${date.getSeconds().toString().padStart(2, '0')}`;
-            text_end = text_end + `\n[#${i}] Выдано модератором: ${user_give[i]}. Причина: ${user_reason[i]}\n[#${i}] Истекает: ${formate_date}\n`;
+            text_end = text_end + `\n**[#${i}] Выдано модератором: \`${user_give[i]}\`. Причина: \`${user_reason[i]}\`\n[#${i}] Истекает: ${formate_date}**\n`;
           }
           message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`);
           return message.delete();
@@ -1104,14 +1104,14 @@ if (message.content.startsWith("/getwarns")){
           }
           let text_end = `Предупреждений: ${user_warns}`;
           for (var i = 0; i < user_reason.length; i++){
-            let date = new Date(user_time[i]);
+            let date = new Date(+user_time[i]);
             let formate_date = `${date.getFullYear()}.` + 
             `${(date.getMonth() + 1).toString().padStart(2, '0')}.` +
             `${date.getDate().toString().padStart(2, '0')} в ` + 
             `${date.getHours().toString().padStart(2, '0')}:` + 
             `${date.getMinutes().toString().padStart(2, '0')}:` + 
             `${date.getSeconds().toString().padStart(2, '0')}`;
-            text_end = text_end + `\n[#${i}] Выдано модератором: ${user_give[i]}. Причина: ${user_reason[i]}\n[#${i}] Истекает: ${formate_date}\n`;
+            text_end = text_end + `\n**[#${i}] Выдано модератором: \`${user_give[i]}\`. Причина: \`${user_reason[i]}\`\n[#${i}] Истекает: ${formate_date}**\n`;
           }
           message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`);
           return message.delete();
