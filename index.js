@@ -1045,7 +1045,7 @@ if (message.content.startsWith("/getwarns")){
           }
           let text_end = `Предупреждений: ${user_warns}`;
           for (var i = 0; i < user_reason.length; i++){
-            let date = new Date(+user_time[i]);
+            let date = new Date(+user_time[i] + 10800000);
             let formate_date = `${date.getFullYear()}.` + 
             `${(date.getMonth() + 1).toString().padStart(2, '0')}.` +
             `${date.getDate().toString().padStart(2, '0')} в ` + 
@@ -1104,7 +1104,7 @@ if (message.content.startsWith("/getwarns")){
           }
           let text_end = `Предупреждений: ${user_warns}`;
           for (var i = 0; i < user_reason.length; i++){
-            let date = new Date(+user_time[i]);
+            let date = new Date(+user_time[i] + 10800000);
             let formate_date = `${date.getFullYear()}.` + 
             `${(date.getMonth() + 1).toString().padStart(2, '0')}.` +
             `${date.getDate().toString().padStart(2, '0')} в ` + 
