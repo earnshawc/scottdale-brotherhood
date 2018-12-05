@@ -1043,7 +1043,7 @@ if (message.content.startsWith("/getwarns")){
             user_give.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]);
             circle++;
           }
-          let text_end = `Предупреждений: ${user_warns}`;
+          let text_end = `**Предупреждений: ${user_warns}**`;
           for (var i = 0; i < user_reason.length; i++){
             let date = new Date(+user_time[i] + 10800000);
             let formate_date = `${date.getFullYear()}.` + 
@@ -1052,7 +1052,7 @@ if (message.content.startsWith("/getwarns")){
             `${date.getHours().toString().padStart(2, '0')}:` + 
             `${date.getMinutes().toString().padStart(2, '0')}:` + 
             `${date.getSeconds().toString().padStart(2, '0')}`;
-            text_end = text_end + `\n**[#${i}] Выдано модератором: \`${user_give[i]}\`. Причина: \`${user_reason[i]}\`\n[#${i}] Истекает: ${formate_date}**\n`;
+            text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${user_give[i]}\`. Причина: \`${user_reason[i]}\`\n[#${i}] Истекает: ${formate_date}**\n`;
           }
           message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`);
           return message.delete();
@@ -1102,7 +1102,7 @@ if (message.content.startsWith("/getwarns")){
             user_give.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]);
             circle++;
           }
-          let text_end = `Предупреждений: ${user_warns}`;
+          let text_end = `**Предупреждений: ${user_warns}**`;
           for (var i = 0; i < user_reason.length; i++){
             let date = new Date(+user_time[i] + 10800000);
             let formate_date = `${date.getFullYear()}.` + 
@@ -1111,7 +1111,7 @@ if (message.content.startsWith("/getwarns")){
             `${date.getHours().toString().padStart(2, '0')}:` + 
             `${date.getMinutes().toString().padStart(2, '0')}:` + 
             `${date.getSeconds().toString().padStart(2, '0')}`;
-            text_end = text_end + `\n**[#${i}] Выдано модератором: \`${user_give[i]}\`. Причина: \`${user_reason[i]}\`\n[#${i}] Истекает: ${formate_date}**\n`;
+            text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${user_give[i]}\`. Причина: \`${user_reason[i]}\`\n[#${i}] Истекает: ${formate_date}**\n`;
           }
           message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`);
           return message.delete();
