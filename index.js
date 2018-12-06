@@ -1069,7 +1069,7 @@ if (message.content.startsWith("/unwarn")){
               let genchannel = message.guild.channels.find(c => c.name == "general");
               genchannel.send(`<@${user.id}>, \`вам было снято одно предупреждение. Источник: ${message.member.displayName}\``);
               let schat = message.guild.channels.find(c => c.name == "spectator-chat");
-              schat.send(`\`Модератор\` <@${message.author.id}> \`снял пользователю\` <@${user.id}> \`одно предупреждение.\nИнформация: Выдано было модератором: ${str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]} по причине: ${str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1]}\``);
+              schat.send(`\`Модератор\` <@${message.author.id}> \`снял пользователю\` <@${user.id}> \`одно предупреждение.\nИнформация: Выдано было модератором: ${str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]} по причине: ${str.split('\n')[+circle + +moderation_warns + 3].split('==>')[0]}\``);
             }else{
               user_reason.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[0]);
               user_time.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1]);
