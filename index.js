@@ -1486,7 +1486,7 @@ if (message.content.startsWith("/warn")){
         if (+user_warns < 3){
           sacc.edit(text_end);
           let ann = message.guild.channels.find(c => c.name == "general");
-          ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение. Причина: ${reason}\nЕсли вы не согласны с модератором, вы можете написать в нашу поддержку\` <#${message.guild.channels.find(c => c.name == "support").id}>`);
+          ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение (${user_warns}/3). Причина: ${reason}\nЕсли вы не согласны с модератором, вы можете написать в нашу поддержку\` <#${message.guild.channels.find(c => c.name == "support").id}>`);
           return message.delete();
         }else{
           await fs.appendFileSync(`./ban.txt`, `${text_end}`);
@@ -1494,7 +1494,7 @@ if (message.content.startsWith("/warn")){
           fs.unlinkSync(`./ban.txt`);
           acc.delete();
           let ann = message.guild.channels.find(c => c.name == "general");
-          await ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение. Причина: ${reason}\nВам была выдана блокировка за нарушение правил (3/3)!\``);
+          await ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение (${user_warns}/3). Причина: ${reason}\nВам была выдана блокировка за нарушение правил (3/3)!\``);
           user.ban("Максимальное количество предупреждений");
           return message.delete();
         }
