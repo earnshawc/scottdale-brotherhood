@@ -240,6 +240,7 @@ function hook(channel, message, webhook_name, name, time, avatar) {
     })
 }
 
+const warn_cooldown = new Set();
 const support_loop = new Set(); 
 const fbi_dostup = new Set();
 fbi_dostup.add("353055790862565377");
@@ -1128,7 +1129,7 @@ if (message.content.startsWith("/unwarn")){
             if (+circle == +args[3] - 1){
               moderation_warns--
               let schat = message.guild.channels.find(c => c.name == "spectator-chat");
-              schat.send(`\`Administrator\` <@${message.author.id}> \`снял модератору\` <@${user.id}> \`одно предупреждение.\nИнформация: Выдано было модератором: ${str.split('\n')[+circle + 2].split('==>')[2]} по причине: ${str.split('\n')[+circle + 2].split('==>')[0]}\``);
+              schat.send(`<@${message.author.id}> \`снял модератору\` <@${user.id}> \`одно предупреждение.\nИнформация: Выдано было модератором: ${str.split('\n')[+circle + 2].split('==>')[2]} по причине: ${str.split('\n')[+circle + 2].split('==>')[0]}\``);
             }else{
               moderation_reason.push(str.split('\n')[+circle + 2].split('==>')[0]);
               moderation_time.push(str.split('\n')[+circle + 2].split('==>')[1]);
@@ -1213,7 +1214,7 @@ if (message.content.startsWith("/getmwarns")){
           }
           let text_end = `**Предупреждений: ${moderation_warns}**`;
           for (var i = 0; i < moderation_reason.length; i++){
-            text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${moderation_give[i]}\`. Причина: \`${moderation_reason[i]}\``;
+            text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${moderation_give[i]}\`. Причина: \`${moderation_reason[i]}\`**`;
           }
           message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`);
           return message.delete();
@@ -1265,7 +1266,7 @@ if (message.content.startsWith("/getmwarns")){
           }
           let text_end = `**Предупреждений: ${moderation_warns}**`;
           for (var i = 0; i < moderation_reason.length; i++){
-            text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${moderation_give[i]}\`. Причина: \`${moderation_reason[i]}\``;
+            text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${moderation_give[i]}\`. Причина: \`${moderation_reason[i]}\`**`;
           }
           message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`);
           return message.delete();
@@ -1403,6 +1404,11 @@ if (message.content.startsWith("/getwarns")){
 
 if (message.content.startsWith("/warn")){
   if (!message.member.hasPermission("MANAGE_ROLES")) return
+  if (warn_cooldown.has(message.author.id)) return message.delete();
+  warn_cooldown.add(message.author.id)
+  setTimeout(() => {
+    if (warn_cooldown.has(message.author.id)) warn_cooldown.delete(message.author.id);
+  }, 30000);
   let user = message.guild.member(message.mentions.users.first());
   const args = message.content.slice(`/warn`).split(/ +/);
   if (!user || !args[2]){
