@@ -1001,6 +1001,116 @@ if (message.content.startsWith("/mwarn")){
   });
 }
 	
+if (message.content.startsWith("/getmwarns")){
+  if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
+  let user = message.guild.member(message.mentions.users.first());
+  if (!user){
+    message.reply(`\`для выполнения нужно указать пользователя. '/getmwarns [user]'\``).then(msg => msg.delete(9000));
+    return message.delete();
+  }
+  if (user.id == message.author.id){
+    let db_server = bot.guilds.find(g => g.id == "493459379878625320");
+    let acc = db_server.channels.find(c => c.name == user.id);
+    if (!acc){
+      message.reply(`\`у вас нет текущих предупреждений.\``).then(msg => msg.delete(12000));
+      return message.delete();
+    }
+    await acc.fetchMessages({limit: 1}).then(async messages => {
+      if (messages.size == 1){
+        messages.forEach(async sacc => {
+          let str = sacc.content;
+          let moderation_level = str.split('\n')[0].match(re)[0];
+          let moderation_warns = str.split('\n')[1].match(re)[0];
+          let user_warns = str.split('\n')[+moderation_warns + 2].match(re)[0];
+          let moderation_reason = [];
+          let user_reason = [];
+          let moderation_time = [];
+          let user_time = [];
+          let moderation_give = [];
+          let user_give = [];
+
+          let circle = 0;
+          while (+moderation_warns > circle){
+            moderation_reason.push(str.split('\n')[+circle + 2].split('==>')[0]);
+            moderation_time.push(str.split('\n')[+circle + 2].split('==>')[1]);
+            moderation_give.push(str.split('\n')[+circle + 2].split('==>')[2]);
+            circle++;
+          }
+
+          circle = 0;
+          while (+user_warns > circle){
+            user_reason.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[0]);
+            user_time.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1]);
+            user_give.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]);
+            circle++;
+          }
+          let text_end = `**Предупреждений: ${moderation_warns}**`;
+          for (var i = 0; i < moderation_reason.length; i++){
+            text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${moderation_give[i]}\`. Причина: \`${moderation_reason[i]}\``;
+          }
+          message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`);
+          return message.delete();
+        });
+      }else{
+        message.reply(`\`ошибка выполнения 605. [ACC=${user.id}]\``).then(msg => msg.pin());
+        return message.delete();
+      }
+    });
+  }else{
+    if (!message.member.hasPermission("ADMINISTRATOR")){
+      message.reply(`\`у вас нет прав модератора для просмотра чужой статистики.\``).then(msg => msg.delete(7000));
+      return message.delete();
+    }
+    let db_server = bot.guilds.find(g => g.id == "493459379878625320");
+    let acc = db_server.channels.find(c => c.name == user.id);
+    if (!acc){
+      message.reply(`\`у пользователя нет предупреждений.\``).then(msg => msg.delete(12000));
+      return message.delete();
+    }
+    await acc.fetchMessages({limit: 1}).then(async messages => {
+      if (messages.size == 1){
+        messages.forEach(async sacc => {
+          let str = sacc.content;
+          let moderation_level = str.split('\n')[0].match(re)[0];
+          let moderation_warns = str.split('\n')[1].match(re)[0];
+          let user_warns = str.split('\n')[+moderation_warns + 2].match(re)[0];
+          let moderation_reason = [];
+          let user_reason = [];
+          let moderation_time = [];
+          let user_time = [];
+          let moderation_give = [];
+          let user_give = [];
+
+          let circle = 0;
+          while (+moderation_warns > circle){
+            moderation_reason.push(str.split('\n')[+circle + 2].split('==>')[0]);
+            moderation_time.push(str.split('\n')[+circle + 2].split('==>')[1]);
+            moderation_give.push(str.split('\n')[+circle + 2].split('==>')[2]);
+            circle++;
+          }
+
+          circle = 0;
+          while (+user_warns > circle){
+            user_reason.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[0]);
+            user_time.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1]);
+            user_give.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]);
+            circle++;
+          }
+          let text_end = `**Предупреждений: ${moderation_warns}**`;
+          for (var i = 0; i < moderation_reason.length; i++){
+            text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${moderation_give[i]}\`. Причина: \`${moderation_reason[i]}\``;
+          }
+          message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`);
+          return message.delete();
+        });
+      }else{
+        message.reply(`\`ошибка выполнения 605. [ACC=${user.id}]\``).then(msg => msg.pin());
+        return message.delete();
+      }
+    });
+  }
+}
+	
 if (message.content.startsWith("/getwarns")){
   let user = message.guild.member(message.mentions.users.first());
   if (!user){
