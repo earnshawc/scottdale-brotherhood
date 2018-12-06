@@ -1097,7 +1097,7 @@ if (message.content.startsWith("/unwarn"){
         message.reply(`\`произошла ошибка. [USER=${user.id}]\``).then(msg => msg.delete(9000));
         return message.delete();
       }
-    }
+    });
   }else if (args[2] == "mod"){
     if (!message.member.hasPermission("ADMINISTRATOR")){
       message.reply(`\`недостаточно прав доступа к данному разделу!\``).then(msg => msg.delete(9000));
@@ -1164,7 +1164,7 @@ if (message.content.startsWith("/unwarn"){
         message.reply(`\`произошла ошибка. [USER=${user.id}]\``).then(msg => msg.delete(9000));
         return message.delete();
       }
-    }
+    });
   }
 }
 	
