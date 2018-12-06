@@ -1001,6 +1001,173 @@ if (message.content.startsWith("/mwarn")){
   });
 }
 	
+if (message.content.startsWith("/unwarn"){
+  if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
+  let user = message.guild.member(message.mentions.users.first());
+  if (!user){
+    message.reply(`\`пользователь не указан! '/unwarn [пользователь] [тип] [число]'\``).then(msg => msg.delete(9000));
+    return message.delete();
+  }
+  const args = message.content.slice(`/unwarn`).split(/ +/);
+  if (!args[2]){
+    message.reply(`\`тип не указан! '/unwarn [пользователь] [тип] [число]'\``).then(msg => msg.delete(9000));
+    return message.delete();
+  }
+  if (args[2] != 'user' && args[2] != 'mod'){
+    message.reply(`\`тип может быть 'user' или 'mod'! '/unwarn [пользователь] [тип] [число]'\``).then(msg => msg.delete(9000));
+    return message.delete();
+  }
+  if (!args[3]){
+    message.reply(`\`номер предупреждения не указан! '/unwarn [пользователь] [тип] [число]'\``).then(msg => msg.delete(9000));
+    return message.delete();
+  }
+  if (typeof(+args[3]) != number){
+    message.reply(`\`укажите число! '/unwarn [пользователь] [тип] [число]'\``).then(msg => msg.delete(9000));
+    return message.delete();
+  }
+  if (+args[3] > 2 || +args[3] < 1){
+    message.reply(`\`можно указать 1 или 2! '/unwarn [пользователь] [тип] [число]'\``).then(msg => msg.delete(9000));
+    return message.delete();
+  }
+  if (args[2] == "user"){
+    if (user.hasPermission("MANAGE_ROLES") && !message.member.hasPermission("ADMINISTRATOR")){
+      message.reply(`\`модератору нельзя снимать предупреждения!\``).then(msg => msg.delete(9000));
+      return message.delete();
+    }
+    let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
+    let report_channel = dataserver.channels.find(c => c.name == user.id);
+    if (!report_channel){
+      message.reply(`\`у пользователя нет предупреждений!\``).then(msg => msg.delete(9000));
+      return message.delete();
+    }
+    await report_channel.fetchMessages({limit: 1}).then(async messages => {
+      if (messages.size == 1){
+        messages.forEach(async sacc => {
+          let str = sacc.content;
+          let moderation_level = str.split('\n')[0].match(re)[0];
+          let moderation_warns = str.split('\n')[1].match(re)[0];
+          let user_warns = str.split('\n')[+moderation_warns + 2].match(re)[0];
+          let moderation_reason = [];
+          let user_reason = [];
+          let moderation_time = [];
+          let user_time = [];
+          let moderation_give = [];
+          let user_give = [];
+          
+          let circle = 0;
+          while (+moderation_warns > circle){
+            moderation_reason.push(str.split('\n')[+circle + 2].split('==>')[0]);
+            moderation_time.push(str.split('\n')[+circle + 2].split('==>')[1]);
+            moderation_give.push(str.split('\n')[+circle + 2].split('==>')[2]);
+            circle++;
+          }
+
+          circle = 0;
+          while (+user_warns > circle){
+            if (+circle == +args[3] - 1){
+              user_warns--
+              let genchannel = message.guild.channels.find(c => c.name == "general");
+              genchannel.send(`<@${user.id}>, \`вам было снято одно предупреждение. Источник: ${message.member.displayName}\``);
+              let schat = message.guild.channels.find(c => c.name == "spectator-chat");
+              schat.send(`\`Модератор\` <@${message.author.id}> \`снял пользователю\` <@${user.id}> \`одно предупреждение.\nИнформация: Выдано было модератором: ${str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]} по причине: ${str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1]}\``);
+            }else{
+              user_reason.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[0]);
+              user_time.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1]);
+              user_give.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]);
+            }
+            circle++;
+          }
+          let text_end = `Уровень модератора: ${moderation_level}\n` + 
+          `Предупреждения модератора: ${moderation_warns}`;
+          for (var i = 0; i < moderation_reason.length; i++){
+            text_end = text_end + `\n${moderation_reason[i]}==>${moderation_time[i]}==>${moderation_give[i]}`;
+          }
+          text_end = text_end + `\nПредупреждений: ${+user_warns}`;
+          for (var i = 0; i < user_reason.length; i++){
+            text_end = text_end + `\n${user_reason[i]}==>${user_time[i]}==>${user_give[i]}`;
+          }
+          if (+moderation_level == 0 && +moderation_warns == 0 && +user_warns == 0){
+            report_channel.delete();
+          }else{
+            sacc.edit(text_end);
+          }
+          message.delete()
+        });
+      }else{
+        message.reply(`\`произошла ошибка. [USER=${user.id}]\``).then(msg => msg.delete(9000));
+        return message.delete();
+      }
+    }
+  }else if (args[2] == "mod"){
+    if (!message.member.hasPermission("ADMINISTRATOR")){
+      message.reply(`\`недостаточно прав доступа к данному разделу!\``).then(msg => msg.delete(9000));
+      return message.delete();
+    }
+    let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
+    let report_channel = dataserver.channels.find(c => c.name == user.id);
+    if (!report_channel){
+      message.reply(`\`у пользователя нет предупреждений!\``).then(msg => msg.delete(9000));
+      return message.delete();
+    }
+    await report_channel.fetchMessages({limit: 1}).then(async messages => {
+      if (messages.size == 1){
+        messages.forEach(async sacc => {
+          let str = sacc.content;
+          let moderation_level = str.split('\n')[0].match(re)[0];
+          let moderation_warns = str.split('\n')[1].match(re)[0];
+          let user_warns = str.split('\n')[+moderation_warns + 2].match(re)[0];
+          let moderation_reason = [];
+          let user_reason = [];
+          let moderation_time = [];
+          let user_time = [];
+          let moderation_give = [];
+          let user_give = [];
+          
+          let circle = 0;
+          while (+moderation_warns > circle){
+            if (+circle == +args[3] - 1){
+              moderation_warns--
+              let schat = message.guild.channels.find(c => c.name == "spectator-chat");
+              schat.send(`\`Administrator\` <@${message.author.id}> \`снял модератору\` <@${user.id}> \`одно предупреждение.\nИнформация: Выдано было модератором: ${str.split('\n')[+circle + 2].split('==>')[2]} по причине: ${str.split('\n')[+circle + 2].split('==>')[0]}\``);
+            }else{
+              moderation_reason.push(str.split('\n')[+circle + 2].split('==>')[0]);
+              moderation_time.push(str.split('\n')[+circle + 2].split('==>')[1]);
+              moderation_give.push(str.split('\n')[+circle + 2].split('==>')[2]);
+            }
+            circle++;
+          }
+
+          circle = 0;
+          while (+user_warns > circle){
+            user_reason.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[0]);
+            user_time.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1]);
+            user_give.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]);
+            circle++;
+          }
+          let text_end = `Уровень модератора: ${moderation_level}\n` + 
+          `Предупреждения модератора: ${moderation_warns}`;
+          for (var i = 0; i < moderation_reason.length; i++){
+            text_end = text_end + `\n${moderation_reason[i]}==>${moderation_time[i]}==>${moderation_give[i]}`;
+          }
+          text_end = text_end + `\nПредупреждений: ${+user_warns}`;
+          for (var i = 0; i < user_reason.length; i++){
+            text_end = text_end + `\n${user_reason[i]}==>${user_time[i]}==>${user_give[i]}`;
+          }
+          if (+moderation_level == 0 && +moderation_warns == 0 && +user_warns == 0){
+            report_channel.delete();
+          }else{
+            sacc.edit(text_end);
+          }
+          message.delete()
+        });
+      }else{
+        message.reply(`\`произошла ошибка. [USER=${user.id}]\``).then(msg => msg.delete(9000));
+        return message.delete();
+      }
+    }
+  }
+}
+	
 if (message.content.startsWith("/getmwarns")){
   if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
   let user = message.guild.member(message.mentions.users.first());
