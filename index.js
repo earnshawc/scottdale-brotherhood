@@ -1021,7 +1021,7 @@ if (message.content.startsWith("/unwarn")){
     message.reply(`\`номер предупреждения не указан! '/unwarn [пользователь] [тип] [число]'\``).then(msg => msg.delete(9000));
     return message.delete();
   }
-  if (typeof(+args[3]) != number){
+  if (typeof(+args[3]) != "number"){
     message.reply(`\`укажите число! '/unwarn [пользователь] [тип] [число]'\``).then(msg => msg.delete(9000));
     return message.delete();
   }
