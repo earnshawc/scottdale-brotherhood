@@ -1001,7 +1001,7 @@ if (message.content.startsWith("/mwarn")){
   });
 }
 	
-if (message.content.startsWith("/unwarn"){
+if (message.content.startsWith("/unwarn")){
   if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
   let user = message.guild.member(message.mentions.users.first());
   if (!user){
