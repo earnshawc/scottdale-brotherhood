@@ -784,7 +784,7 @@ if (message.content == '/close'){
     }
     
     if (message.content.startsWith("/add")){
-  if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("MANAGE_ROLES")){
+  if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("ADMINISTRATOR")){
     message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(10000));
     return message.delete();
   }
@@ -825,7 +825,7 @@ if (message.content == '/close'){
 }
 
 if (message.content.startsWith("/del")){
-  if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("MANAGE_ROLES")){
+  if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("ADMINISTRATOR")){
     message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(10000));
     return message.delete();
   }
