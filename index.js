@@ -676,12 +676,16 @@ if (message.content == '/close'){
   if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
   if (!message.channel.name.startsWith('ticket-')) return message.delete();
   if (message.channel.topic == 'Жалоба закрыта.') return message.delete();
+  let full_support = false;
   let s_category = message.guild.channels.find(c => c.name == "Корзина");
   if (!s_category) return message.delete(3000);
   await message.channel.setParent(s_category.id).catch(err => {
-    message.reply(`\`корзина заполнена! Повторите попытку чуть позже!\``).then(msg => msg.delete(12000));
-    return message.delete();
+    full_support = true;
   });
+  if (full_support){
+    message.reply(`\`корзина заполнена! Повторите попытку чуть позже!\``).then(msg => msg.delete(12000));
+    return message.delete();  
+  }
   let memberid;
   await message.channel.permissionOverwrites.forEach(async perm => {
     if (perm.type == `member`){
