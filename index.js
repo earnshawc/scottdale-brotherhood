@@ -513,7 +513,7 @@ bot.on('message', async message => {
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
         if (!message.channel.name.startsWith('ticket-')) return message.delete();
         if (message.channel.topic == 'Жалоба закрыта.' || message.channel.topic == 'Жалоба на рассмотрении.') return message.delete();
-        let memberid;
+        let memberid = 'не найден';
         await message.channel.permissionOverwrites.forEach(async perm => {
             if (perm.type == `member`){
                 memberid = await perm.id;
@@ -550,8 +550,13 @@ bot.on('message', async message => {
         await message.channel.setParent(s_category.id);
         let sp_chat_get = message.guild.channels.find(c => c.name == "reports-log");
         message.channel.setTopic('Жалоба на рассмотрении.')
-        message.channel.send(`\`[STATUS]\` <@${memberid}>, \`вашей жалобе был установлен статус: 'На рассмотрении'. Источник: ${message.member.displayName}\``);
-        sp_chat_get.send(`\`[HOLD]\` \`Модератор ${message.member.displayName} установил жалобе\` <#${message.channel.id}> \`статус 'На рассмотрении'.\``);
+        if (memberid != 'не найден'){
+            message.channel.send(`\`[STATUS]\` <@${memberid}>, \`вашей жалобе был установлен статус: 'На рассмотрении'. Источник: ${message.member.displayName}\``);
+            sp_chat_get.send(`\`[HOLD]\` \`Модератор ${message.member.displayName} установил жалобе\` <#${message.channel.id}> \`статус 'На рассмотрении'.\``);
+        }else{
+            message.channel.send(`\`[STATUS]\` \`Данной жалобе был установлен статус: 'На рассмотрении'. Источник: ${message.member.displayName}\``);
+            sp_chat_get.send(`\`[HOLD]\` \`Модератор ${message.member.displayName} установил жалобе\` <#${message.channel.id}> \`статус 'На рассмотрении'.\``);
+        }
         message.delete();
     }
 	
@@ -579,7 +584,7 @@ bot.on('message', async message => {
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
         if (!message.channel.name.startsWith('ticket-')) return message.delete();
         if (message.channel.topic == 'Жалоба закрыта.' || message.channel.topic != 'Жалоба на рассмотрении.') return message.delete();
-        let memberid;
+        let memberid = 'не найден';
         await message.channel.permissionOverwrites.forEach(async perm => {
             if (perm.type == `member`){
                 memberid = await perm.id;
@@ -616,7 +621,11 @@ bot.on('message', async message => {
         await message.channel.setParent(s_category.id);
         let sp_chat_get = message.guild.channels.find(c => c.name == "reports-log");
         message.channel.setTopic('Жалоба в обработке.');
-        message.channel.send(`\`[STATUS]\` <@${memberid}>, \`вашей жалобе был установлен статус: 'В обработке'. Источник: ${message.member.displayName}\``);
+        if (memberid != 'не найден'){
+            message.channel.send(`\`[STATUS]\` <@${memberid}>, \`вашей жалобе был установлен статус: 'В обработке'. Источник: ${message.member.displayName}\``);
+        }else{
+            message.channel.send(`\`[STATUS]\` \`Данной жалобе был установлен статус: 'В обработке'. Источник: ${message.member.displayName}\``);
+        }
         sp_chat_get.send(`\`[UNWAIT]\` \`Модератор ${message.member.displayName} убрал жалобе\` <#${message.channel.id}> \`статус 'На рассмотрении'.\``);
         message.delete();
     }
@@ -625,7 +634,7 @@ bot.on('message', async message => {
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
         if (!message.channel.name.startsWith('ticket-')) return message.delete();
         if (message.channel.topic == 'Жалоба закрыта.') return message.delete();
-        let memberid;
+        let memberid = 'не найден';
         await message.channel.permissionOverwrites.forEach(async perm => {
             if (perm.type == `member`){
                 memberid = await perm.id;
@@ -688,7 +697,11 @@ bot.on('message', async message => {
             ADD_REACTIONS: false,
         })  
         let sp_chat_get = message.guild.channels.find(c => c.name == "reports-log");
-        message.channel.send(`\`[STATUS]\` <@${memberid}>, \`ваше обращение было передано администрации. Источник: ${message.member.displayName}\``);
+        if (memberid != 'не найден'){        
+            message.channel.send(`\`[STATUS]\` <@${memberid}>, \`ваше обращение было передано администрации. Источник: ${message.member.displayName}\``);
+        }else{
+            message.channel.send(`\`[STATUS]\` \`Данное обращение было передано администрации. Источник: ${message.member.displayName}\``);
+        }
         sp_chat_get.send(`\`[ADMIN]\` \`Модератор ${message.member.displayName} передал жалобу\` <#${message.channel.id}> \`администрации.\``);
         message.delete();
     }
@@ -707,7 +720,7 @@ bot.on('message', async message => {
             message.reply(`\`корзина заполнена! Повторите попытку чуть позже!\``).then(msg => msg.delete(12000));
             return message.delete();  
         }
-        let memberid;
+        let memberid = 'не найден';
         await message.channel.permissionOverwrites.forEach(async perm => {
             if (perm.type == `member`){
             memberid = await perm.id;
@@ -749,27 +762,33 @@ bot.on('message', async message => {
             `**Вопросы на рассмотрении: ${info_rep[2]}**\n` +
             `**Закрытых: ${+info_rep[3] + 1}**`)
         }
-        await message.channel.overwritePermissions(message.guild.members.find(m => m.id == memberid), {
-            // GENERAL PERMISSIONS
-            CREATE_INSTANT_INVITE: false,
-            MANAGE_CHANNELS: false,
-            MANAGE_ROLES: false,
-            MANAGE_WEBHOOKS: false,
-            // TEXT PERMISSIONS
-            VIEW_CHANNEL: true,
-            SEND_MESSAGES: false,
-            SEND_TTS_MESSAGES: false,
-            MANAGE_MESSAGES: false,
-            EMBED_LINKS: false,
-            ATTACH_FILES: false,
-            READ_MESSAGE_HISTORY: true,
-            MENTION_EVERYONE: false,
-            USE_EXTERNAL_EMOJIS: false,
-            ADD_REACTIONS: false,
-        }) 
+        if (memberid != 'не найден'){
+            await message.channel.overwritePermissions(message.guild.members.find(m => m.id == memberid), {
+                // GENERAL PERMISSIONS
+                CREATE_INSTANT_INVITE: false,
+                MANAGE_CHANNELS: false,
+                MANAGE_ROLES: false,
+                MANAGE_WEBHOOKS: false,
+                // TEXT PERMISSIONS
+                VIEW_CHANNEL: true,
+                SEND_MESSAGES: false,
+                SEND_TTS_MESSAGES: false,
+                MANAGE_MESSAGES: false,
+                EMBED_LINKS: false,
+                ATTACH_FILES: false,
+                READ_MESSAGE_HISTORY: true,
+                MENTION_EVERYONE: false,
+                USE_EXTERNAL_EMOJIS: false,
+                ADD_REACTIONS: false,
+            }) 
+        }
         let sp_chat_get = message.guild.channels.find(c => c.name == "reports-log");
         message.channel.setTopic('Жалоба закрыта.');
-        message.channel.send(`\`[STATUS]\` <@${memberid}>, \`вашей жалобе был установлен статус: 'Закрыта'. Источник: ${message.member.displayName}\``);
+        if (memberid != 'не найден'){
+            message.channel.send(`\`[STATUS]\` <@${memberid}>, \`вашей жалобе был установлен статус: 'Закрыта'. Источник: ${message.member.displayName}\``);
+        }else{
+            message.channel.send(`\`[STATUS]\` \`Данной жалобе был установлен статус: 'Закрыта'. Источник: ${message.member.displayName}\``);
+        }
         sp_chat_get.send(`\`[CLOSE]\` \`Модератор ${message.member.displayName} установил жалобе\` <#${message.channel.id}> \`статус 'Закрыта'.\``);
         message.delete();
     }
