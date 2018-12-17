@@ -961,7 +961,7 @@ bot.on('message', async message => {
             }).then(async (answer) => {
                 if (answer.first().content != "-"){
                     question.delete().catch(err => console.error(err));
-                    setembed_fields[+args[1] - 1] = `${args[2]}<=+=>${answer.first().content}`;
+                    setembed_fields[+args[1] - 1] = `${cmd_value}<=+=>${answer.first().content}`;
                     answer.first().delete();
                     message.reply(`\`вы успешно отредактировали поле №${args[1]}!\nДелаем отступ после данного поля (да/нет)? На ответ 30 секунд.\``).then(async vopros => {
                         message.channel.awaitMessages(responsed => responsed.member.id == message.member.id, {
