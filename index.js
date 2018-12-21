@@ -911,6 +911,7 @@ bot.on('message', async message => {
         if (!acc){
             await db_server.createChannel(user.id).then(async chan => {
                 await chan.setParent(db_parent.id);
+		await chan.setTopic(`<@${user.id}>`);
                 acc = chan;
             });
         }
@@ -1232,6 +1233,7 @@ if (message.content.startsWith("/mwarn")){
   if (!acc){
     await db_server.createChannel(user.id).then(async chan => {
       await chan.setParent(db_parent.id);
+      await chan.setTopic(`<@${user.id}>`);
       acc = chan;
     });
   }
@@ -1795,6 +1797,7 @@ if (message.content.startsWith("/warn")){
   if (!acc){
     await db_server.createChannel(user.id).then(async chan => {
       await chan.setParent(db_parent.id);
+      await chan.setTopic(`<@${user.id}>`);
       acc = chan;
     });
   }
