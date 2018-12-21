@@ -888,7 +888,7 @@ bot.on('message', async message => {
             message.reply(`\`укажи число! '/setup [user] [уровень]'\``)
             return message.delete();
         }
-        if (typeof args[2] != "number") {
+        if (typeof +args[2] != "number") {
             message.reply(`\`укажи число! '/setup [user] [уровень]'\``)
             return message.delete();
         }
