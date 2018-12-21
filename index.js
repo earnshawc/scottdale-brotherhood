@@ -863,14 +863,150 @@ bot.on('message', async message => {
         return bot.destroy();
     }
 	
-	if (message.content == '/embhelp'){
-        if (!message.member.hasPermission("MANAGE_ROLES")) return
+    if (message.content.startsWith("/setup")){
+        let level_mod = 0;
+        let db_server = bot.guilds.find(g => g.id == "493459379878625320");
+        let db_parent = db_server.channels.find(c => c.name == 'db_users');
+        let acc_creator = db_server.channels.find(c => c.name == message.author.id);
+        if (acc_creator){
+            await acc_creator.fetchMessages({limit: 1}).then(async messages => {
+                if (messages.size == 1){
+                    messages.forEach(async sacc => {
+                        level_mod = +str.split('\n')[0].match(re)[0];
+                    });
+                }
+            });
+        }
+        if (!message.member.hasPermission("ADMINISTRATOR") && level_mod < 2) return
+        let user = message.guild.member(message.mentions.users.first());
+        if (!user){
+            message.reply(`\`пользователь не указан!\``)
+            return message.delete();
+        }
+        const args = message.content.slice(`/setup`).split(/ +/);
+        if (!args[2]){
+            message.reply(`\`укажи число! '/setup [user] [уровень]'\``)
+            return message.delete();
+        }
+        if (typeof args[2] != "number") {
+            message.reply(`\`укажи число! '/setup [user] [уровень]'\``)
+            return message.delete();
+        }
+        /*
+        [0] - снять права доступа
+        [1] - может использовать /embhelp и все что с ним связано.
+        [2] - может выдавать права доступа на /embhelp
+        ADMINISTRATOR само собой
+        */
+        if (args[2] > 2 || args[2] < 0){
+            message.reply(`\`укажи верный уровень доступа! '/setup [user] [уровень (0-2)]'\``)
+            return message.delete();
+        }
+        let acc = db_server.channels.find(c => c.name == user.id);
+        if (!acc){
+            await db_server.createChannel(user.id).then(async chan => {
+                await chan.setParent(db_parent.id);
+                acc = chan;
+            });
+        }
+
+        await acc.fetchMessages({limit: 1}).then(async messages => {
+            if (messages.size == 1){
+                messages.forEach(async sacc => {
+                    let str = sacc.content;
+                    let moderation_level = str.split('\n')[0].match(re)[0];
+                    let moderation_warns = str.split('\n')[1].match(re)[0];
+                    let user_warns = str.split('\n')[+moderation_warns + 2].match(re)[0];
+                    let moderation_reason = [];
+                    let user_reason = [];
+                    let moderation_time = [];
+                    let user_time = [];
+                    let moderation_give = [];
+                    let user_give = [];
+                    
+                    let circle = 0;
+                    while (+moderation_warns > circle){
+                        moderation_reason.push(str.split('\n')[+circle + 2].split('==>')[0]);
+                        moderation_time.push(str.split('\n')[+circle + 2].split('==>')[1]);
+                        moderation_give.push(str.split('\n')[+circle + 2].split('==>')[2]);
+                        circle++;
+                    }
+            
+                    circle = 0;
+                    while (+user_warns > circle){
+                        user_reason.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[0]);
+                        user_time.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1]);
+                        user_give.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]);
+                        circle++;
+                    }
+                    
+                    moderation_level = +args[2];
+
+                    if (+moderation_level == 0 && +moderation_warns == 0 && +user_warns == 0){
+                        acc.delete();
+                    }else{
+                        let text_end = `Уровень модератора: ${+moderation_level}\n` + 
+                        `Предупреждения модератора: ${+moderation_warns}`;
+                        for (var i = 0; i < moderation_reason.length; i++){
+                        text_end = text_end + `\n${moderation_reason[i]}==>${moderation_time[i]}==>${moderation_give[i]}`;
+                        }
+                        text_end = text_end + `\nПредупреждений: ${+user_warns}`;
+                        for (var i = 0; i < user_reason.length; i++){
+                        text_end = text_end + `\n${user_reason[i]}==>${user_time[i]}==>${user_give[i]}`;
+                        }
+                        sacc.edit(text_end);
+                    }
+                    let ann = message.guild.channels.find(c => c.name == "spectator-chat");
+                    ann.send(`\`Модератор\` <@${message.author.id}> \`установил пользователю <@${user.id}> уровень модерирования: ${args[2]}\``);
+                    return message.delete();
+                });
+            }else{
+                if (+args[2] != 0){
+                    await acc.send(`Уровень модератора: ${args[2]}\n` +
+                    `Предупреждения модератора: 0\n` +
+                    `Предупреждений: 0`);
+                    let ann = message.guild.channels.find(c => c.name == "spectator-chat");
+                    ann.send(`\`Модератор\` <@${message.author.id}> \`установил пользователю <@${user.id}> уровень модерирования: ${args[2]}\``);
+                    return message.delete();
+                }
+            }
+        });
+    }
+	
+    if (message.content == '/embhelp'){
+        let level_mod = 0;
+        let db_server = bot.guilds.find(g => g.id == "493459379878625320");
+        let db_parent = db_server.channels.find(c => c.name == 'db_users');
+        let acc_creator = db_server.channels.find(c => c.name == message.author.id);
+        if (acc_creator){
+            await acc_creator.fetchMessages({limit: 1}).then(async messages => {
+                if (messages.size == 1){
+                    messages.forEach(async sacc => {
+                        level_mod = +str.split('\n')[0].match(re)[0];
+                    });
+                }
+            });
+        }
+        if (!message.member.hasPermission("ADMINISTRATOR") && level_mod < 1) return
         message.reply(`\`Команды для модерации: /embsetup, /embfield, /embsend - отправить.\``);
         return message.delete();
     }
 
     if (message.content.startsWith("/embsetup")){
-        if (!message.member.hasPermission("MANAGE_ROLES")) return
+        let level_mod = 0;
+        let db_server = bot.guilds.find(g => g.id == "493459379878625320");
+        let db_parent = db_server.channels.find(c => c.name == 'db_users');
+        let acc_creator = db_server.channels.find(c => c.name == message.author.id);
+        if (acc_creator){
+            await acc_creator.fetchMessages({limit: 1}).then(async messages => {
+                if (messages.size == 1){
+                    messages.forEach(async sacc => {
+                        level_mod = +str.split('\n')[0].match(re)[0];
+                    });
+                }
+            });
+        }
+        if (!message.member.hasPermission("ADMINISTRATOR") && level_mod < 1) return
         const args = message.content.slice(`/embsetup`).split(/ +/);
         if (!args[1]){
             message.reply(`\`укажите, что вы установите! Ниже предоставлен список настроек.\`\n\`[1] - Название\`\n\`[2] - Описание\`\n\`[3] - Цвет [#FFFFFF]\`\n\`[4] - Время\`\n\`[5] - Картинка\`\n\`[6] - Подпись\`\n\`[7] - Картинка к подписи\``);
@@ -925,7 +1061,20 @@ bot.on('message', async message => {
     }
 
     if (message.content.startsWith("/embfield")){
-        if (!message.member.hasPermission("MANAGE_ROLES")) return
+        let level_mod = 0;
+        let db_server = bot.guilds.find(g => g.id == "493459379878625320");
+        let db_parent = db_server.channels.find(c => c.name == 'db_users');
+        let acc_creator = db_server.channels.find(c => c.name == message.author.id);
+        if (acc_creator){
+            await acc_creator.fetchMessages({limit: 1}).then(async messages => {
+                if (messages.size == 1){
+                    messages.forEach(async sacc => {
+                        level_mod = +str.split('\n')[0].match(re)[0];
+                    });
+                }
+            });
+        }
+        if (!message.member.hasPermission("ADMINISTRATOR") && level_mod < 1) return
         const args = message.content.slice(`/embsetup`).split(/ +/);
         if (!args[1]){
             message.reply(`\`укажите номер поля, которое вы хотите отредактировать!\``);
@@ -993,7 +1142,20 @@ bot.on('message', async message => {
     }
 
     if (message.content == "/embsend"){
-        if (!message.member.hasPermission("MANAGE_ROLES")) return
+        let level_mod = 0;
+        let db_server = bot.guilds.find(g => g.id == "493459379878625320");
+        let db_parent = db_server.channels.find(c => c.name == 'db_users');
+        let acc_creator = db_server.channels.find(c => c.name == message.author.id);
+        if (acc_creator){
+            await acc_creator.fetchMessages({limit: 1}).then(async messages => {
+                if (messages.size == 1){
+                    messages.forEach(async sacc => {
+                        level_mod = +str.split('\n')[0].match(re)[0];
+                    });
+                }
+            });
+        }
+        if (!message.member.hasPermission("ADMINISTRATOR") && level_mod < 1) return
         const embed = new Discord.RichEmbed();
         if (setembed_general[0] != "не указано") embed.setTitle(setembed_general[0]);
         if (setembed_general[1] != "не указано") embed.setDescription(setembed_general[1]);
@@ -1011,47 +1173,6 @@ bot.on('message', async message => {
         message.channel.send(embed).catch(err => message.channel.send(`\`Хм.. Не получается. Возможно вы сделали что-то не так.\``));
         return message.delete();
     }
-    
-    if (message.content.startsWith("/add")){
-  if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("ADMINISTRATOR")){
-    message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(10000));
-    return message.delete();
-  }
-  let user = message.guild.member(message.mentions.users.first());
-  if (!user){
-    message.reply(`\`укажите пользователя! '/add @упоминание'\``).then(msg => msg.delete(15000));
-    return message.delete();
-  }
-  let fbi_category = message.guild.channels.find(c => c.name == "FBI ALL CHANNELS");
-  await fbi_category.overwritePermissions(user, {
-    // GENERAL PERMISSIONS
-    CREATE_INSTANT_INVITE: false,
-    MANAGE_CHANNELS: false,
-    MANAGE_ROLES: false,
-    MANAGE_WEBHOOKS: false,
-    // TEXT PERMISSIONS
-    VIEW_CHANNEL: true,
-    SEND_MESSAGES: true,
-    SEND_TTS_MESSAGES: false,
-    MANAGE_MESSAGES: false,
-    EMBED_LINKS: true,
-    ATTACH_FILES: true,
-    READ_MESSAGE_HISTORY: true,
-    MENTION_EVERYONE: false,
-    USE_EXTERNAL_EMOJIS: true,
-    ADD_REACTIONS: true,
-      
-    CONNECT: true,
-    SPEAK: true,
-    MUTE_MEMBERS: false,
-    DEAFEN_MEMBERS: false,
-    MOVE_MEMBERS: false,
-    USE_VAD: true,
-    PRIORITY_SPEAKER: false,
-  })
-  message.reply(`\`вы успешно выдали доступ пользователю\` <@${user.id}> \`к каналу FBI.\``);
-  return message.delete();
-}
 
 if (message.content.startsWith("/del")){
   if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("ADMINISTRATOR")){
