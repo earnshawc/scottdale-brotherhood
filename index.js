@@ -877,7 +877,7 @@ bot.on('message', async message => {
                 }
             });
         }
-        if (!message.member.hasPermission("ADMINISTRATOR") && level_mod < 2) return
+        if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod < 2) return
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
             message.reply(`\`пользователь не указан!\``)
@@ -957,7 +957,7 @@ bot.on('message', async message => {
                         sacc.edit(text_end);
                     }
                     let ann = message.guild.channels.find(c => c.name == "spectator-chat");
-                    ann.send(`\`Модератор\` <@${message.author.id}> \`установил пользователю <@${user.id}> уровень модерирования: ${args[2]}\``);
+                    ann.send(`\`Модератор\` <@${message.author.id}> \`установил пользователю\` <@${user.id}> \`уровень модерирования: ${args[2]}\``);
                     return message.delete();
                 });
             }else{
@@ -966,7 +966,7 @@ bot.on('message', async message => {
                     `Предупреждения модератора: 0\n` +
                     `Предупреждений: 0`);
                     let ann = message.guild.channels.find(c => c.name == "spectator-chat");
-                    ann.send(`\`Модератор\` <@${message.author.id}> \`установил пользователю <@${user.id}> уровень модерирования: ${args[2]}\``);
+                    ann.send(`\`Модератор\` <@${message.author.id}> \`установил пользователю\` <@${user.id}> \`уровень модерирования: ${args[2]}\``);
                     return message.delete();
                 }
             }
@@ -987,7 +987,7 @@ bot.on('message', async message => {
                 }
             });
         }
-        if (!message.member.hasPermission("ADMINISTRATOR") && level_mod < 1) return
+        if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod < 1) return
         message.reply(`\`Команды для модерации: /embsetup, /embfield, /embsend - отправить.\``);
         return message.delete();
     }
@@ -1006,7 +1006,7 @@ bot.on('message', async message => {
                 }
             });
         }
-        if (!message.member.hasPermission("ADMINISTRATOR") && level_mod < 1) return
+        if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod < 1) return
         const args = message.content.slice(`/embsetup`).split(/ +/);
         if (!args[1]){
             message.reply(`\`укажите, что вы установите! Ниже предоставлен список настроек.\`\n\`[1] - Название\`\n\`[2] - Описание\`\n\`[3] - Цвет [#FFFFFF]\`\n\`[4] - Время\`\n\`[5] - Картинка\`\n\`[6] - Подпись\`\n\`[7] - Картинка к подписи\``);
@@ -1074,8 +1074,8 @@ bot.on('message', async message => {
                 }
             });
         }
-        if (!message.member.hasPermission("ADMINISTRATOR") && level_mod < 1) return
-        const args = message.content.slice(`/embsetup`).split(/ +/);
+        if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod < 1) return
+        const args = message.content.slice(`/embfield`).split(/ +/);
         if (!args[1]){
             message.reply(`\`укажите номер поля, которое вы хотите отредактировать!\``);
             return message.delete();
@@ -1155,7 +1155,7 @@ bot.on('message', async message => {
                 }
             });
         }
-        if (!message.member.hasPermission("ADMINISTRATOR") && level_mod < 1) return
+        if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod < 1) return
         const embed = new Discord.RichEmbed();
         if (setembed_general[0] != "не указано") embed.setTitle(setembed_general[0]);
         if (setembed_general[1] != "не указано") embed.setDescription(setembed_general[1]);
