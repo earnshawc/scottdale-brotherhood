@@ -881,7 +881,7 @@ bot.on('message', async message => {
         if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod < 2) return
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
-            message.reply(`\`пользователь не указан!\``)
+            message.reply(`\`пользователь не указан! '/setup [user] [уровень]'\``)
             return message.delete();
         }
         const args = message.content.slice(`/setup`).split(/ +/);
@@ -903,6 +903,10 @@ bot.on('message', async message => {
             message.reply(`\`укажи верный уровень доступа! '/setup [user] [уровень (0-2)]'\``)
             return message.delete();
         }
+	if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod <= +args[2]){
+            message.reply(`\`ты не можешь выдавать уровень равный твоему или выше '/setup [user] [уровень (0-2)]'\``)
+            return message.delete();
+	}
         let acc = db_server.channels.find(c => c.name == user.id);
         if (!acc){
             await db_server.createChannel(user.id).then(async chan => {
