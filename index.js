@@ -872,6 +872,7 @@ bot.on('message', async message => {
             await acc_creator.fetchMessages({limit: 1}).then(async messages => {
                 if (messages.size == 1){
                     messages.forEach(async sacc => {
+			let str = sacc.content;
                         level_mod = +str.split('\n')[0].match(re)[0];
                     });
                 }
@@ -982,6 +983,7 @@ bot.on('message', async message => {
             await acc_creator.fetchMessages({limit: 1}).then(async messages => {
                 if (messages.size == 1){
                     messages.forEach(async sacc => {
+			let str = sacc.content;
                         level_mod = +str.split('\n')[0].match(re)[0];
                     });
                 }
@@ -1001,6 +1003,7 @@ bot.on('message', async message => {
             await acc_creator.fetchMessages({limit: 1}).then(async messages => {
                 if (messages.size == 1){
                     messages.forEach(async sacc => {
+			let str = sacc.content;
                         level_mod = +str.split('\n')[0].match(re)[0];
                     });
                 }
@@ -1069,6 +1072,7 @@ bot.on('message', async message => {
             await acc_creator.fetchMessages({limit: 1}).then(async messages => {
                 if (messages.size == 1){
                     messages.forEach(async sacc => {
+			let str = sacc.content;
                         level_mod = +str.split('\n')[0].match(re)[0];
                     });
                 }
@@ -1150,6 +1154,7 @@ bot.on('message', async message => {
             await acc_creator.fetchMessages({limit: 1}).then(async messages => {
                 if (messages.size == 1){
                     messages.forEach(async sacc => {
+			let str = sacc.content;
                         level_mod = +str.split('\n')[0].match(re)[0];
                     });
                 }
