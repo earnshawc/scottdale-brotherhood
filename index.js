@@ -1184,7 +1184,7 @@ bot.on('message', async message => {
         return message.delete();
     }
 
-if (message.content.startsWith("/del")){
+if (message.content.startsWith("/del") && !message.content.includes("fam")){
   if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("ADMINISTRATOR")){
     message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(10000));
     return message.delete();
