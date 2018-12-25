@@ -1432,6 +1432,7 @@ if (message.content.startsWith("/unwarn")){
     message.reply(`\`можно указать 1 или 2! '/unwarn [пользователь] [тип] [число]'\``).then(msg => msg.delete(9000));
     return message.delete();
   }
+  args[3] = +args[3] - 1;
   if (args[2] == "user"){
     if (user.hasPermission("MANAGE_ROLES") && !message.member.hasPermission("ADMINISTRATOR")){
       message.reply(`\`модератору нельзя снимать предупреждения!\``).then(msg => msg.delete(9000));
@@ -1467,7 +1468,7 @@ if (message.content.startsWith("/unwarn")){
 
           circle = 0;
           while (+user_warns > circle){
-            if (+circle == +args[3] - 1){
+            if (+circle == +args[3]){
               user_warns--
               let genchannel = message.guild.channels.find(c => c.name == "general");
               genchannel.send(`<@${user.id}>, \`вам было снято одно предупреждение. Источник: ${message.member.displayName}\``);
@@ -1528,7 +1529,7 @@ if (message.content.startsWith("/unwarn")){
           
           let circle = 0;
           while (+moderation_warns > circle){
-            if (+circle == +args[3] - 1){
+            if (+circle == +args[3]){
               moderation_warns--
               let schat = message.guild.channels.find(c => c.name == "spectator-chat");
               schat.send(`<@${message.author.id}> \`снял модератору\` <@${user.id}> \`одно предупреждение.\nИнформация: Выдано было модератором: ${str.split('\n')[+circle + 2].split('==>')[2]} по причине: ${str.split('\n')[+circle + 2].split('==>')[0]}\``);
