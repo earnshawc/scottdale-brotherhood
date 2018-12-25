@@ -998,6 +998,47 @@ bot.on('message', async message => {
         message.reply(`\`Команды для модерации: /embsetup, /embfield, /embsend - отправить.\``);
         return message.delete();
     }
+	
+	if (message.content.startsWith("/add")){
+  if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("ADMINISTRATOR")){
+    message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(10000));
+    return message.delete();
+  }
+  let user = message.guild.member(message.mentions.users.first());
+  if (!user){
+    message.reply(`\`укажите пользователя! '/add @упоминание'\``).then(msg => msg.delete(15000));
+    return message.delete();
+  }
+  let fbi_category = message.guild.channels.find(c => c.name == "FBI ALL CHANNELS");
+  await fbi_category.overwritePermissions(user, {
+    // GENERAL PERMISSIONS
+    CREATE_INSTANT_INVITE: false,
+    MANAGE_CHANNELS: false,
+    MANAGE_ROLES: false,
+    MANAGE_WEBHOOKS: false,
+    // TEXT PERMISSIONS
+    VIEW_CHANNEL: true,
+    SEND_MESSAGES: true,
+    SEND_TTS_MESSAGES: false,
+    MANAGE_MESSAGES: false,
+    EMBED_LINKS: true,
+    ATTACH_FILES: true,
+    READ_MESSAGE_HISTORY: true,
+    MENTION_EVERYONE: false,
+    USE_EXTERNAL_EMOJIS: true,
+    ADD_REACTIONS: true,
+
+    CONNECT: true,
+    SPEAK: true,
+    MUTE_MEMBERS: false,
+    DEAFEN_MEMBERS: false,
+    MOVE_MEMBERS: false,
+    USE_VAD: true,
+    PRIORITY_SPEAKER: false,
+  })
+  message.reply(`\`вы успешно выдали доступ пользователю\` <@${user.id}> \`к каналу FBI.\``);
+  return message.delete();
+}
 
     if (message.content.startsWith("/embsetup")){
         let level_mod = 0;
