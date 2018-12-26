@@ -354,6 +354,7 @@ bot.on('message', async message => {
                                 }
                 
                                 circle = 0;
+				let rem = 0;
                                 while (+user_warns > circle){
                                     let myDate = new Date().valueOf();
                                     if (+str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1] > myDate){
@@ -361,12 +362,13 @@ bot.on('message', async message => {
                                         user_time.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1]);
                                         user_give.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]);
                                     }else{
-                                        user_warns--
+					rem++
                                         let genchannel = message.guild.channels.find(c => c.name == "general");
                                         genchannel.send(`<@${channel.name}>, \`вам было снято одно предупреждение. [Прошло 3 дня]\``);
                                     }
                                     circle++;
                                 }
+				user_warns = +user_warns - +rem;
                                 let text_end = `Уровень модератора: ${moderation_level}\n` + 
                                 `Предупреждения модератора: ${moderation_warns}`;
                                 for (var i = 0; i < moderation_reason.length; i++){
@@ -1467,9 +1469,10 @@ if (message.content.startsWith("/unwarn")){
           }
 
           circle = 0;
+	  let rem = 0;
           while (+user_warns > circle){
             if (+circle == +args[3]){
-              user_warns--
+              rem++;
               let genchannel = message.guild.channels.find(c => c.name == "general");
               genchannel.send(`<@${user.id}>, \`вам было снято одно предупреждение. Источник: ${message.member.displayName}\``);
               let schat = message.guild.channels.find(c => c.name == "spectator-chat");
@@ -1481,6 +1484,7 @@ if (message.content.startsWith("/unwarn")){
             }
             circle++;
           }
+	  user_warns = +user_warns - +rem;
           let text_end = `Уровень модератора: ${moderation_level}\n` + 
           `Предупреждения модератора: ${moderation_warns}`;
           for (var i = 0; i < moderation_reason.length; i++){
@@ -1528,9 +1532,10 @@ if (message.content.startsWith("/unwarn")){
           let user_give = [];
           
           let circle = 0;
+          let rem = 0;
           while (+moderation_warns > circle){
             if (+circle == +args[3]){
-              moderation_warns--
+              rem++;
               let schat = message.guild.channels.find(c => c.name == "spectator-chat");
               schat.send(`<@${message.author.id}> \`снял модератору\` <@${user.id}> \`одно предупреждение.\nИнформация: Выдано было модератором: ${str.split('\n')[+circle + 2].split('==>')[2]} по причине: ${str.split('\n')[+circle + 2].split('==>')[0]}\``);
             }else{
@@ -1540,7 +1545,7 @@ if (message.content.startsWith("/unwarn")){
             }
             circle++;
           }
-
+	  moderation_warns = +moderation_warns - +rem;
           circle = 0;
           while (+user_warns > circle){
             user_reason.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[0]);
