@@ -1543,7 +1543,6 @@ if (message.content.startsWith("/unwarn")){
             }
             circle++;
           }
-	  moderation_warns = +moderation_warns - +rem;
           circle = 0;
           while (+user_warns > circle){
             user_reason.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[0]);
@@ -1551,6 +1550,7 @@ if (message.content.startsWith("/unwarn")){
             user_give.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]);
             circle++;
           }
+          moderation_warns = +moderation_warns - +rem;
           let text_end = `Уровень модератора: ${moderation_level}\n` + 
           `Предупреждения модератора: ${moderation_warns}`;
           for (var i = 0; i < moderation_reason.length; i++){
