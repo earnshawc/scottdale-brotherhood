@@ -431,7 +431,6 @@ bot.on('message', async message => {
         info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
 	const imageemb = new Discord.RichEmbed()
-	.setColor("#FF0000")
         .setImage("https://imgur.com/LKDbJeM.gif")
         rep_message.edit(`` +
             `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
@@ -548,7 +547,6 @@ bot.on('message', async message => {
         info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
 	const imageemb = new Discord.RichEmbed()
-	.setColor("#FF0000")
         .setImage("https://imgur.com/LKDbJeM.gif")
         rep_message.edit(`` +
         `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
@@ -651,7 +649,6 @@ bot.on('message', async message => {
         info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
 	const imageemb = new Discord.RichEmbed()
-	.setColor("#FF0000")
         .setImage("https://imgur.com/LKDbJeM.gif")
         rep_message.edit(`` +
             `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
@@ -790,7 +787,6 @@ bot.on('message', async message => {
         info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
 	const imageemb = new Discord.RichEmbed()
-	.setColor("#FF0000")
         .setImage("https://imgur.com/LKDbJeM.gif")
         if (message.channel.topic == 'Жалоба на рассмотрении.'){
             rep_message.edit(`` +
