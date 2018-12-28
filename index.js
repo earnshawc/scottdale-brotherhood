@@ -436,7 +436,7 @@ bot.on('message', async message => {
             `**Количество вопросов за все время: ${+info_rep[0] + 1}**\n` +
             `**Необработанных модераторами: ${+info_rep[1] + 1}**\n` +
             `**Вопросы на рассмотрении: ${info_rep[2]}**\n` +
-            `**Закрытых: ${info_rep[3]}**`)
+            `**Закрытых: ${info_rep[3]}**`, {file: "https://imgur.com/LKDbJeM.gif"})
         let s_category = message.guild.channels.find(c => c.name == "Активные жалобы");
         if (!s_category) return message.delete(3000);
         await message.guild.createChannel(`ticket-${+info_rep[0] + 1}`).then(async channel => {
@@ -550,7 +550,7 @@ bot.on('message', async message => {
         `**Количество вопросов за все время: ${info_rep[0]}**\n` +
         `**Необработанных модераторами: ${+info_rep[1] - 1}**\n` +
         `**Вопросы на рассмотрении: ${+info_rep[2] + 1}**\n` +
-        `**Закрытых: ${info_rep[3]}**`)
+        `**Закрытых: ${info_rep[3]}**`, {file: "https://imgur.com/LKDbJeM.gif"})
         let s_category = message.guild.channels.find(c => c.name == "Жалобы на рассмотрении");
         if (!s_category) return message.delete(3000);
         await message.channel.setParent(s_category.id);
@@ -650,7 +650,7 @@ bot.on('message', async message => {
             `**Количество вопросов за все время: ${info_rep[0]}**\n` +
             `**Необработанных модераторами: ${+info_rep[1] + 1}**\n` +
             `**Вопросы на рассмотрении: ${+info_rep[2] - 1}**\n` +
-            `**Закрытых: ${info_rep[3]}**`)
+            `**Закрытых: ${info_rep[3]}**`, {file: "https://imgur.com/LKDbJeM.gif"})
         let s_category = message.guild.channels.find(c => c.name == "Активные жалобы");
         if (!s_category) return message.delete(3000);
         await message.channel.setParent(s_category.id);
@@ -787,7 +787,7 @@ bot.on('message', async message => {
             `**Количество вопросов за все время: ${info_rep[0]}**\n` +
             `**Необработанных модераторами: ${info_rep[1]}**\n` +
             `**Вопросы на рассмотрении: ${+info_rep[2] - 1}**\n` +
-            `**Закрытых: ${+info_rep[3] + 1}**`)
+            `**Закрытых: ${+info_rep[3] + 1}**`, {file: "https://imgur.com/LKDbJeM.gif"})
         }else{
             rep_message.edit(`` +
             `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
@@ -795,7 +795,7 @@ bot.on('message', async message => {
             `**Количество вопросов за все время: ${info_rep[0]}**\n` +
             `**Необработанных модераторами: ${+info_rep[1] - 1}**\n` +
             `**Вопросы на рассмотрении: ${info_rep[2]}**\n` +
-            `**Закрытых: ${+info_rep[3] + 1}**`)
+            `**Закрытых: ${+info_rep[3] + 1}**`, {file: "https://imgur.com/LKDbJeM.gif"})
         }
         if (memberid != 'не найден'){
             await message.channel.overwritePermissions(message.guild.members.find(m => m.id == memberid), {
