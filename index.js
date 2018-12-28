@@ -2968,13 +2968,29 @@ if (message.content == '/archive'){
         });
     }
     */
+	
+    if (message.content.startsWith("/dwarn")){
+	if (!message.member.hasPermission("ADMINISTRATOR")){
+	    message.reply(`\`недостаточно прав доступа!\``).then(msg => msg.delete(12000));
+	    return message.delete();
+	}
+	let user = message.guild.member(message.mentions.users.first());
+        if (!user){
+            message.reply(`\`пользователь не указан! '/dwarn [user]'\``)
+            return message.delete();
+        }
+	antislivsp1.delete(user.id);
+	antisplivsp2.delete(user.id);
+	let spchangg = message.guild.channels.find(c => c.name == "spectator-chat");
+	spchangg.send(`\`${message.member.displayName} очистил все предупреждения системой антислива пользователю\` <@${user.id}>`);
+    }
 
     if (message.content.toLowerCase().startsWith("/itester")){
         if (message.guild.id == "355656045600964609") return message.reply("`команда работает только на тестовом сервере Scottdale Brotherhood.`", {embed: {
             color: 3447003,
             fields: [{
                 name: "`Scottdale Brotherhood - Сервер разработчиков`",
-                value: "**[Подключение к каналу тестеров](https://discord.gg/VTE9cWk)**"
+                value: "**Набор в тестеры закрыт!**"
             }]}}).then(msg => msg.delete(12000))
         if (message.member.roles.some(r => r.name == "Tester's Team ✔")){
             return message.reply("`вы уже являетесь тестером.`")
