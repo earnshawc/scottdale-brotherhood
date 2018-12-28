@@ -439,7 +439,7 @@ bot.on('message', async message => {
             `**Количество вопросов за все время: ${+info_rep[0] + 1}**\n` +
             `**Необработанных модераторами: ${+info_rep[1] + 1}**\n` +
             `**Вопросы на рассмотрении: ${info_rep[2]}**\n` +
-            `**Закрытых: ${info_rep[3]}**`, imageemb})
+            `**Закрытых: ${info_rep[3]}**`, imageemb)
         let s_category = message.guild.channels.find(c => c.name == "Активные жалобы");
         if (!s_category) return message.delete(3000);
         await message.guild.createChannel(`ticket-${+info_rep[0] + 1}`).then(async channel => {
