@@ -430,13 +430,16 @@ bot.on('message', async message => {
         info_rep.push(rep_message.content.split('\n')[4].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
+	const imageemb = new Discord.RichEmbed()
+	.setColor("#FF0000")
+        .setImage("https://imgur.com/LKDbJeM.gif")
         rep_message.edit(`` +
             `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
             `**Тут Вы сможете задать вопрос модераторам или администраторам сервера!**\n\n` +
             `**Количество вопросов за все время: ${+info_rep[0] + 1}**\n` +
             `**Необработанных модераторами: ${+info_rep[1] + 1}**\n` +
             `**Вопросы на рассмотрении: ${info_rep[2]}**\n` +
-            `**Закрытых: ${info_rep[3]}**`, {file: "https://imgur.com/LKDbJeM.gif"})
+            `**Закрытых: ${info_rep[3]}**`, imageemb})
         let s_category = message.guild.channels.find(c => c.name == "Активные жалобы");
         if (!s_category) return message.delete(3000);
         await message.guild.createChannel(`ticket-${+info_rep[0] + 1}`).then(async channel => {
@@ -544,13 +547,16 @@ bot.on('message', async message => {
         info_rep.push(rep_message.content.split('\n')[4].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
+	const imageemb = new Discord.RichEmbed()
+	.setColor("#FF0000")
+        .setImage("https://imgur.com/LKDbJeM.gif")
         rep_message.edit(`` +
         `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
         `**Тут Вы сможете задать вопрос модераторам или администраторам сервера!**\n\n` +
         `**Количество вопросов за все время: ${info_rep[0]}**\n` +
         `**Необработанных модераторами: ${+info_rep[1] - 1}**\n` +
         `**Вопросы на рассмотрении: ${+info_rep[2] + 1}**\n` +
-        `**Закрытых: ${info_rep[3]}**`, {file: "https://imgur.com/LKDbJeM.gif"})
+        `**Закрытых: ${info_rep[3]}**`, imageemb)
         let s_category = message.guild.channels.find(c => c.name == "Жалобы на рассмотрении");
         if (!s_category) return message.delete(3000);
         await message.channel.setParent(s_category.id);
@@ -644,13 +650,16 @@ bot.on('message', async message => {
         info_rep.push(rep_message.content.split('\n')[4].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
+	const imageemb = new Discord.RichEmbed()
+	.setColor("#FF0000")
+        .setImage("https://imgur.com/LKDbJeM.gif")
         rep_message.edit(`` +
             `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
             `**Тут Вы сможете задать вопрос модераторам или администраторам сервера!**\n\n` +
             `**Количество вопросов за все время: ${info_rep[0]}**\n` +
             `**Необработанных модераторами: ${+info_rep[1] + 1}**\n` +
             `**Вопросы на рассмотрении: ${+info_rep[2] - 1}**\n` +
-            `**Закрытых: ${info_rep[3]}**`, {file: "https://imgur.com/LKDbJeM.gif"})
+            `**Закрытых: ${info_rep[3]}**`, imageemb)
         let s_category = message.guild.channels.find(c => c.name == "Активные жалобы");
         if (!s_category) return message.delete(3000);
         await message.channel.setParent(s_category.id);
@@ -780,6 +789,9 @@ bot.on('message', async message => {
         info_rep.push(rep_message.content.split('\n')[4].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
+	const imageemb = new Discord.RichEmbed()
+	.setColor("#FF0000")
+        .setImage("https://imgur.com/LKDbJeM.gif")
         if (message.channel.topic == 'Жалоба на рассмотрении.'){
             rep_message.edit(`` +
             `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
@@ -787,7 +799,7 @@ bot.on('message', async message => {
             `**Количество вопросов за все время: ${info_rep[0]}**\n` +
             `**Необработанных модераторами: ${info_rep[1]}**\n` +
             `**Вопросы на рассмотрении: ${+info_rep[2] - 1}**\n` +
-            `**Закрытых: ${+info_rep[3] + 1}**`, {file: "https://imgur.com/LKDbJeM.gif"})
+            `**Закрытых: ${+info_rep[3] + 1}**`, imageemb)
         }else{
             rep_message.edit(`` +
             `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
@@ -795,7 +807,7 @@ bot.on('message', async message => {
             `**Количество вопросов за все время: ${info_rep[0]}**\n` +
             `**Необработанных модераторами: ${+info_rep[1] - 1}**\n` +
             `**Вопросы на рассмотрении: ${info_rep[2]}**\n` +
-            `**Закрытых: ${+info_rep[3] + 1}**`, {file: "https://imgur.com/LKDbJeM.gif"})
+            `**Закрытых: ${+info_rep[3] + 1}**`, imageemb)
         }
         if (memberid != 'не найден'){
             await message.channel.overwritePermissions(message.guild.members.find(m => m.id == memberid), {
