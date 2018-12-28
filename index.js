@@ -2980,7 +2980,7 @@ if (message.content == '/archive'){
             return message.delete();
         }
 	antislivsp1.delete(user.id);
-	antisplivsp2.delete(user.id);
+	antislivsp2.delete(user.id);
 	let spchangg = message.guild.channels.find(c => c.name == "spectator-chat");
 	spchangg.send(`\`${message.member.displayName} очистил все предупреждения системой антислива пользователю\` <@${user.id}>`);
     }
