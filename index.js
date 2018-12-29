@@ -1056,7 +1056,7 @@ bot.on('message', async message => {
     USE_VAD: true,
     PRIORITY_SPEAKER: false,
   })
-  message.reply(`\`вы успешно выдали доступ пользователю\` <@${user.id}> \`к каналу FBI.\``, authorrisbot);
+  message.reply(`\`вы успешно выдали доступ пользователю\` <@${user.id}> \`к каналу FBI.\``);
   return message.delete();
 }
 
@@ -1491,7 +1491,7 @@ if (message.content.startsWith("/unwarn")){
             if (+circle == +args[3]){
               rem++;
               let genchannel = message.guild.channels.find(c => c.name == "general");
-              genchannel.send(`<@${user.id}>, \`вам было снято одно предупреждение. Источник: ${message.member.displayName}\``, authorrisbot);
+              genchannel.send(`<@${user.id}>, \`вам было снято одно предупреждение. Источник: ${message.member.displayName}\``);
               let schat = message.guild.channels.find(c => c.name == "spectator-chat");
               schat.send(`\`Модератор\` <@${message.author.id}> \`снял пользователю\` <@${user.id}> \`одно предупреждение.\nИнформация: Выдано было модератором: ${str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]} по причине: ${str.split('\n')[+circle + +moderation_warns + 3].split('==>')[0]}\``);
             }else{
@@ -1697,7 +1697,7 @@ if (message.content.startsWith("/getmwarns")){
           return message.delete();
         });
       }else{
-        message.reply(`\`ошибка выполнения 605. [ACC=${user.id}]\``, authorrisbot).then(msg => msg.pin());
+        message.reply(`\`ошибка выполнения 605. [ACC=${user.id}]\``).then(msg => msg.pin());
         return message.delete();
       }
     });
@@ -1761,7 +1761,7 @@ if (message.content.startsWith("/getwarns")){
           return message.delete();
         });
       }else{
-        message.reply(`\`ошибка выполнения 605. [ACC=${user.id}]\``, authorrisbot).then(msg => msg.pin());
+        message.reply(`\`ошибка выполнения 605. [ACC=${user.id}]\``).then(msg => msg.pin());
         return message.delete();
       }
     });
@@ -1820,7 +1820,7 @@ if (message.content.startsWith("/getwarns")){
           return message.delete();
         });
       }else{
-        message.reply(`\`ошибка выполнения 605. [ACC=${user.id}]\``, authorrisbot).then(msg => msg.pin());
+        message.reply(`\`ошибка выполнения 605. [ACC=${user.id}]\``).then(msg => msg.pin());
         return message.delete();
       }
     });
@@ -2234,9 +2234,9 @@ if (message.content.startsWith("/warn")){
                             }
                             await message.guild.members.find(m => m.id == family_leader).addRole(family_role);
                             let general = message.guild.channels.find(c => c.name == `general`);
-                            if (general) await general.send(`<@${family_leader}>, \`модератор\` <@${idmember}> \`назначил вас контролировать семью: ${family_name}\``, authorrisbot)
+                            if (general) await general.send(`<@${family_leader}>, \`модератор\` <@${idmember}> \`назначил вас контролировать семью: ${family_name}\``)
                             let fam_chat = message.guild.channels.find(c => c.name == `family-chat`);
-                            if (fam_chat) await fam_chat.send(`\`[CREATE]\` \`Пользователь\` <@${family_leader}> \`стал лидером семьи '${family_name}'! Назначил:\` <@${idmember}>`, authorrisbot);
+                            if (fam_chat) await fam_chat.send(`\`[CREATE]\` \`Пользователь\` <@${family_leader}> \`стал лидером семьи '${family_name}'! Назначил:\` <@${idmember}>`);
                             return
                         })
                     }).catch(() => {
@@ -2300,7 +2300,7 @@ if (message.content == '/archive'){
             }
         })
         if (families.length == 0){
-            message.channel.send(`\`[ERROR]\` <@${message.author.id}> \`вы не являетесь создателем/заместителем семьи!\``, authorrisbot).then(msg => msg.delete(10000));
+            message.channel.send(`\`[ERROR]\` <@${message.author.id}> \`вы не являетесь создателем/заместителем семьи!\``).then(msg => msg.delete(10000));
             return message.delete();
         }
         let user = message.guild.member(message.mentions.users.first());
@@ -2421,7 +2421,7 @@ if (message.content == '/archive'){
             }
         })
         if (families.length == 0){
-            message.channel.send(`\`[ERROR]\` <@${message.author.id}> \`вы не являетесь создателем/заместителем семьи!\``, authorrisbot).then(msg => msg.delete(10000));
+            message.channel.send(`\`[ERROR]\` <@${message.author.id}> \`вы не являетесь создателем/заместителем семьи!\``).then(msg => msg.delete(10000));
             return message.delete();
         }
         let user = message.guild.member(message.mentions.users.first());
@@ -2548,9 +2548,9 @@ if (message.content == '/archive'){
         family_channel.delete();
         family_role.delete();
         let general = message.guild.channels.find(c => c.name == `general`);
-        if (general) await general.send(`<@${family_leader.id}>, \`модератор\` <@${message.author.id}> \`удалил вашу семью: ${name}\``, authorrisbot)
+        if (general) await general.send(`<@${family_leader.id}>, \`модератор\` <@${message.author.id}> \`удалил вашу семью: ${name}\``)
         let fam_chat = message.guild.channels.find(c => c.name == `family-chat`);
-        if (fam_chat) await fam_chat.send(`\`[DELETED]\` \`Семья '${name}', главой которой был\` <@${family_leader.id}> \`была удалена модератором. Удалил:\` <@${message.author.id}>`, authorrisbot);
+        if (fam_chat) await fam_chat.send(`\`[DELETED]\` \`Семья '${name}', главой которой был\` <@${family_leader.id}> \`была удалена модератором. Удалил:\` <@${message.author.id}>`);
         return message.delete();
     }
 
