@@ -267,6 +267,9 @@ bot.on('message', async message => {
     if (message.author.id == bot.user.id) return
     
     let re = /(\d+(\.\d)*)/i;
+	
+    const authorrisbot = new Discord.RichEmbed()
+    .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
     
     if (!support_loop.has(message.guild.id) && message.channel.name != "support"){
         support_loop.add(message.guild.id)
@@ -367,7 +370,7 @@ bot.on('message', async message => {
                                     }else{
 					rem++
                                         let genchannel = message.guild.channels.find(c => c.name == "general");
-                                        genchannel.send(`<@${channel.name}>, \`вам было снято одно предупреждение. [Прошло 3 дня]\``);
+                                        genchannel.send(`<@${channel.name}>, \`вам было снято одно предупреждение. [Прошло 3 дня]\``, authorrisbot);
                                     }
                                     circle++;
                                 }
@@ -434,6 +437,7 @@ bot.on('message', async message => {
         info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
 	const imageemb = new Discord.RichEmbed()
+	.setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
         .setImage("https://imgur.com/LKDbJeM.gif")
         rep_message.edit(`` +
             `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
@@ -550,6 +554,7 @@ bot.on('message', async message => {
         info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
 	const imageemb = new Discord.RichEmbed()
+	.setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
         .setImage("https://imgur.com/LKDbJeM.gif")
         rep_message.edit(`` +
         `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
@@ -606,6 +611,7 @@ bot.on('message', async message => {
         if (!message.member.hasPermission("ADMINISTRATOR")) return message.delete();
         let textforobz = "**  ╔┓┏╦━━╦┓╔┓╔━━╗ @everyone\n  ║┗┛║┗━╣┃║┃║╯╰║ @everyone\n  ║┏┓║┏━╣┗╣┗╣╰╯║ @everyone\n  ╚┛┗╩━━╩━╩━╩━━╝ @everyone**";
         const embed = new Discord.RichEmbed()
+	.setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
         .setTitle("**Заявления на пост модератора группы**")
         .setColor("#FF8E01")
         .setDescription("**Мы вернулись, что бы обрадовать вас! Ведь " + args[1] + " " + args[2] + " пройдет набор на пост Spectator'a нашей группы Discord!\nВы сможете стать одним из нас, почуствовать себя в роли модератора группы, последить за игроками, а так же получить доступ к супер секретным функциям канала Scottdale Brotherhood. Все, что вам нужно будет делать, это наводить порядок в нашей группе и помогать игрокам!**")
@@ -652,6 +658,7 @@ bot.on('message', async message => {
         info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
 	const imageemb = new Discord.RichEmbed()
+	.setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
         .setImage("https://imgur.com/LKDbJeM.gif")
         rep_message.edit(`` +
             `**Приветствую! Вы попали в канал поддержки сервера Scottdale Brotherhood!**\n` +
@@ -790,6 +797,7 @@ bot.on('message', async message => {
         info_rep.push(rep_message.content.split('\n')[5].match(re)[0]);
         info_rep.push(rep_message.content.split('\n')[6].match(re)[0]);
 	const imageemb = new Discord.RichEmbed()
+	.setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
         .setImage("https://imgur.com/LKDbJeM.gif")
         if (message.channel.topic == 'Жалоба на рассмотрении.'){
             rep_message.edit(`` +
@@ -1013,7 +1021,7 @@ bot.on('message', async message => {
 	
 	if (message.content.startsWith("/add")){
   if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("ADMINISTRATOR")){
-    message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(10000));
+    message.reply(`\`недостаточно прав доступа.\``, authorrisbot).then(msg => msg.delete(10000));
     return message.delete();
   }
   let user = message.guild.member(message.mentions.users.first());
@@ -1048,7 +1056,7 @@ bot.on('message', async message => {
     USE_VAD: true,
     PRIORITY_SPEAKER: false,
   })
-  message.reply(`\`вы успешно выдали доступ пользователю\` <@${user.id}> \`к каналу FBI.\``);
+  message.reply(`\`вы успешно выдали доступ пользователю\` <@${user.id}> \`к каналу FBI.\``, authorrisbot);
   return message.delete();
 }
 
@@ -1239,7 +1247,7 @@ bot.on('message', async message => {
 
 if (message.content.startsWith("/del") && !message.content.includes("fam")){
   if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("ADMINISTRATOR")){
-    message.reply(`\`недостаточно прав доступа.\``).then(msg => msg.delete(10000));
+    message.reply(`\`недостаточно прав доступа.\``, authorrisbot).then(msg => msg.delete(10000));
     return message.delete();
   }
   let user = message.guild.member(message.mentions.users.first());
@@ -1483,7 +1491,7 @@ if (message.content.startsWith("/unwarn")){
             if (+circle == +args[3]){
               rem++;
               let genchannel = message.guild.channels.find(c => c.name == "general");
-              genchannel.send(`<@${user.id}>, \`вам было снято одно предупреждение. Источник: ${message.member.displayName}\``);
+              genchannel.send(`<@${user.id}>, \`вам было снято одно предупреждение. Источник: ${message.member.displayName}\``, authorrisbot);
               let schat = message.guild.channels.find(c => c.name == "spectator-chat");
               schat.send(`\`Модератор\` <@${message.author.id}> \`снял пользователю\` <@${user.id}> \`одно предупреждение.\nИнформация: Выдано было модератором: ${str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]} по причине: ${str.split('\n')[+circle + +moderation_warns + 3].split('==>')[0]}\``);
             }else{
@@ -1633,7 +1641,7 @@ if (message.content.startsWith("/getmwarns")){
           for (var i = 0; i < moderation_reason.length; i++){
             text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${moderation_give[i]}\`. Причина: \`${moderation_reason[i]}\`**`;
           }
-          message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`);
+          message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`, authorrisbot);
           return message.delete();
         });
       }else{
@@ -1643,7 +1651,7 @@ if (message.content.startsWith("/getmwarns")){
     });
   }else{
     if (!message.member.hasPermission("ADMINISTRATOR")){
-      message.reply(`\`у вас нет прав модератора для просмотра чужой статистики.\``).then(msg => msg.delete(7000));
+      message.reply(`\`у вас нет прав модератора для просмотра чужой статистики.\``, authorrisbot).then(msg => msg.delete(7000));
       return message.delete();
     }
     let db_server = bot.guilds.find(g => g.id == "493459379878625320");
@@ -1685,11 +1693,11 @@ if (message.content.startsWith("/getmwarns")){
           for (var i = 0; i < moderation_reason.length; i++){
             text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${moderation_give[i]}\`. Причина: \`${moderation_reason[i]}\`**`;
           }
-          message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`);
+          message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`, authorrisbot);
           return message.delete();
         });
       }else{
-        message.reply(`\`ошибка выполнения 605. [ACC=${user.id}]\``).then(msg => msg.pin());
+        message.reply(`\`ошибка выполнения 605. [ACC=${user.id}]\``, authorrisbot).then(msg => msg.pin());
         return message.delete();
       }
     });
@@ -1749,17 +1757,17 @@ if (message.content.startsWith("/getwarns")){
             `${date.getSeconds().toString().padStart(2, '0')}`;
             text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${user_give[i]}\`. Причина: \`${user_reason[i]}\`\n[#${+i + 1}] Истекает: ${formate_date}**\n`;
           }
-          message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`);
+          message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`, authorrisbot);
           return message.delete();
         });
       }else{
-        message.reply(`\`ошибка выполнения 605. [ACC=${user.id}]\``).then(msg => msg.pin());
+        message.reply(`\`ошибка выполнения 605. [ACC=${user.id}]\``, authorrisbot).then(msg => msg.pin());
         return message.delete();
       }
     });
   }else{
     if (!message.member.hasPermission("MANAGE_ROLES")){
-      message.reply(`\`у вас нет прав модератора для просмотра чужой статистики.\``).then(msg => msg.delete(7000));
+      message.reply(`\`у вас нет прав модератора для просмотра чужой статистики.\``, authorrisbot).then(msg => msg.delete(7000));
       return message.delete();
     }
     let db_server = bot.guilds.find(g => g.id == "493459379878625320");
@@ -1808,11 +1816,11 @@ if (message.content.startsWith("/getwarns")){
             `${date.getSeconds().toString().padStart(2, '0')}`;
             text_end = text_end + `\n**[#${+i + 1}] Выдано модератором: \`${user_give[i]}\`. Причина: \`${user_reason[i]}\`\n[#${+i + 1}] Истекает: ${formate_date}**\n`;
           }
-          message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`);
+          message.reply(`\`вот информация по поводу аккаунта:\` <@${user.id}>\n${text_end}`, authorrisbot);
           return message.delete();
         });
       }else{
-        message.reply(`\`ошибка выполнения 605. [ACC=${user.id}]\``).then(msg => msg.pin());
+        message.reply(`\`ошибка выполнения 605. [ACC=${user.id}]\``, authorrisbot).then(msg => msg.pin());
         return message.delete();
       }
     });
@@ -2226,9 +2234,9 @@ if (message.content.startsWith("/warn")){
                             }
                             await message.guild.members.find(m => m.id == family_leader).addRole(family_role);
                             let general = message.guild.channels.find(c => c.name == `general`);
-                            if (general) await general.send(`<@${family_leader}>, \`модератор\` <@${idmember}> \`назначил вас контролировать семью: ${family_name}\``)
+                            if (general) await general.send(`<@${family_leader}>, \`модератор\` <@${idmember}> \`назначил вас контролировать семью: ${family_name}\``, authorrisbot)
                             let fam_chat = message.guild.channels.find(c => c.name == `family-chat`);
-                            if (fam_chat) await fam_chat.send(`\`[CREATE]\` \`Пользователь\` <@${family_leader}> \`стал лидером семьи '${family_name}'! Назначил:\` <@${idmember}>`);
+                            if (fam_chat) await fam_chat.send(`\`[CREATE]\` \`Пользователь\` <@${family_leader}> \`стал лидером семьи '${family_name}'! Назначил:\` <@${idmember}>`, authorrisbot);
                             return
                         })
                     }).catch(() => {
@@ -2292,7 +2300,7 @@ if (message.content == '/archive'){
             }
         })
         if (families.length == 0){
-            message.channel.send(`\`[ERROR]\` <@${message.author.id}> \`вы не являетесь создателем/заместителем семьи!\``).then(msg => msg.delete(10000));
+            message.channel.send(`\`[ERROR]\` <@${message.author.id}> \`вы не являетесь создателем/заместителем семьи!\``, authorrisbot).then(msg => msg.delete(10000));
             return message.delete();
         }
         let user = message.guild.member(message.mentions.users.first());
@@ -2413,7 +2421,7 @@ if (message.content == '/archive'){
             }
         })
         if (families.length == 0){
-            message.channel.send(`\`[ERROR]\` <@${message.author.id}> \`вы не являетесь создателем/заместителем семьи!\``).then(msg => msg.delete(10000));
+            message.channel.send(`\`[ERROR]\` <@${message.author.id}> \`вы не являетесь создателем/заместителем семьи!\``, authorrisbot).then(msg => msg.delete(10000));
             return message.delete();
         }
         let user = message.guild.member(message.mentions.users.first());
@@ -2540,9 +2548,9 @@ if (message.content == '/archive'){
         family_channel.delete();
         family_role.delete();
         let general = message.guild.channels.find(c => c.name == `general`);
-        if (general) await general.send(`<@${family_leader.id}>, \`модератор\` <@${message.author.id}> \`удалил вашу семью: ${name}\``)
+        if (general) await general.send(`<@${family_leader.id}>, \`модератор\` <@${message.author.id}> \`удалил вашу семью: ${name}\``, authorrisbot)
         let fam_chat = message.guild.channels.find(c => c.name == `family-chat`);
-        if (fam_chat) await fam_chat.send(`\`[DELETED]\` \`Семья '${name}', главой которой был\` <@${family_leader.id}> \`была удалена модератором. Удалил:\` <@${message.author.id}>`);
+        if (fam_chat) await fam_chat.send(`\`[DELETED]\` \`Семья '${name}', главой которой был\` <@${family_leader.id}> \`была удалена модератором. Удалил:\` <@${message.author.id}>`, authorrisbot);
         return message.delete();
     }
 
@@ -2831,6 +2839,7 @@ if (message.content == '/archive'){
                     if (foundedusers_tag == null) foundedusers_tag = `НЕ НАЙДЕНЫ`;
                     if (foundedusers_nick == null) foundedusers_nick = `НЕ НАЙДЕНЫ`;
                     const embed = new Discord.RichEmbed()
+		    .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
                     .addField(`BY NICKNAME`, foundedusers_nick, true)
                     .addField("BY DISCORD TAG", foundedusers_tag, true)
                     message.reply(`\`по вашему запросу найдена следующая информация:\``, embed); 
@@ -2851,6 +2860,7 @@ if (message.content == '/archive'){
                     if (foundedusers_tag == null) foundedusers_tag = `НЕ НАЙДЕНЫ`;
                     if (foundedusers_nick == null) foundedusers_nick = `НЕ НАЙДЕНЫ`;
                     const embed = new Discord.RichEmbed()
+		    .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
                     .addField(`BY NICKNAME`, foundedusers_nick, true)
                     .addField("BY DISCORD TAG", foundedusers_tag, true)
                     message.reply(`\`по вашему запросу найдена следующая информация:\``, embed); 
@@ -2862,11 +2872,12 @@ if (message.content == '/archive'){
                 if (!userfinders) userfinders = true;
             }
         })
-        if (!userfinders) return message.reply(`я никого не нашел.`) && message.delete()
+        if (!userfinders) return message.reply(`я никого не нашел.`, authorrisbot) && message.delete()
         if (numberff_nick != 0 || numberff_tag != 0){
             if (foundedusers_tag == null) foundedusers_tag = `НЕ НАЙДЕНЫ`;
             if (foundedusers_nick == null) foundedusers_nick = `НЕ НАЙДЕНЫ`;
             const embed = new Discord.RichEmbed()
+	    .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
             .addField(`BY NICKNAME`, foundedusers_nick, true)
             .addField("BY DISCORD TAG", foundedusers_tag, true)
             message.reply(`\`по вашему запросу найдена следующая информация:\``, embed); 
@@ -2899,7 +2910,8 @@ if (message.content == '/archive'){
             date = user.joinedAt
             let joindate = `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
             const embed = new Discord.RichEmbed()
-            .setColor("#FF0000")
+            .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
+	    .setColor("#FF0000")
             .setFooter(`Аккаунт пользователя: ${user.displayName}`, user.user.avatarURL)
             .setTimestamp()
             .addField(`Дата создания аккаунта и входа на сервер`, `**Аккаунт создан:** \`${registed}\`\n**Вошел к нам:** \`${joindate}\``)
@@ -2942,6 +2954,7 @@ if (message.content == '/archive'){
                 date = user.joinedAt
                 let joindate = `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
                 const embed = new Discord.RichEmbed()
+                .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
                 .setColor("#FF0000")
                 .setFooter(`Аккаунт пользователя: ${user.displayName}`, user.user.avatarURL)
                 .setTimestamp()
@@ -3198,6 +3211,8 @@ bot.on('guildMemberUpdate', async (oldMember, newMember) => {
 
 bot.on('raw', async event => {
     if (!events.hasOwnProperty(event.t)) return; // Если не будет добавление или удаление смайлика, то выход
+    const authorrisbot = new Discord.RichEmbed()
+    .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
     if (event.t == "MESSAGE_REACTION_ADD"){
         let event_guildid = event.d.guild_id // ID discord сервера
         let event_channelid = event.d.channel_id // ID канала
@@ -3227,7 +3242,7 @@ bot.on('raw', async event => {
                 if (!field_user || !field_nickname || !field_role || !field_channel){
                     channel.send(`\`[DELETED]\` ${member} \`удалил багнутый запрос.\``);
                 }else{
-                    channel.send(`\`[DELETED]\` ${member} \`удалил запрос от ${field_nickname}, с ID: ${field_user.id}\``);
+                    channel.send(`\`[DELETED]\` ${member} \`удалил запрос от ${field_nickname}, с ID: ${field_user.id}\``, authorrisbot);
                 }
                 if (sened.has(field_nickname)) sened.delete(field_nickname); // Отметить ник, что он не отправлял запрос
                 return message.delete();
@@ -3239,7 +3254,7 @@ bot.on('raw', async event => {
                 if (!field_author || !field_user || !field_role || !field_channel){
                     channel.send(`\`[DELETED]\` ${member} \`удалил багнутый запрос на снятие роли.\``);
                 }else{
-                    channel.send(`\`[DELETED]\` ${member} \`удалил запрос на снятие роли от ${field_author.displayName}, с ID: ${field_author.id}\``);
+                    channel.send(`\`[DELETED]\` ${member} \`удалил запрос на снятие роли от ${field_author.displayName}, с ID: ${field_author.id}\``, authorrisbot);
                 }
                 if (snyatie.has(field_author.id + `=>` + field_user.id)) snyatie.delete(field_author.id + `=>` + field_user.id)
                 return message.delete();
@@ -3253,7 +3268,7 @@ bot.on('raw', async event => {
                 let field_nickname = message.embeds[0].fields[1].value.split(`\`Ник:\` `)[1];
                 let field_role = server.roles.find(r => "<@&" + r.id + ">" == message.embeds[0].fields[2].value.split(/ +/)[3]);
                 let field_channel = server.channels.find(c => "<#" + c.id + ">" == message.embeds[0].fields[3].value.split(/ +/)[0]);
-                channel.send(`\`[DENY]\` <@${member.id}> \`отклонил запрос от ${field_nickname}, с ID: ${field_user.id}\``);
+                channel.send(`\`[DENY]\` <@${member.id}> \`отклонил запрос от ${field_nickname}, с ID: ${field_user.id}\``, authorrisbot);
                 field_channel.send(`<@${field_user.id}>**,** \`модератор\` <@${member.id}> \`отклонил ваш запрос на выдачу роли.\nВаш ник при отправке: ${field_nickname}\nУстановите ник на: [Фракция] Имя_Фамилия [Ранг]\``)
                 nrpnames.add(field_nickname); // Добавить данный никнейм в список невалидных
                 if (sened.has(field_nickname)) sened.delete(field_nickname); // Отметить ник, что он не отправлял запрос
@@ -3271,7 +3286,7 @@ bot.on('raw', async event => {
                     if (snyatie.has(field_author.id + `=>` + field_user.id)) snyatie.delete(field_author.id + `=>` + field_user.id)
                     return message.delete();
                 }
-                channel.send(`\`[DENY]\` <@${member.id}> \`отклонил запрос на снятие роли от\` <@${field_author.id}>\`, с ID: ${field_author.id}\``);
+                channel.send(`\`[DENY]\` <@${member.id}> \`отклонил запрос на снятие роли от\` <@${field_author.id}>\`, с ID: ${field_author.id}\``, authorrisbot);
                 field_channel.send(`<@${field_author.id}>**,** \`модератор\` <@${member.id}> \`отклонил ваш запрос на снятие роли пользователю:\` <@${field_user.id}>`)
                 if (snyatie.has(field_author.id + `=>` + field_user.id)) snyatie.delete(field_author.id + `=>` + field_user.id)
                 return message.delete();
@@ -3302,7 +3317,7 @@ bot.on('raw', async event => {
                     }
                 }
                 await field_user.addRole(field_role); // Выдать роль по соответствию с тэгом
-                channel.send(`\`[ACCEPT]\` <@${member.id}> \`одобрил запрос от ${field_nickname}, с ID: ${field_user.id}\``);
+                channel.send(`\`[ACCEPT]\` <@${member.id}> \`одобрил запрос от ${field_nickname}, с ID: ${field_user.id}\``, authorrisbot);
                 if (rolesremoved){
                     if (rolesremovedcount == 1){
                         field_channel.send(`<@${field_user.id}>**,** \`модератор\` <@${member.id}> \`одобрил ваш запрос на выдачу роли.\`\n\`Роль\`  <@&${field_role.id}>  \`была выдана! ${rolesremovedcount} роль другой фракции была убрана.\``)
@@ -3330,7 +3345,7 @@ bot.on('raw', async event => {
                     return message.delete();
                 }
                 field_user.removeRole(field_role);
-                channel.send(`\`[ACCEPT]\` <@${member.id}> \`одобрил снятие роли (${field_role.name}) от\` <@${field_author.id}>, \`пользователю\` <@${field_user.id}>, \`с ID: ${field_user.id}\``);
+                channel.send(`\`[ACCEPT]\` <@${member.id}> \`одобрил снятие роли (${field_role.name}) от\` <@${field_author.id}>, \`пользователю\` <@${field_user.id}>, \`с ID: ${field_user.id}\``, authorrisbot);
                 field_channel.send(`**<@${field_user.id}>, с вас сняли роль**  <@&${field_role.id}>  **по запросу от <@${field_author.id}>.**`)
                 if (snyatie.has(field_author.id + `=>` + field_user.id)) snyatie.delete(field_author.id + `=>` + field_user.id)
                 return message.delete()
