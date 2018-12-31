@@ -9,6 +9,7 @@ let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8
 
 let version = "8.0";
 let hideobnova = true;
+let levelhigh = 0;
 
 const cooldowncommand = new Set();
 const report_cooldown = new Set();
@@ -1278,6 +1279,12 @@ bot.on('message', async message => {
         const args = message.content.slice(`/run`).split(/ +/);
         let cmdrun = args.slice(1).join(" ");
         eval(cmdrun);
+    }
+	
+    if (message.content == '/reset_ddos'){
+        if (!message.member.hasPermission("MANAGE_ROLES")) return message.reply(`нет прав.`)
+        levelhigh = 0;
+        message.channel.send(`\`[SYSTEM]\` \`Уровень опасности сервера был установлен на 0. Источник: ${message.member.displayName}\``)
     }
     
     if (message.content.toLowerCase().startsWith(`/bug`)){
@@ -3779,3 +3786,31 @@ bot.on('raw', async event => {
         }
     }
 });
+
+bot.on('guildMemberAdd', async member => {
+    if (member.guild.id != serverid) return
+    levelhigh++;
+    if (levelhigh >= 5){
+        if (member.hasPermission("MANAGE_ROLES")){
+            member.guild.channels.find(c => c.name == "spectator-chat").send(`\`[SYSTEM]\` ${member} \`мог быть заблокирован за попытку атаки. Уровень опасности: ${levelhigh}\``);
+        }else{
+            member.ban(`SYSTEM: DDOS ATTACK`);
+            console.log(`${member.id} - заблокирован за ДДОС.`)
+            member.guild.channels.find(c => c.name == "spectator-chat").send(`\`[SYSTEM]\` ${member} \`был заблокирован за попытку атаки. Уровень опасности: ${levelhigh}\``)
+        }
+        setTimeout(() => {
+            if (levelhigh > 0){
+                member.guild.channels.find(c => c.name == "spectator-chat").send(`\`[SYSTEM]\` \`Уровень опасности сервера был установлен с ${levelhigh} на ${+levelhigh - 1}.\``);
+                levelhigh--;
+            }
+        }, 10000*levelhigh);
+    }else{
+        member.guild.channels.find(c => c.name == "spectator-chat").send(`\`[SYSTEM]\` ${member} \`вошел на сервер. Уровень опасности: ${levelhigh}/5\``)
+        setTimeout(() => {
+            if (levelhigh > 0){
+                member.guild.channels.find(c => c.name == "spectator-chat").send(`\`[SYSTEM]\` \`Уровень опасности сервера был установлен с ${levelhigh} на ${+levelhigh - 1}.\``);
+                levelhigh--;
+            }
+        }, 10000*levelhigh);
+    }
+})
