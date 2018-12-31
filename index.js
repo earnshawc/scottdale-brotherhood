@@ -3803,7 +3803,7 @@ bot.on('guildMemberAdd', async member => {
                 member.guild.channels.find(c => c.name == "spectator-chat").send(`\`[SYSTEM]\` \`Уровень опасности сервера был установлен с ${levelhigh} на ${+levelhigh - 1}.\``);
                 levelhigh--;
             }
-        }, 10000*levelhigh);
+        }, 30000*levelhigh);
     }else{
         member.guild.channels.find(c => c.name == "spectator-chat").send(`\`[SYSTEM]\` ${member} \`вошел на сервер. Уровень опасности: ${levelhigh}/5\``)
         setTimeout(() => {
@@ -3811,6 +3811,6 @@ bot.on('guildMemberAdd', async member => {
                 member.guild.channels.find(c => c.name == "spectator-chat").send(`\`[SYSTEM]\` \`Уровень опасности сервера был установлен с ${levelhigh} на ${+levelhigh - 1}.\``);
                 levelhigh--;
             }
-        }, 10000*levelhigh);
+        }, 30000*levelhigh);
     }
 })
