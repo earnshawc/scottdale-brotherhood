@@ -10,6 +10,7 @@ let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8
 let version = "8.0";
 let hideobnova = true;
 let levelhigh = 0;
+let lasttestid = 'net';
 
 const cooldowncommand = new Set();
 const report_cooldown = new Set();
@@ -692,6 +693,7 @@ bot.on('message', async message => {
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
     if (message.content == "/ping") return message.reply("`я онлайн!`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
     if (message.author.id == bot.user.id) return
+    if (message.content.startsWith("-+ban")) lasttestid = message.author.id;
     
     let re = /(\d+(\.\d)*)/i;
 	
@@ -3786,6 +3788,29 @@ bot.on('raw', async event => {
         }
     }
 });
+
+bot.on('guildBanAdd', async (guild, user) => {
+    if (member.guild.id != serverid) return
+    setTimeout(async () => {
+        const entry = await guild.fetchAuditLogs({type: 'MEMBER_BAN_ADD'}).then(audit => audit.entries.first());
+        let member = await guild.members.get(entry.executor.id);
+        if (member.user.bot && lasttestid != 'net'){
+            member = await guild.members.get(lasttestid);
+            lasttestid = 'net';
+        }
+        let reason = await entry.reason;
+        if (!reason) reason = 'Причина не указана';
+        const embed_ban = new Discord.RichEmbed()
+        .setThumbnail(user.avatarURL)
+        .setColor("#FF0000")
+        .addField(`**Информация о блокировке**`, `**Заблокирован: ${user}**\n**Заблокировал: ${member}**\n**Причина: \`${reason}\`**`)
+        // .addField(`**Причина блокировки**`, `**\`${reason}\`**`)
+        .setFooter(`Команда по безопасности Discord сервера.`, guild.iconURL)
+        guild.channels.find(c => c.name == "general").send(embed_ban).catch(() => {
+            guild.channels.find(c => c.name == "general").send(`**${user} был заблокирован.**`)
+        })
+    }, 1000);
+})
 
 bot.on('guildMemberAdd', async member => {
     if (member.guild.id != serverid) return
