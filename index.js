@@ -3790,7 +3790,7 @@ bot.on('raw', async event => {
 });
 
 bot.on('guildBanAdd', async (guild, user) => {
-    if (member.guild.id != serverid) return
+    if (guild.id != serverid) return
     setTimeout(async () => {
         const entry = await guild.fetchAuditLogs({type: 'MEMBER_BAN_ADD'}).then(audit => audit.entries.first());
         let member = await guild.members.get(entry.executor.id);
