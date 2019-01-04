@@ -712,7 +712,7 @@ bot.on('message', async message => {
                     channel.fetchMessages({limit: 1}).then(async messages => {
                         if (messages.size == 1){
                             messages.forEach(async msg => {
-                                let s_now = new Date().valueOf() - 86400000;
+                                let s_now = new Date().valueOf() - 30000;
                                 if (msg.createdAt.valueOf() < s_now){
                                     let archive_messages = [];
                                     await channel.fetchMessages({limit: 100}).then(async messagestwo => {
