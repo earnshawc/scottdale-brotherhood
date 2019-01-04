@@ -3809,7 +3809,7 @@ bot.on('guildBanAdd', async (guild, user) => {
         guild.channels.find(c => c.name == "general").send(embed_ban).catch(() => {
             guild.channels.find(c => c.name == "general").send(`**${user} был заблокирован.**`)
         })
-    }, 1000);
+    }, 2000);
 })
 
 bot.on('guildMemberAdd', async member => {
