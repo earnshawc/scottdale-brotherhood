@@ -6,4 +6,4 @@ color 0a
 echo Console started.
 node .
 ; CMD /Q /K
-; legoe
+; legoet
