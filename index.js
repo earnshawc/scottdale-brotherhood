@@ -3840,11 +3840,42 @@ bot.on('voiceStateUpdate', async (oldMember, newMember) => {
                 ADD_REACTIONS: false,
             }, 'подключение (конференция)');
             edit_channel.send(`**<@${newMember.id}> \`успешно подключился.\`**`).then(msg => msg.delete(30000));
+        }else if (member_newchannel.name == '→ Обзвон ←'){
+            let edit_channel = newMember.guild.channels.find(c => c.name == "closed-accept");
+            if (!edit_channel) return console.log('[ERROR] Не возможно найти текстовой канал конференции.');
+            await edit_channel.overwritePermissions(newMember, {
+                // GENERAL PERMISSIONS
+                CREATE_INSTANT_INVITE: false,
+                MANAGE_CHANNELS: false,
+                MANAGE_ROLES: false,
+                MANAGE_WEBHOOKS: false,
+                // TEXT PERMISSIONS
+                VIEW_CHANNEL: true,
+                SEND_MESSAGES: true,
+                SEND_TTS_MESSAGES: false,
+                MANAGE_MESSAGES: false,
+                EMBED_LINKS: true,
+                ATTACH_FILES: true,
+                READ_MESSAGE_HISTORY: false,
+                MENTION_EVERYONE: false,
+                USE_EXTERNAL_EMOJIS: false,
+                ADD_REACTIONS: false,
+            }, 'подключение (конференция)');
+            edit_channel.send(`**<@${newMember.id}> \`успешно подключился.\`**`).then(msg => msg.delete(30000));
         }
     }
     if (member_oldchannel){
         if (member_oldchannel.name == 'Конференция'){
         let edit_channel = newMember.guild.channels.find(c => c.name == "конференция");
+            if (!edit_channel) return console.log('[ERROR] Не возможно найти текстовой канал конференции.');
+            edit_channel.permissionOverwrites.forEach(async (perm) => {
+                if (perm.type != 'member') return
+                if (perm.id != newMember.id) return
+                await perm.delete('отключение (конференция)');
+            });
+            edit_channel.send(`**<@${newMember.id}> \`отключился.\`**`).then(msg => msg.delete(15000));
+        }else if (member_oldchannel.name == '→ Обзвон ←'){
+            let edit_channel = newMember.guild.channels.find(c => c.name == "closed-accept");
             if (!edit_channel) return console.log('[ERROR] Не возможно найти текстовой канал конференции.');
             edit_channel.permissionOverwrites.forEach(async (perm) => {
                 if (perm.type != 'member') return
