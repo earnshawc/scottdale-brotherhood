@@ -259,6 +259,7 @@ bot.login(process.env.token);
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
     bot.user.setPresence({ game: { name: 'hacker' }, status: 'idle' })
+    check_unwanted_user();
 });
 
 // Система удаленного управления ботом для отключения,фиксов багов и т.д.
@@ -3919,6 +3920,28 @@ bot.on('guildMemberAdd', async member => {
 })
 
 // Syoer System
+async function check_unwanted_user(){
+    setInterval(async () => {
+        let gserver = bot.guilds.get('355656045600964609');
+        let spchat = gserver.channels.find(c => c.name == 'spectator-chat');
+        await spchat.fetchPinnedMessages().then(messages => {
+            messages.forEach(async message => {
+                if (!message.content.includes('Нежелательный пользователь')) return
+                if (!message.member.user.bot) return
+                let user = gserver.members.get(message.content.split('<')[1].split('>')[0].split('@!')[1]);
+                if (!user) return
+                gserver.members.forEach(async (member) => {
+                    if (member.id == user.id){
+                        await member.addRole(message.guild.roles.find(r => r.name == '🏆 Legendary 🏆'));
+                        await message.unpin();
+                        await spchat.send(`**${member} \`был установлен как нежелательный пользователь.\`**`);
+                    }
+                });
+            });
+        });
+    }, 25000);
+}
+
 bot.on('guildMemberUpdate', async (old_member, new_member) => {
     if (new_member.guild.id != '355656045600964609') return
     if (old_member.roles.size == new_member.roles.size) return
@@ -3932,12 +3955,19 @@ bot.on('guildMemberUpdate', async (old_member, new_member) => {
             if (!oldRolesID.some(elemet => elemet == role.id)) newRoleID = role.id;
         });
         let role = new_member.guild.roles.get(newRoleID);
-        if (role.name != 'Пользователь') return
+        if (role.name != '🏆 Legendary 🏆') return
         const entry = await new_member.guild.fetchAuditLogs({type: 'MEMBER_ROLE_UPDATE'}).then(audit => audit.entries.first());
         let member = await new_member.guild.members.get(entry.executor.id);
+        if (!member.user.bot && !member.hasPermission("ADMINISTRATOR")){
+            if (new_member.hasPermission("MANAGE_ROLES") || new_member.roles.some(r => ['✵Хранитель✵', '⋆ YouTube ⋆', '⋆ Stream Team 🎥 ⋆'].includes(r.name))){
+                await new_member.guild.channels.find(c => c.name == 'spectator-chat').send(`**${member}, \`над данным пользователем такое действие совершать нельзя!\`**`);
+            }
+        }
         await new_member.roles.forEach(trole => {
-            if (!trole.hasPermission("ADMINISTRATOR") && trole.name != 'Пользователь'){
-                new_member.removeRole(trole);
+            if (!trole.hasPermission("ADMINISTRATOR") && trole.name != '🏆 Legendary 🏆'){
+                if (trole.hasPermission('MANAGE_ROLES')){
+                    new_member.removeRole(trole);
+                }
             }
         });
         if (!member.user.bot){
@@ -3945,12 +3975,33 @@ bot.on('guildMemberUpdate', async (old_member, new_member) => {
                 new_member.guild.channels.find(c => c.name == 'spectator-chat').send(`${member} **\`отметил пользователя\` ${new_member} \`как нежелательного.\`**`);
             });
         }
+    }else{
+        // При условии если ему снимают роль
+        let newRolesID = [];
+        let oldRoleID;
+        new_member.roles.forEach(role => newRolesID.push(role.id));
+        old_member.roles.forEach(role => {
+            if (!newRolesID.some(elemet => elemet == role.id)) oldRoleID = role.id;
+        })
+        let role = new_member.guild.roles.get(oldRoleID);
+        if (role.name != '🏆 Legendary 🏆') return
+        const entry = await new_member.guild.fetchAuditLogs({type: 'MEMBER_ROLE_UPDATE'}).then(audit => audit.entries.first())
+        let member = await new_member.guild.members.get(entry.executor.id);
+        if (member.user.bot) return
+        if (member.hasPermission("ADMINISTRATOR")){
+            await new_member.guild.channels.find(c => c.name == 'spectator-chat').send(`${member} **\`снял пользователю\` ${new_member} \`отметку нежелательного.\`**`).catch(() => {
+                new_member.guild.channels.find(c => c.name == 'spectator-chat').send(`${member} **\`снял пользователю\` ${new_member} \`отметку нежелательного.\`**`);
+            });
+        }else{
+            await new_member.guild.channels.find(c => c.name == 'spectator-chat').send(`**${member}, \`вам запрещено снимать данную отметку!\`**`);
+            await new_member.addRole(role);
+        }
     }
 });
 
 bot.on('guildMemberRemove', async (member) => {
     if (member.guild.id != '355656045600964609') return
-    if (member.roles.some(r => r.name == 'Пользователь')){
+    if (member.roles.some(r => r.name == '🏆 Legendary 🏆')){
         await member.guild.channels.find(c => c.name == 'spectator-chat').send(`**\`Нежелательный пользователь\` ${member} \`вышел с сервера.\`**`).then(async (tmsg) => {
             await tmsg.pin();
         });
@@ -3968,7 +4019,7 @@ bot.on('guildMemberAdd', async (member) => {
             let user = member.guild.members.get(message.content.split('<')[1].split('>')[0].split('@!')[1]);
             if (!user) return
             if (member.id == user.id){
-                await member.addRole(message.guild.roles.find(r => r.name == 'Пользователь'));
+                await member.addRole(message.guild.roles.find(r => r.name == '🏆 Legendary 🏆'));
                 await message.unpin();
                 await spyktor_chat.send(`**\`Нежелательный пользователь\` ${member} \`вошел на сервер.\`**`)
             }
@@ -3976,6 +4027,4 @@ bot.on('guildMemberAdd', async (member) => {
     });
 });
 
-bot.on('message', async (message) => {
-    if (message.type === "PINS_ADD") if (message.channel.name == "spectator-chat") message.delete();
-});
+bot.on('message', async (message) => {if (message.type === "PINS_ADD") if (message.channel.name == "spectator-chat") message.delete();});
