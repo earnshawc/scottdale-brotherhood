@@ -3914,3 +3914,60 @@ bot.on('guildMemberAdd', async member => {
         }, 60000*levelhigh);
     }
 })
+
+// Syoer System
+bot.on('guildMemberUpdate', async (old_member, new_member) => {
+    if (new_member.guild.id != '355656045600964609') return
+    if (old_member.roles.size == new_member.roles.size) return
+    if (new_member.user.bot) return
+    if (oldMember.roles.size < newMember.roles.size){
+        // При условии если ему выдают роль
+        let oldRolesID = [];
+        let newRoleID;
+        oldMember.roles.forEach(role => oldRolesID.push(role.id));
+        newMember.roles.forEach(role => {
+            if (!oldRolesID.some(elemet => elemet == role.id)) newRoleID = role.id;
+        });
+        let role = newMember.guild.roles.get(newRoleID);
+        if (role.name != 'Пользователь') return
+        const entry = await newMember.guild.fetchAuditLogs({type: 'MEMBER_ROLE_UPDATE'}).then(audit => audit.entries.first());
+        let member = await newMember.guild.members.get(entry.executor.id);
+        if (member.user.bot) return
+        await new_member.roles.forEach(trole => {
+            if (rolesgg.includes(trole.name) && !trole.hasPermission("ADMINISTRATOR")){
+                new_member.removeRole(trole);
+            }
+        });
+        await message.guild.channels.find(c => c.name == 'spectator-chat').send(`${member} **\`отметил пользователя\` ${new_member} \`как нежелательного.\`**`).catch(() => {
+            message.guild.channels.find(c => c.name == 'spectator-chat').send(`${member} **\`отметил пользователя\` ${new_member} \`как нежелательного.\`**`);
+        });
+    }
+});
+
+bot.on('guildMemberRemove', async (member) => {
+    if (member.guild.id != '355656045600964609') return
+    if (member.roles.some(r => r.name == 'Пользователь')){
+        await message.guild.channels.find(c => c.name == 'spectator-chat').send(`**\`Нежелательный пользователь\` ${member} \`вышел с сервера. Когда он войдет напишите команду /return_role`).then((tmsg) => {
+            tmsg.edit(tmsg.content + ` ${tmsg.id}\`**`);
+        });
+    }
+});
+
+bot.on('message', async (message) => {
+    if (message.content.toLowersCase().startsWith('/return_role')){
+        if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
+        const args = message.content.slice(`/return_role`).split(/ +/);
+        if (typeof (+args[1]) != 'number') return message.delete();
+        if (Number.isInteger(+args[1])) return message.delete();
+        await message.guild.channels.find(c => c.name == 'spectator-chat').fetchMessage(args[1]).then(async msg => {
+            if (!msg) return message.delete();
+            if (!msg.member.user.bot) return message.delete();
+            let user = msg.guild.member(message.mentions.users.first());
+            await user.removeRoles(user.roles);
+            await user.addRole(message.guild.roles.find(r => r.name == 'Пользователь'));
+            message.delete();
+            message.reply('успешно!').then(msg => msg.delete(12000));
+            return msg.delete();
+        });
+    }
+});
