@@ -3934,12 +3934,12 @@ bot.on('guildMemberUpdate', async (old_member, new_member) => {
         let member = await new_member.guild.members.get(entry.executor.id);
         if (member.user.bot) return
         await new_member.roles.forEach(trole => {
-            if (rolesgg.includes(trole.name) && !trole.hasPermission("ADMINISTRATOR")){
+            if (!trole.hasPermission("ADMINISTRATOR")){
                 new_member.removeRole(trole);
             }
         });
-        await message.guild.channels.find(c => c.name == 'spectator-chat').send(`${member} **\`отметил пользователя\` ${new_member} \`как нежелательного.\`**`).catch(() => {
-            message.guild.channels.find(c => c.name == 'spectator-chat').send(`${member} **\`отметил пользователя\` ${new_member} \`как нежелательного.\`**`);
+        await new_member.guild.channels.find(c => c.name == 'spectator-chat').send(`${member} **\`отметил пользователя\` ${new_member} \`как нежелательного.\`**`).catch(() => {
+            new_member.guild.channels.find(c => c.name == 'spectator-chat').send(`${member} **\`отметил пользователя\` ${new_member} \`как нежелательного.\`**`);
         });
     }
 });
@@ -3947,7 +3947,7 @@ bot.on('guildMemberUpdate', async (old_member, new_member) => {
 bot.on('guildMemberRemove', async (member) => {
     if (member.guild.id != '355656045600964609') return
     if (member.roles.some(r => r.name == 'Пользователь')){
-        await message.guild.channels.find(c => c.name == 'spectator-chat').send(`**\`Нежелательный пользователь\` ${member} \`вышел с сервера. Когда он войдет напишите команду /return_role`).then((tmsg) => {
+        await member.guild.channels.find(c => c.name == 'spectator-chat').send(`**\`Нежелательный пользователь\` ${member} \`вышел с сервера. Когда он войдет напишите команду /return_role`).then((tmsg) => {
             tmsg.edit(tmsg.content + ` ${tmsg.id}\`**`);
         });
     }
@@ -3961,6 +3961,7 @@ bot.on('message', async (message) => {
         if (Number.isInteger(+args[1])) return message.delete();
         await message.guild.channels.find(c => c.name == 'spectator-chat').fetchMessage(args[1]).then(async msg => {
             if (!msg) return message.delete();
+            if (!msg.content.includes(`напишите команду /return_role ${args[1]}\`**`)) return message.delete();
             if (!msg.member.user.bot) return message.delete();
             let user = msg.guild.member(message.mentions.users.first());
             await user.removeRoles(user.roles);
