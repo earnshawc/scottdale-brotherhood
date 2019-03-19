@@ -3932,7 +3932,6 @@ bot.on('guildMemberUpdate', async (old_member, new_member) => {
         if (role.name != 'Пользователь') return
         const entry = await new_member.guild.fetchAuditLogs({type: 'MEMBER_ROLE_UPDATE'}).then(audit => audit.entries.first());
         let member = await new_member.guild.members.get(entry.executor.id);
-        if (member.user.bot) return
         await new_member.roles.forEach(trole => {
             if (!trole.hasPermission("ADMINISTRATOR") && trole.name != 'Пользователь'){
                 new_member.removeRole(trole);
@@ -3963,7 +3962,6 @@ bot.on('message', async (message) => {
             if (!msg.content.includes(`напишите команду /return_role ${args[1]}\`**`)) return message.delete();
             if (!msg.member.user.bot) return message.delete();
             let user = msg.guild.member(message.mentions.users.first());
-            await user.removeRoles(user.roles);
             await user.addRole(message.guild.roles.find(r => r.name == 'Пользователь'));
             message.delete();
             message.reply('успешно!').then(msg => msg.delete(12000));
