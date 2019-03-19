@@ -3946,10 +3946,29 @@ bot.on('guildMemberUpdate', async (old_member, new_member) => {
 bot.on('guildMemberRemove', async (member) => {
     if (member.guild.id != '355656045600964609') return
     if (member.roles.some(r => r.name == 'Пользователь')){
-        await member.guild.channels.find(c => c.name == 'spectator-chat').send(`**\`Нежелательный пользователь\` ${member} \`вышел с сервера. Когда он войдет напишите команду /return_role`).then((tmsg) => {
-            tmsg.edit(tmsg.content + ` ${tmsg.id}\`**`);
+        await member.guild.channels.find(c => c.name == 'spectator-chat').send(`**\`Нежелательный пользователь\` ${member} \`вышел с сервера. Когда он войдет напишите команду /return_role`).then(async (tmsg) => {
+            await tmsg.edit(tmsg.content + ` ${tmsg.id}\`**`);
+            await tmsg.pin();
         });
     }
+});
+
+bot.on('guildMemberAdd', async (member) => {
+    if (member.guild.id != '355656045600964609') return
+    let spyktor_chat = member.guild.channels.find(c => c.name == 'spectator-chat');
+    if (!spyktor_chat) return
+    spyktor_chat.fetchPinnedMessages().then(messages => {
+        messages.forEach(async message => {
+            if (!message.content.toLowerCase().includes('напишите команду /return_role')) return
+            if (!message.member.user.bot) return
+            let user = msg.guild.members.get(msg.content.split('<')[1].split('>')[0].split('@!')[1]);
+            if (!user) return
+            if (member.id == user.id){
+                member.addRole(message.guild.roles.find(r => r.name == 'Пользователь'));
+                message.delete();
+            }
+        });
+    });
 });
 
 bot.on('message', async (message) => {
@@ -3962,6 +3981,7 @@ bot.on('message', async (message) => {
             if (!msg.content.includes(`напишите команду /return_role ${args[1]}\`**`)) return message.delete();
             if (!msg.member.user.bot) return message.delete();
             let user = msg.guild.members.get(msg.content.split('<')[1].split('>')[0].split('@!')[1]);
+            if (!user) return message.delete();
             await user.addRole(message.guild.roles.find(r => r.name == 'Пользователь'));
             message.delete();
             message.reply('успешно!').then(msg => msg.delete(12000));
