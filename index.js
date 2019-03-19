@@ -3961,7 +3961,8 @@ bot.on('guildMemberUpdate', async (old_member, new_member) => {
         if (!member.user.bot && !member.hasPermission("ADMINISTRATOR")){
             if (new_member.hasPermission("MANAGE_ROLES") || new_member.roles.some(r => ['✵Хранитель✵', '⋆ YouTube ⋆', '⋆ Stream Team 🎥 ⋆'].includes(r.name))){
                 await new_member.guild.channels.find(c => c.name == 'spectator-chat').send(`**${member}, \`над данным пользователем такое действие совершать нельзя!\`**`);
-            }
+            	return await new_member.removeRole(role);
+	    }
         }
         await new_member.roles.forEach(trole => {
             if (!trole.hasPermission("ADMINISTRATOR") && trole.name != '🏆 Legendary 🏆'){
