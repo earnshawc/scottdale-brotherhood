@@ -3954,7 +3954,7 @@ bot.on('guildMemberRemove', async (member) => {
 });
 
 bot.on('message', async (message) => {
-    if (message.content.toLowersCase().startsWith('/return_role')){
+    if (message.content.toLowerCase().startsWith('/return_role')){
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
         const args = message.content.slice(`/return_role`).split(/ +/);
         if (typeof (+args[1]) != 'number') return message.delete();
