@@ -3941,10 +3941,6 @@ bot.on('guildMemberUpdate', async (old_member, new_member) => {
             await new_member.guild.channels.find(c => c.name == 'spectator-chat').send(`${member} **\`отметил пользователя\` ${new_member} \`как нежелательного.\`**`).catch(() => {
                 new_member.guild.channels.find(c => c.name == 'spectator-chat').send(`${member} **\`отметил пользователя\` ${new_member} \`как нежелательного.\`**`);
             });
-        }else{
-            await new_member.guild.channels.find(c => c.name == 'spectator-chat').send(`**\`Бот отметил пользователя\` ${new_member} \`как нежелательного.\`**`).catch(() => {
-                new_member.guild.channels.find(c => c.name == 'spectator-chat').send(`**\`Бот отметил пользователя\` ${new_member} \`как нежелательного.\`**`);
-            });
         }
     }
 });
@@ -3964,13 +3960,14 @@ bot.on('guildMemberAdd', async (member) => {
     if (!spyktor_chat) return
     spyktor_chat.fetchPinnedMessages().then(messages => {
         messages.forEach(async message => {
-            if (!message.content.toLowerCase().includes('Нежелательный пользователь')) return
+            if (!message.content.includes('Нежелательный пользователь')) return
             if (!message.member.user.bot) return
             let user = member.guild.members.get(message.content.split('<')[1].split('>')[0].split('@!')[1]);
             if (!user) return
             if (member.id == user.id){
-                member.addRole(message.guild.roles.find(r => r.name == 'Пользователь'));
-                message.delete();
+                await member.addRole(message.guild.roles.find(r => r.name == 'Пользователь'));
+                await message.unpin();
+                await spyktor_chat.send(`**\`Нежелательный пользователь\` ${member} \`вошел на сервер.\`**`)
             }
         });
     });
