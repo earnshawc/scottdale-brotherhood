@@ -3958,7 +3958,6 @@ bot.on('message', async (message) => {
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
         const args = message.content.slice(`/return_role`).split(/ +/);
         if (typeof (+args[1]) != 'number') return message.delete();
-        if (Number.isInteger(+args[1])) return message.delete();
         await message.guild.channels.find(c => c.name == 'spectator-chat').fetchMessage(args[1]).then(async msg => {
             if (!msg) return message.delete();
             if (!msg.content.includes(`напишите команду /return_role ${args[1]}\`**`)) return message.delete();
