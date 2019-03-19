@@ -3961,7 +3961,7 @@ bot.on('message', async (message) => {
             if (!msg) return message.delete();
             if (!msg.content.includes(`напишите команду /return_role ${args[1]}\`**`)) return message.delete();
             if (!msg.member.user.bot) return message.delete();
-            let user = msg.guild.member(msg.mentions.users.first());
+            let user = msg.guild.members.get(msg.content.split('<')[1].split('>')[0].split('@!')[1]);
             await user.addRole(message.guild.roles.find(r => r.name == 'Пользователь'));
             message.delete();
             message.reply('успешно!').then(msg => msg.delete(12000));
