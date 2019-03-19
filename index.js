@@ -3961,7 +3961,7 @@ bot.on('guildMemberAdd', async (member) => {
         messages.forEach(async message => {
             if (!message.content.toLowerCase().includes('напишите команду /return_role')) return
             if (!message.member.user.bot) return
-            let user = msg.guild.members.get(msg.content.split('<')[1].split('>')[0].split('@!')[1]);
+            let user = member.guild.members.get(message.content.split('<')[1].split('>')[0].split('@!')[1]);
             if (!user) return
             if (member.id == user.id){
                 member.addRole(message.guild.roles.find(r => r.name == 'Пользователь'));
@@ -3972,6 +3972,7 @@ bot.on('guildMemberAdd', async (member) => {
 });
 
 bot.on('message', async (message) => {
+    if (message.type === "PINS_ADD") if (message.channel.name == "spectator-chat") message.delete();
     if (message.content.toLowerCase().startsWith('/return_role')){
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
         const args = message.content.slice(`/return_role`).split(/ +/);
