@@ -3920,18 +3920,18 @@ bot.on('guildMemberUpdate', async (old_member, new_member) => {
     if (new_member.guild.id != '355656045600964609') return
     if (old_member.roles.size == new_member.roles.size) return
     if (new_member.user.bot) return
-    if (oldMember.roles.size < newMember.roles.size){
+    if (old_member.roles.size < new_member.roles.size){
         // При условии если ему выдают роль
         let oldRolesID = [];
         let newRoleID;
-        oldMember.roles.forEach(role => oldRolesID.push(role.id));
-        newMember.roles.forEach(role => {
+        old_member.roles.forEach(role => oldRolesID.push(role.id));
+        new_member.roles.forEach(role => {
             if (!oldRolesID.some(elemet => elemet == role.id)) newRoleID = role.id;
         });
-        let role = newMember.guild.roles.get(newRoleID);
+        let role = new_member.guild.roles.get(newRoleID);
         if (role.name != 'Пользователь') return
-        const entry = await newMember.guild.fetchAuditLogs({type: 'MEMBER_ROLE_UPDATE'}).then(audit => audit.entries.first());
-        let member = await newMember.guild.members.get(entry.executor.id);
+        const entry = await new_member.guild.fetchAuditLogs({type: 'MEMBER_ROLE_UPDATE'}).then(audit => audit.entries.first());
+        let member = await new_member.guild.members.get(entry.executor.id);
         if (member.user.bot) return
         await new_member.roles.forEach(trole => {
             if (rolesgg.includes(trole.name) && !trole.hasPermission("ADMINISTRATOR")){
