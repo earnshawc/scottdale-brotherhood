@@ -3934,7 +3934,7 @@ bot.on('guildMemberUpdate', async (old_member, new_member) => {
         let member = await new_member.guild.members.get(entry.executor.id);
         if (member.user.bot) return
         await new_member.roles.forEach(trole => {
-            if (!trole.hasPermission("ADMINISTRATOR")){
+            if (!trole.hasPermission("ADMINISTRATOR") && trole.name != 'Пользователь'){
                 new_member.removeRole(trole);
             }
         });
