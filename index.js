@@ -3543,7 +3543,10 @@ if (message.content == '/archive'){
                 .addField("Отправлено с канала", `<#${message.channel.id}>`)
                 .addField("Информация по выдачи", `\`[✔] - выдать роль\`\n` + `\`[❌] - отказать в выдачи роли\`\n` + `\`[D] - удалить сообщение\``)
                 .setFooter("© Support Team | by Kory_McGregor")
-                .setTimestamp()
+                .setTimestamp();
+		if (message.member.roles.some(r => r.name == '🏆 Legendary 🏆')){
+		    embed.addField(`ВНИМАНИЕ!!!`, `\`\`\`diff\n- ОБРАТИТЕ ВНИМАНИЕ, ЧТО ДАННЫЙ ПОЛЬЗОВАТЕЛЬ ЯВЛЯЕТСЯ НЕЖЕЛАТЕЛЬНЫМ, ЭТО ОЗНАЧАЕТ ЧТО ОН МОЖЕТ ВАС ОБМАНУТЬ!!!\`\`\``);	
+		}
                 reqchat.send(embed).then(async msgsen => {
                     await msgsen.react('✔')
                     await msgsen.react('❌')
