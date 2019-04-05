@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-exports.run = async (bot, message) => {
+exports.run = async (bot, message, warn_cooldown) => {
     if (message.content.startsWith("/mwarn")){
         if (!message.member.hasPermission("ADMINISTRATOR")) return
         let user = message.guild.member(message.mentions.users.first());

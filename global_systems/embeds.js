@@ -1,9 +1,6 @@
 const Discord = require('discord.js');
 
-exports.run = async (bot, message) => {
-    let setembed_general = ["не указано", "не указано", "не указано", "не указано", "не указано", "не указано", "не указано"];
-    let setembed_fields = ["нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет"];
-    let setembed_addline = ["нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет"];
+exports.run = async (bot, message, setembed_general, setembed_fields, setembed_addline) => {
 
     if (message.content.startsWith("/setup")){
         let level_mod = 0;

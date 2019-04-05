@@ -13,8 +13,160 @@ const snyatie = new Set(); // Уже отправленные запросы н�
 let antislivsp1 = new Set();
 let antislivsp2 = new Set();
 
+let setembed_general = ["не указано", "не указано", "не указано", "не указано", "не указано", "не указано", "не указано"];
+let setembed_fields = ["нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет"];
+let setembed_addline = ["нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет"];
+
 let serverid = '355656045600964609';
 let databaseid = '493459379878625320';
+
+tags = ({
+    "ПРА-ВО": "⋆ The Board of State ⋆",
+    "ГЦЛ": "⋆ The Board of State ⋆",
+    "АШ": "⋆ The Board of State ⋆",
+    "ЦБ": "⋆ The Board of State ⋆",
+
+    "FBI": "⋆ Department of Justice ⋆",
+    "ФБР": "⋆ Department of Justice ⋆",
+    "LSPD": "⋆ Department of Justice ⋆",
+    "ЛСПД": "⋆ Department of Justice ⋆",
+    "SFPD": "⋆ Department of Justice ⋆",
+    "СФПД": "⋆ Department of Justice ⋆",
+    "LVPD": "⋆ Department of Justice ⋆",
+    "ЛВПД": "⋆ Department of Justice ⋆",
+    "SWAT": "⋆ Department of Justice ⋆",
+    "СВАТ": "⋆ Department of Justice ⋆",
+    "RCPD": "⋆ Department of Justice ⋆",
+    "РКПД": "⋆ Department of Justice ⋆",
+
+    "LSA": "⋆ Department of Defence ⋆",
+    "ЛСА": "⋆ Department of Defence ⋆",
+    "SFA": "⋆ Department of Defence ⋆",
+    "СФА": "⋆ Department of Defence ⋆",
+    "LS-A": "⋆ Department of Defence ⋆",
+    "ЛС-А": "⋆ Department of Defence ⋆",
+    "SF-A": "⋆ Department of Defence ⋆",
+    "СФ-А": "⋆ Department of Defence ⋆",
+    "ТСР": "⋆ Department of Defence ⋆",
+    "ТЮРЬМА": "⋆ Department of Defence ⋆",
+
+    "LSMC": "⋆ Department of Health ⋆",
+    "ЛСМЦ": "⋆ Department of Health ⋆",
+    "SFMC": "⋆ Department of Health ⋆",
+    "СФМЦ": "⋆ Department of Health ⋆",
+    "LVMC": "⋆ Department of Health ⋆",
+    "ЛВМЦ": "⋆ Department of Health ⋆",
+
+    "R-LS": "⋆ Mass Media ⋆",
+    "RLS": "⋆ Mass Media ⋆",
+    "Р-ЛС": "⋆ Mass Media ⋆",
+    "РЛС": "⋆ Mass Media ⋆",
+    "R-SF": "⋆ Mass Media ⋆",
+    "RSF": "⋆ Mass Media ⋆",
+    "Р-СФ": "⋆ Mass Media ⋆",
+    "РСФ": "⋆ Mass Media ⋆",
+    "R-LV": "⋆ Mass Media ⋆",
+    "RLV": "⋆ Mass Media ⋆",
+    "Р-ЛВ": "⋆ Mass Media ⋆",
+    "РЛВ": "⋆ Mass Media ⋆",
+
+    "WMC": "⋆ Warlock MC ⋆",
+    "W-MC": "⋆ Warlock MC ⋆",
+    "RM": "⋆ Russian Mafia ⋆",
+    "РМ": "⋆ Russian Mafia ⋆",
+    "LCN": "⋆ La Cosa Nostra ⋆",
+    "ЛКН": "⋆ La Cosa Nostra ⋆",
+    "YAKUZA": "⋆ Yakuza ⋆",
+    "ЯКУДЗА": "⋆ Yakuza ⋆",
+
+    "GROVE": "⋆ Grove Street Gang ⋆",
+    "ГРУВ": "⋆ Grove Street Gang ⋆",
+    "BALLAS": "⋆ East Side Ballas Gang ⋆",
+    "БАЛЛАС": "⋆ East Side Ballas Gang ⋆",
+    "VAGOS": "⋆ Vagos Gang ⋆",
+    "ВАГОС": "⋆ Vagos Gang ⋆",
+    "NW": "⋆ Night Wolfs ⋆",
+    "НВ": "⋆ Night Wolfs ⋆",
+    "RIFA": "⋆ Rifa Gang ⋆",
+    "РИФА": "⋆ Rifa Gang ⋆",
+    "AZTEC": "⋆ Aztecas Gang ⋆",  
+    "АЦТЕК": "⋆ Aztecas Gang ⋆",  
+});
+
+let manytags = [
+"ПРА-ВО",
+"ГЦЛ",
+"АШ",
+"ЦБ",
+
+"FBI",
+"ФБР",
+"LSPD",
+"ЛСПД",
+"SFPD",
+"СФПД",
+"LVPD",
+"ЛВПД",
+"SWAT",
+"СВАТ",
+"RCPD",
+"РКПД",
+
+"LSA",
+"ЛСА",
+"SFA",
+"СФА",
+"LS-A",
+"ЛС-А",
+"SF-A",
+"СФ-А",
+"ТСР",
+"ТЮРЬМА",
+
+"LSMC",
+"ЛСМЦ",
+"SFMC",
+"СФМЦ",
+"LVMC",
+"ЛВМЦ",
+
+"R-LS",
+"RLS",
+"Р-ЛС",
+"РЛС",
+"R-SF",
+"RSF",
+"Р-СФ",
+"РСФ",
+"R-LV",
+"RLV",
+"Р-ЛВ",
+"РЛВ",
+
+"WMC",
+"W-MC",
+"RM",
+"РМ",
+"LCN",
+"ЛКН",
+"YAKUZA",
+"ЯКУДЗА",
+
+"GROVE",
+"ГРУВ",
+"BALLAS",
+"БАЛЛАС",
+"VAGOS",
+"ВАГОС",
+"AZTEC",  
+"АЦТЕК",
+"RIFA",
+"РИФА",
+"NW",
+"НВ",
+];
+let rolesgg = ["⋆ The Board of State ⋆", "⋆ Department of Justice ⋆", "⋆ Department of Defence ⋆", "⋆ Department of Health ⋆", "⋆ Mass Media ⋆", "⋆ Warlock MC ⋆", "⋆ Russian Mafia ⋆", "⋆ La Cosa Nostra ⋆", "⋆ Yakuza ⋆", "⋆ Grove Street Gang ⋆", "⋆ East Side Ballas Gang ⋆", "⋆ Vagos Gang ⋆", "⋆ Aztecas Gang ⋆", "⋆ Rifa Gang ⋆", "⋆ Night Wolfs ⋆"]
+let canremoverole = ["✫Deputy Leader✫", "✵Leader✵", "✮Ministers✮", "✔ Helper ✔"];
 
 const events = {
     MESSAGE_REACTION_ADD: 'messageReactionAdd',
@@ -72,11 +224,11 @@ bot.on('message', async message => {
     .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
 
     // Системы
-    require('./global_systems/embeds').run(bot, message);
+    require('./global_systems/embeds').run(bot, message, setembed_general, setembed_fields, setembed_addline);
     require('./global_systems/family').run(bot, message);
-    require('./global_systems/role').run(bot, message);
-    require('./global_systems/support').run(bot, message);
-    require('./global_systems/warn').run(bot, message);
+    require('./global_systems/role').run(bot, message, tags, rolesgg, canremoverole, manytags);
+    require('./global_systems/support').run(bot, message, support_loop, support_cooldown);
+    require('./global_systems/warn').run(bot, message, warn_cooldown);
 	
     if (message.content.startsWith("/newsp")){
         const args = message.content.slice(`/newsp`).split(/ +/);

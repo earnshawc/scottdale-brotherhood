@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-exports.run = async (bot, message) => {
+exports.run = async (bot, message, support_loop, support_cooldown) => {
     const authorrisbot = new Discord.RichEmbed()
     .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
     
