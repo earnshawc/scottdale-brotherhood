@@ -17,7 +17,7 @@ exports.run = async (bot, message, setembed_general, setembed_fields, setembed_a
                 }
             });
         }
-        if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod < 2) return
+        if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod < 3) return
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
             message.reply(`\`пользователь не указан! '/setup [user] [уровень]'\``)
@@ -38,8 +38,8 @@ exports.run = async (bot, message, setembed_general, setembed_fields, setembed_a
         [2] - может выдавать права доступа на /embhelp
         ADMINISTRATOR само собой
         */
-        if (args[2] > 2 || args[2] < 0){
-            message.reply(`\`укажи верный уровень доступа! '/setup [user] [уровень (0-2)]'\``)
+        if (args[2] > 3 || args[2] < 0){
+            message.reply(`\`укажи верный уровень доступа! '/setup [user] [уровень (0-3)]'\``)
             return message.delete();
         }
 	if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod <= +args[2]){
@@ -152,7 +152,7 @@ exports.run = async (bot, message, setembed_general, setembed_fields, setembed_a
                 }
             });
         }
-        if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod < 1) return
+        if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod < 2) return
         const args = message.content.slice(`/embsetup`).split(/ +/);
         if (!args[1]){
             message.reply(`\`укажите, что вы установите! Ниже предоставлен список настроек.\`\n\`[1] - Название\`\n\`[2] - Описание\`\n\`[3] - Цвет [#FFFFFF]\`\n\`[4] - Время\`\n\`[5] - Картинка\`\n\`[6] - Подпись\`\n\`[7] - Картинка к подписи\``);
@@ -221,7 +221,7 @@ exports.run = async (bot, message, setembed_general, setembed_fields, setembed_a
                 }
             });
         }
-        if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod < 1) return
+        if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod < 2) return
         const args = message.content.slice(`/embfield`).split(/ +/);
         if (!args[1]){
             message.reply(`\`укажите номер поля, которое вы хотите отредактировать!\``);
@@ -303,7 +303,7 @@ exports.run = async (bot, message, setembed_general, setembed_fields, setembed_a
                 }
             });
         }
-        if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod < 1) return
+        if (!message.member.hasPermission("ADMINISTRATOR") && +level_mod < 2) return
         const embed = new Discord.RichEmbed();
         if (setembed_general[0] != "не указано") embed.setTitle(setembed_general[0]);
         if (setembed_general[1] != "не указано") embed.setDescription(setembed_general[1]);

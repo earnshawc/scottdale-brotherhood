@@ -23,7 +23,7 @@ exports.run = async (bot, message) => {
         }
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
-            message.reply(`**\`/fbi_access [user] [add/remove/moderate] [(0)/(1)/(2)]\`**`).then(msg => msg.delete(12000));
+            message.reply(`**\`/fbi_access [user] [add/remove/moderate] [(0)/(1)/(2)]\`**`).then(msg => msg.delete(40000));
             return message.delete();
         }
         if (!args[2]){
@@ -72,7 +72,7 @@ exports.run = async (bot, message) => {
                 USE_VAD: true,
                 PRIORITY_SPEAKER: false,
             });
-            message.reply(`**\`вы успешно выдали доступ пользователю\` <@${user.id}> \`на подключение/просмотр данного канала.\`**`);
+            message.reply(`**\`вы успешно выдали доступ пользователю\` <@${user.id}> \`на подключение/просмотр '${federal_channels[args[3]].name}'.\`**`);
             return message.delete();
         }else if (args[2] == 'moderate'){
             await federal_channels[args[3]].overwritePermissions(user, {
@@ -102,15 +102,15 @@ exports.run = async (bot, message) => {
                 USE_VAD: true,
                 PRIORITY_SPEAKER: true,
             });
-            message.reply(`**\`вы успешно выдали доступ пользователю\` <@${user.id}> \`на модерацию данного канала.\`**`);
+            message.reply(`**\`вы успешно выдали доступ пользователю\` <@${user.id}> \`на модерацию '${federal_channels[args[3]].name}'.\`**`);
             return message.delete();
         }else if (args[2] == 'remove'){
-            await channel.permissionOverwrites.forEach(async perm => {
+            await federal_channels[args[3]].permissionOverwrites.forEach(async perm => {
                 if (perm.type == `member`){
                     if (perm.id == user.id) await perm.delete();
                 }
             });
-            message.reply(`**\`вы успешно забрали доступ у пользователя\` <@${user.id}> \`к данному каналу.\`**`);
+            message.reply(`**\`вы успешно забрали доступ у пользователя\` <@${user.id}> \`к '${federal_channels[args[3]].name}'.\`**`);
             return message.delete();
         }
     }
