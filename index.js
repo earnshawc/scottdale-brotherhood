@@ -26,8 +26,8 @@ tags = ({
     "АШ": "⋆ The Board of State ⋆",
     "ЦБ": "⋆ The Board of State ⋆",
 
-    "FBI": "⋆ Department of Justice ⋆",
-    "ФБР": "⋆ Department of Justice ⋆",
+    "FBI": "⋆ Federal Bureau of Investigation ⋆",
+    "ФБР": "⋆ Federal Bureau of Investigation ⋆",
     "LSPD": "⋆ Department of Justice ⋆",
     "ЛСПД": "⋆ Department of Justice ⋆",
     "SFPD": "⋆ Department of Justice ⋆",
@@ -165,7 +165,7 @@ let manytags = [
 "NW",
 "НВ",
 ];
-let rolesgg = ["⋆ The Board of State ⋆", "⋆ Department of Justice ⋆", "⋆ Department of Defence ⋆", "⋆ Department of Health ⋆", "⋆ Mass Media ⋆", "⋆ Warlock MC ⋆", "⋆ Russian Mafia ⋆", "⋆ La Cosa Nostra ⋆", "⋆ Yakuza ⋆", "⋆ Grove Street Gang ⋆", "⋆ East Side Ballas Gang ⋆", "⋆ Vagos Gang ⋆", "⋆ Aztecas Gang ⋆", "⋆ Rifa Gang ⋆", "⋆ Night Wolfs ⋆"]
+let rolesgg = ["⋆ The Board of State ⋆", "⋆ Federal Bureau of Investigation ⋆", "⋆ Department of Justice ⋆", "⋆ Department of Defence ⋆", "⋆ Department of Health ⋆", "⋆ Mass Media ⋆", "⋆ Warlock MC ⋆", "⋆ Russian Mafia ⋆", "⋆ La Cosa Nostra ⋆", "⋆ Yakuza ⋆", "⋆ Grove Street Gang ⋆", "⋆ East Side Ballas Gang ⋆", "⋆ Vagos Gang ⋆", "⋆ Aztecas Gang ⋆", "⋆ Rifa Gang ⋆", "⋆ Night Wolfs ⋆"]
 let canremoverole = ["✫Deputy Leader✫", "✵Leader✵", "✮Ministers✮", "✔ Helper ✔"];
 
 const events = {
