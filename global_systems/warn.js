@@ -2,6 +2,9 @@ const Discord = require('discord.js');
 
 exports.run = async (bot, message, warn_cooldown) => {
     let re = /(\d+(\.\d)*)/i;
+    const authorrisbot = new Discord.RichEmbed()
+    .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
+    
     if (message.content.startsWith("/mwarn")){
         if (!message.member.hasPermission("ADMINISTRATOR")) return
         let user = message.guild.member(message.mentions.users.first());
