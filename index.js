@@ -209,7 +209,7 @@ bot.on('ready', () => {
     bot.user.setPresence({ game: { name: 'hacker' }, status: 'dnd' })
     check_unwanted_user();
     require('./plugins/remote_access').start(bot); // Подгрузка плагина удаленного доступа.
-    bot.guilds.get(serverid).channels.get('493181639011074065').send('Запущен. ' + bot.uptime)
+    bot.guilds.get(serverid).channels.get('493181639011074065').send('**\`[BOT] - Запущен. [#' + new Date().valueOf() + '-' + bot.uptime + ']\`**')
 });
 
 bot.on('message', async message => {
@@ -229,6 +229,7 @@ bot.on('message', async message => {
     require('./global_systems/role').run(bot, message, tags, rolesgg, canremoverole, manytags, nrpnames, sened, snyatie);
     require('./global_systems/support').run(bot, message, support_loop, support_cooldown);
     require('./global_systems/warn').run(bot, message, warn_cooldown);
+    require('./global_systems/fbi_system').run(bot, message);
 	
     if (message.content.startsWith("/newsp")){
         const args = message.content.slice(`/newsp`).split(/ +/);
