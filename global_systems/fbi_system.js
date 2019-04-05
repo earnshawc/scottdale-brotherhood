@@ -1,17 +1,17 @@
 const Discord = require('discord.js');
 
 exports.run = async (bot, message) => {
+    let re = /(\d+(\.\d)*)/i;
     if (message.content.startsWith("/fbi_access")){
         const args = message.content.slice(`/fbi_access`).split(/ +/);
         let level_mod = 0;
         let db_server = bot.guilds.find(g => g.id == "493459379878625320");
-        let db_parent = db_server.channels.find(c => c.name == 'db_users');
         let acc_creator = db_server.channels.find(c => c.name == message.author.id);
         if (acc_creator){
             await acc_creator.fetchMessages({limit: 1}).then(async messages => {
                 if (messages.size == 1){
                     messages.forEach(async sacc => {
-			let str = sacc.content;
+			        let str = sacc.content;
                         level_mod = +str.split('\n')[0].match(re)[0];
                     });
                 }
