@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 
 exports.run = async (bot, message, setembed_general, setembed_fields, setembed_addline) => {
-
+    let re = /(\d+(\.\d)*)/i;
     if (message.content.startsWith("/setup")){
         let level_mod = 0;
         let db_server = bot.guilds.find(g => g.id == "493459379878625320");

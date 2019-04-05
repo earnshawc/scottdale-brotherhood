@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 
 exports.run = async (bot, message) => {
+    let re = /(\d+(\.\d)*)/i;
     if (message.content.toLowerCase() == '/famhelp'){
         message.channel.send(`**<@${message.author.id}>, вот справка по системе семей!**`, {embed: {
             color: 3447003,

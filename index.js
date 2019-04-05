@@ -962,7 +962,9 @@ bot.on('guildMemberAdd', async (member) => {
             let user = member.guild.members.get(message.content.split('<')[1].split('>')[0].split('@!')[1]);
             if (!user) return
             if (member.id == user.id){
-                await member.addRole(message.guild.roles.find(r => r.name == '🏆 Legendary 🏆'));
+                setTimeout(async () => {
+                    await member.addRole(message.guild.roles.find(r => r.name == '🏆 Legendary 🏆'));
+                }, 3000)
                 await message.unpin();
                 await spyktor_chat.send(`**\`Нежелательный пользователь\` ${member} \`вошел на сервер.\`**`)
             }

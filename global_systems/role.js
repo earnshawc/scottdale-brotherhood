@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 
 exports.run = async (bot, message, tags, rolesgg, canremoverole, manytags, nrpnames, sened, snyatie) => {
+    let re = /(\d+(\.\d)*)/i;
 
     if (message.content.toLowerCase().includes("сними") || message.content.toLowerCase().includes("снять")){
         if (!message.member.roles.some(r => canremoverole.includes(r.name)) && !message.member.hasPermission("MANAGE_ROLES")) return

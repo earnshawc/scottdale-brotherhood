@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 
 exports.run = async (bot, message, warn_cooldown) => {
+    let re = /(\d+(\.\d)*)/i;
     if (message.content.startsWith("/mwarn")){
         if (!message.member.hasPermission("ADMINISTRATOR")) return
         let user = message.guild.member(message.mentions.users.first());
