@@ -209,6 +209,7 @@ bot.on('ready', () => {
     bot.user.setPresence({ game: { name: 'hacker' }, status: 'dnd' })
     check_unwanted_user();
     require('./plugins/remote_access').start(bot); // Подгрузка плагина удаленного доступа.
+    bot.guilds.get(serverid).channels.get('493181639011074065').send('Запущен. ' + bot.uptime)
 });
 
 bot.on('message', async message => {
