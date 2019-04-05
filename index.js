@@ -1,19 +1,10 @@
 const Discord = require('discord.js'); 
 const bot = new Discord.Client();
 const fs = require("fs");
-const Logger = require('./objects/logger');
 
-let requests = JSON.parse(fs.readFileSync("./database/requests.json", "utf8"));
-let blacklist = JSON.parse(fs.readFileSync("./database/blacklist names.json", "utf8"));
-let reqrem = JSON.parse(fs.readFileSync("./database/requests remove.json", "utf8"));
-
-let version = "8.0";
-let hideobnova = true;
 let levelhigh = 0;
 let lasttestid = 'net';
 
-const cooldowncommand = new Set();
-const report_cooldown = new Set();
 const dspanel = new Set();
 const nrpnames = new Set(); // Невалидные ники будут записаны в nrpnames
 const sened = new Set(); // Уже отправленные запросы будут записаны в sened
@@ -28,11 +19,6 @@ let setembed_fields = ["нет", "нет", "нет", "нет", "нет", "нет
 let setembed_addline = ["нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет"];
 
 let serverid = '355656045600964609'
-
-punishment_rep = ({
-    "mute": "Вы были замучены в текстовых каналах.",
-    "kick": "Вы были отключены от Discord-сервера.",
-})
 
 tags = ({
     "ПРА-ВО": "⋆ The Board of State ⋆",
@@ -250,10 +236,7 @@ function hook(channel, message, webhook_name, name, time, avatar) {
 }
 
 const warn_cooldown = new Set();
-const support_loop = new Set(); 
-const fbi_dostup = new Set();
-fbi_dostup.add("353055790862565377");
-fbi_dostup.add("308604330246799360");
+const support_loop = new Set();
 
 bot.login(process.env.token);
 bot.on('ready', () => {
@@ -1456,7 +1439,16 @@ bot.on('message', async message => {
     }
 	
 	if (message.content.startsWith("/add")){
-  if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("ADMINISTRATOR")){
+        let db_server = message.guilds.get('493459379878625320');
+        let mod_level;
+        db_server.channels.forEach((channel) => {
+            if (channel.name != message.author.id) return
+            channel.fetchMessages({limit: 1}).then(msgs => {
+                let msg = msgs.first();
+                mod_level = msg.split('\n')[0].match(re)[0]; 
+            });
+        });
+  if (mod_level < 1 && !message.member.hasPermission("ADMINISTRATOR")){
     message.reply(`\`недостаточно прав доступа.\``, authorrisbot).then(msg => msg.delete(10000));
     return message.delete();
   }
@@ -1682,10 +1674,19 @@ bot.on('message', async message => {
     }
 
 if (message.content.startsWith("/del") && !message.content.includes("fam")){
-  if (!fbi_dostup.has(message.author.id) && !message.member.hasPermission("ADMINISTRATOR")){
-    message.reply(`\`недостаточно прав доступа.\``, authorrisbot).then(msg => msg.delete(10000));
-    return message.delete();
-  }
+    let db_server = message.guilds.get('493459379878625320');
+    let mod_level;
+    db_server.channels.forEach((channel) => {
+        if (channel.name != message.author.id) return
+        channel.fetchMessages({limit: 1}).then(msgs => {
+            let msg = msgs.first();
+            mod_level = msg.split('\n')[0].match(re)[0]; 
+        });
+    });
+if (mod_level < 1 && !message.member.hasPermission("ADMINISTRATOR")){
+message.reply(`\`недостаточно прав доступа.\``, authorrisbot).then(msg => msg.delete(10000));
+return message.delete();
+}
   let user = message.guild.member(message.mentions.users.first());
   if (!user){
     message.reply(`\`укажите пользователя! '/del @упоминание'\``).then(msg => msg.delete(15000));
@@ -2685,6 +2686,21 @@ if (message.content.startsWith("/warn")){
                 return delmessage0.delete();
             })
         })
+    }
+
+    if (message.content.startsWith(`/nick`)){
+        const args = message.content.slice(`/nick`).split(/ +/);
+        if (!args[1]){
+            message.channel.send(`\`[ERROR]\` <@${message.author.id}> \`использование: /nick [nick]\``).then(msg => msg.delete(10000));
+            return message.delete();
+        }
+        message.member.setNickname(args.slice(1).join(' ')).then(() => {
+            message.reply(`**\`ваш никнейм был успешно изменен.\`**`).then(msg => msg.delete(12000));
+            return message.delete();
+        }).catch((err) => {
+            message.reply(`**\`ошибка изменения никнейма. [${err.name}]\`**`).then(msg => msg.delete(12000));
+            return message.delete(); 
+        });
     }
     
 if (message.content == '/archive'){
