@@ -697,6 +697,7 @@ bot.on('guildMemberAdd', async member => {
 // Syoer System
 async function check_unwanted_user(){
     setInterval(async () => {
+        let re = /(\d+(\.\d)*)/i;
         let gserver = bot.guilds.get('355656045600964609');
         let spchat = gserver.channels.find(c => c.name == 'spectator-chat');
         await spchat.fetchPinnedMessages().then(messages => {

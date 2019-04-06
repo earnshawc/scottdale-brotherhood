@@ -57,6 +57,16 @@ exports.run = async (bot, message, support_loop, support_cooldown) => {
         if (!s_category) return message.delete(3000);
         let moderator_role = await message.guild.roles.find(r => r.name == 'Support Team');
         if (!moderator_role) return message.delete(3000);
+        let createdChans = 0;
+        await message.guild.channels.forEach(channel => {
+            if (channel.parentID == s_category.id){
+                createdChans++;
+            }
+        });
+        if (createdChans >= 40){
+            message.channel.send(`<@${message.author.id}>, \`попробуйте позже.\``).then(msg => msg.delete(7000));
+            return message.delete();
+        }
         await message.guild.createChannel(`ticket-${+info_rep[0] + 1}`, 'text', [
             {
                 id: moderator_role.id,
