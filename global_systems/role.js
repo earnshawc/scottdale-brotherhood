@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const fs = require("fs");
 
 exports.run = async (bot, message, tags, rolesgg, canremoverole, manytags, nrpnames, sened, snyatie) => {
     let re = /(\d+(\.\d)*)/i;

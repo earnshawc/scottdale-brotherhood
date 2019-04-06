@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const fs = require("fs");
 
 exports.run = async (bot, message, support_loop, support_cooldown) => {
     let re = /(\d+(\.\d)*)/i;

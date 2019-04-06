@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const fs = require("fs");
 
 exports.start = async (bot) => {
     // Система удаленного управления ботом для отключения,фиксов багов и т.д.

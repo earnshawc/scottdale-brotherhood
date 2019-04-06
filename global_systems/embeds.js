@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const fs = require("fs");
 
 exports.run = async (bot, message, setembed_general, setembed_fields, setembed_addline) => {
     let re = /(\d+(\.\d)*)/i;
