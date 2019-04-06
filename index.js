@@ -4,7 +4,12 @@ const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 
-let the_rbot_status = false;
+const low = require('./lib/main');
+const FileSync = require('./lib/FileSync');
+
+const adapter = new FileSync('db.json')
+const db = low(adapter)
+
 let levelhigh = 0;
 let lasttestid = 'net';
 
@@ -33,6 +38,39 @@ const events = {
     MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
 };
 
+async function get_database(){
+    let server = bot.guilds.get('355656045600964609');
+    if (!server) return
+    let channel = server.channels.find(c => c.name == 'database-test');
+    if (!channel) return
+    await channel.fetchMessages({limit: 1}).then(async messages => {
+        let message = messages.first();
+        if (!message || !message.attachments.first()){
+            await db.defaults({ server_enabled: 'none' }).write();
+        }
+        await download(message.attachments.first().url, './db.json', function (err, filepath) {})
+    });
+}
+
+async function load_database(){
+    let server = bot.guilds.get('355656045600964609');
+    if (!server) return
+    let channel = server.channels.find(c => c.name == 'database-test');
+    if (!channel) return
+    await channel.send({ files: [ `./db.json` ] });
+}
+
+async function change_database(title, value){
+    if (title == 'server_enabled'){
+        await get_database();
+        let status = await db.get('server_enabled').value();
+        if (status == value) return false;
+        await db.set('server_enabled', value);
+        await load_database();
+        return true;
+    }
+}
+
 const warn_cooldown = new Set();
 const support_loop = new Set();
 
@@ -44,6 +82,7 @@ bot.on('ready', () => {
     check_unwanted_user();
     require('./plugins/remote_access').start(bot); // Подгрузка плагина удаленного доступа.
     bot.guilds.get(serverid).channels.get('493181639011074065').send('**\`[BOT] - Запущен. [#' + new Date().valueOf() + '-' + bot.uptime + ']\`**')
+    get_database();
 });
 
 bot.on('message', async message => {
@@ -64,7 +103,12 @@ bot.on('message', async message => {
     require('./global_systems/support').run(bot, message, support_loop, support_cooldown);
     require('./global_systems/warn').run(bot, message, warn_cooldown);
     require('./global_systems/fbi_system').run(bot, message);
-	
+    
+    if (message.content == 'this_is_a_test'){
+        let how = change_database('server_enabled', new Date().valueOf());
+        message.reply(how);
+    }
+
     if (message.content.startsWith("/newsp")){
         const args = message.content.slice(`/newsp`).split(/ +/);
         if (!args[1]){
