@@ -111,13 +111,15 @@ bot.on('message', async message => {
     
     if (message.content == 'this_is_a_test'){
         await get_database();
-        let count = await db.get('count').value();
         let user = await db.get('users').find({ discord_id: `${message.author.id}` }).value();
         if (!user){
+            await db.update('count', n => n + 1).write();
+            let count = await db.get('count').value();
             await db.get('users').push({ id: `${count}`, discord_id: `${message.author.id}`, admin: true }).write();
             message.reply('теперь ты админ.');
         }else{
             console.log(user);
+            message.reply(user.admin);
         }
     }
 
