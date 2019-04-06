@@ -71,7 +71,7 @@ async function change_database(title, value){
         await get_database();
         let status = await db.get('server_enabled').value();
         if (status == value) return false;
-        await db.set('server_enabled', value);
+        await db.set('server_enabled', value).write();
         await load_database();
         return true;
     }
