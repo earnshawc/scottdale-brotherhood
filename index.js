@@ -117,7 +117,7 @@ bot.on('message', async message => {
             await db.get('users').push({ id: `${count}`, discord_id: `${message.author.id}`, admin: true }).write();
             message.reply('теперь ты админ.');
         }else{
-            message.channel.send(user);
+            console.log(user);
         }
     }
 
