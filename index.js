@@ -1,7 +1,9 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
+const rbot = new Discord.Client();
 const fs = require("fs");
 
+let the_rbot_status = false;
 let levelhigh = 0;
 let lasttestid = 'net';
 
@@ -34,6 +36,13 @@ const warn_cooldown = new Set();
 const support_loop = new Set();
 
 bot.login(process.env.token);
+rbot.login(process.env.recovery_token);
+
+rbot.on('ready', () => {
+    console.log('Бот поддержки был успешно запущен!');
+    the_rbot_status = true;
+});
+
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
     bot.user.setPresence({ game: { name: 'hacker' }, status: 'dnd' })
@@ -807,4 +816,7 @@ bot.on('message', async (message) => {if (message.type === "PINS_ADD") if (messa
 
 process.on('exit', function (code){
     console.log('Бот был успешно отключен! [' + code + ']');
+    if (the_rbot_status == true){
+        rbot.guilds.get(serverid).channels.get('493181639011074065').send('**\`[BOT] - Отключен. [#' + code + ']\`**');
+    }
 });
