@@ -9,7 +9,7 @@ exports.run = async (bot, message, support_loop, support_cooldown) => {
         if (support_cooldown.has(message.author.id)) {
             return message.delete();
         }
-        support_cooldown.add(message.author.id);
+        if (!message.member.hasPermission("ADMINISTRATOR")) support_cooldown.add(message.author.id);
         setTimeout(() => {
             if (support_cooldown.has(message.author.id)) support_cooldown.delete(message.author.id);
         }, 300000);
