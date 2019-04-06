@@ -45,14 +45,17 @@ async function get_database(){
     if (!channel) return
     await channel.fetchMessages({limit: 1}).then(async messages => {
         if (messages.size = 0){
-            return db.defaults({ server_enabled: 'none' }).write();
+            if (fs.existsSync('./db.json')) await fs.unlink('./db.json');
+            return db.defaults({ count: -1, users: [] }).write();
         }
         let message = messages.first();
         if (!message){
-            return db.defaults({ server_enabled: 'none' }).write();
+            if (fs.existsSync('./db.json')) await fs.unlink('./db.json');
+            return db.defaults({ count: -1, users: [] }).write();
         }
         if (!message.attachments){
-            return db.defaults({ server_enabled: 'none' }).write();
+            if (fs.existsSync('./db.json')) await fs.unlink('./db.json');
+            return db.defaults({ count: -1, users: [] }).write();
         }
         await download(message.attachments.first().url, './db.json', function (err, filepath) {})
     });
@@ -63,17 +66,16 @@ async function load_database(){
     if (!server) return
     let channel = server.channels.find(c => c.name == 'database-test');
     if (!channel) return
-    await channel.send({ files: [ `./db.json` ] });
+    if (fs.existsSync('./db.json')) await channel.send({ files: [ `./db.json` ] });
 }
 
 async function change_database(title, value){
     if (title == 'server_enabled'){
         await get_database();
         let status = await db.get('server_enabled').value();
-        if (status == value) return false;
+        if (status == value) return
         await db.set('server_enabled', value).write();
-        await load_database();
-        return true;
+        return load_database();
     }
 }
 
@@ -111,8 +113,15 @@ bot.on('message', async message => {
     require('./global_systems/fbi_system').run(bot, message);
     
     if (message.content == 'this_is_a_test'){
-        let how = change_database('server_enabled', new Date().valueOf());
-        message.reply(how);
+        await get_database();
+        let count = await db.get('count').value();
+        let user = await db.get('users').find({ discord_id: `${message.author.id}` }).value();
+        if (!user){
+            await db.get('users').push({ id: `${count}`, discord_id: `${message.author.id}`, admin: true });
+            message.reply('теперь ты админ.');
+        }else{
+            message.channel.send(user);
+        }
     }
 
     if (message.content.startsWith("/newsp")){
