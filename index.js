@@ -87,7 +87,7 @@ bot.on('ready', () => {
     check_unwanted_user();
     require('./plugins/remote_access').start(bot); // Подгрузка плагина удаленного доступа.
     bot.guilds.get(serverid).channels.get('493181639011074065').send('**\`[BOT] - Запущен. [#' + new Date().valueOf() + '-' + bot.uptime + ']\`**')
-    get_database();
+    // get_database();
 });
 
 bot.on('message', async message => {
