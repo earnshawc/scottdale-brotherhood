@@ -804,3 +804,7 @@ bot.on('guildMemberAdd', async (member) => {
 });
 
 bot.on('message', async (message) => {if (message.type === "PINS_ADD") if (message.channel.name == "spectator-chat") message.delete();});
+
+process.on('exit', function (){
+    console.log('Бот был успешно отключен!');
+});
