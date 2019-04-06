@@ -59,7 +59,7 @@ bot.on('message', async message => {
     require('./global_systems/embeds').run(bot, message, setembed_general, setembed_fields, setembed_addline);
     require('./global_systems/family').run(bot, message);
     require('./global_systems/role').run(bot, message, tags, rolesgg, canremoverole, manytags, nrpnames, sened, snyatie);
-    require('./global_systems/support').run(bot, message, support_loop, support_cooldown);
+    require('./global_systems/support.1').run(bot, message, support_cooldown);
     require('./global_systems/warn').run(bot, message, warn_cooldown);
     require('./global_systems/fbi_system').run(bot, message);
 	
@@ -806,10 +806,3 @@ bot.on('guildMemberAdd', async (member) => {
 });
 
 bot.on('message', async (message) => {if (message.type === "PINS_ADD") if (message.channel.name == "spectator-chat") message.delete();});
-
-process.on('beforeExit', function (code){
-    console.log('Бот был успешно отключен!');
-    if (the_rbot_status == true){
-        bot.guilds.get(serverid).channels.get('493181639011074065').send('**\`[BOT] - Отключен. [#' + code + ']\`**');
-    }
-});
