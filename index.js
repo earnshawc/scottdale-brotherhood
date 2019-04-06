@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const fs = require("fs");
+const md5 = require('./my_modules/md5');
 
 let the_rbot_status = false;
 let levelhigh = 0;
