@@ -45,14 +45,14 @@ async function get_database(){
     if (!channel) return
     await channel.fetchMessages({limit: 1}).then(async messages => {
         if (messages.size = 0){
-            await db.defaults({ server_enabled: 'none' }).write();
+            return db.defaults({ server_enabled: 'none' }).write();
         }
         let message = messages.first();
         if (!message){
-            await db.defaults({ server_enabled: 'none' }).write();
+            return db.defaults({ server_enabled: 'none' }).write();
         }
         if (!message.attachments){
-            await db.defaults({ server_enabled: 'none' }).write();
+            return db.defaults({ server_enabled: 'none' }).write();
         }
         await download(message.attachments.first().url, './db.json', function (err, filepath) {})
     });
