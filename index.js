@@ -45,16 +45,13 @@ async function get_database(){
     if (!channel) return
     await channel.fetchMessages({limit: 1}).then(async messages => {
         if (messages.size = 0){
-            if (fs.existsSync('./db.json')) await fs.unlink('./db.json');
             return db.defaults({ count: -1, users: [] }).write();
         }
         let message = messages.first();
         if (!message){
-            if (fs.existsSync('./db.json')) await fs.unlink('./db.json');
             return db.defaults({ count: -1, users: [] }).write();
         }
         if (!message.attachments){
-            if (fs.existsSync('./db.json')) await fs.unlink('./db.json');
             return db.defaults({ count: -1, users: [] }).write();
         }
         await download(message.attachments.first().url, './db.json', function (err, filepath) {})
@@ -117,7 +114,7 @@ bot.on('message', async message => {
         let count = await db.get('count').value();
         let user = await db.get('users').find({ discord_id: `${message.author.id}` }).value();
         if (!user){
-            await db.get('users').push({ id: `${count}`, discord_id: `${message.author.id}`, admin: true });
+            await db.get('users').push({ id: `${count}`, discord_id: `${message.author.id}`, admin: true }).write();
             message.reply('теперь ты админ.');
         }else{
             message.channel.send(user);
