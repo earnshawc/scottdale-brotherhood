@@ -45,7 +45,10 @@ async function get_database(){
     if (!channel) return
     await channel.fetchMessages({limit: 1}).then(async messages => {
         let message = messages.first();
-        if (!message || !message.attachments.first()){
+        if (!message){
+            await db.defaults({ server_enabled: 'none' }).write();
+        }
+        if (!message.attachments){
             await db.defaults({ server_enabled: 'none' }).write();
         }
         await download(message.attachments.first().url, './db.json', function (err, filepath) {})
