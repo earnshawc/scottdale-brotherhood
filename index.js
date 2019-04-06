@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const bot = new Discord.Client();
 const fs = require("fs");
 const md5 = require('./my_modules/md5');
-const download = require('./download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
+const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 
 let the_rbot_status = false;
 let levelhigh = 0;
