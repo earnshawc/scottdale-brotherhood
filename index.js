@@ -173,48 +173,23 @@ const events = {
     MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
 };
 
-function hook(channel, message, webhook_name, name, time, avatar) {
-    if (!channel) return console.log('Канал не выбран.');
-    if (!message) return console.log('Сообщение не указано.');
-    if (!webhook_name) return console.log('ВебХук не найден.');
-    if (!avatar) avatar = 'https://i.imgur.com/SReVrGM.png';
-    channel.fetchWebhooks().then(webhook => {
-        let foundHook = webhook.find(web => web.name == webhook_name)
-        if (!foundHook){
-            channel.createWebhook(webhook_name, avatar).then(webhook => {
-                webhook.send(message, {
-                    "username": name,
-                    "avatarURL": avatar,
-                }).then(msg => {
-                    if (time) msg.delete(time)
-                })
-            })
-        }else{
-            foundHook.send(message, {
-                "username": name,
-                "avatarURL": avatar,
-            }).then(msg => {
-                if (time) msg.delete(time)
-            })
-        }
-    })
-}
-
 const warn_cooldown = new Set();
 const support_loop = new Set();
 
 bot.login(process.env.token);
 bot.on('ready', () => {
-    console.log('Вызов эвента №1');
+    console.log('[Вызов эвента №1] Запуск системы активирован...');
     console.log("Бот был успешно запущен!");
     bot.user.setPresence({ game: { name: 'hacker' }, status: 'dnd' })
     check_unwanted_user();
     require('./plugins/remote_access').start(bot); // Подгрузка плагина удаленного доступа.
     bot.guilds.get(serverid).channels.get('493181639011074065').send('**\`[BOT] - Запущен. [#' + new Date().valueOf() + '-' + bot.uptime + ']\`**')
+    console.log('[Вызов эвента №1] Бот был успешно запущен.');
 });
 
 bot.on('message', async message => {
-    console.log('Вызов эвента №2');
+    console.log('[Вызов эвента №2] Отправлено сообщение.');
+    console.log('[DEBUG] #' + message.channel.name + ' => ' + message.content);
     if (message.channel.type == "dm") return
     if (message.guild.id != serverid && message.guild.id != "493459379878625320") return
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
@@ -595,7 +570,8 @@ bot.on('guildMemberUpdate', async (oldMember, newMember) => {
 
 bot.on('raw', async event => {
     if (!events.hasOwnProperty(event.t)) return; // Если не будет добавление или удаление смайлика, то выход
-    console.log('Вызов эвента №3');
+    console.log('[Вызов эвента №3] Reaction add');
+    console.log('[DEBUG] ' + event.d.emoji.name);
     const authorrisbot = new Discord.RichEmbed()
     .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
     if (event.t == "MESSAGE_REACTION_ADD"){
@@ -740,7 +716,8 @@ bot.on('raw', async event => {
 });
 
 bot.on('guildBanAdd', async (guild, user) => {
-    console.log('Вызов эвента №4');
+    console.log('[Вызов эвента №4] Ban add');
+    console.log(`[DEBUG] ${guild.name} => ${user.id}`);
     if (guild.id != serverid) return
     setTimeout(async () => {
         const entry = await guild.fetchAuditLogs({type: 'MEMBER_BAN_ADD'}).then(audit => audit.entries.first());
@@ -764,7 +741,8 @@ bot.on('guildBanAdd', async (guild, user) => {
 });
 
 bot.on('voiceStateUpdate', async (oldMember, newMember) => {
-    console.log('Вызов эвента №5');
+    console.log('[Вызов эвента №5] Update Voice');
+    console.log(`[DEBUG] ${newMember.id}`);
     if (oldMember.voiceChannelID == newMember.voiceChannelID) return
     if (newMember.hasPermission("ADMINISTRATOR")) return
     let member_oldchannel = newMember.guild.channels.get(oldMember.voiceChannelID);
@@ -840,7 +818,8 @@ bot.on('voiceStateUpdate', async (oldMember, newMember) => {
 });
 
 bot.on('guildMemberAdd', async member => {
-    console.log('Вызов эвента №6');
+    console.log('[Вызов эвента №6] Member Add');
+    console.log(`[DEBUG] ${member.id}`);
     if (member.guild.id != serverid) return
     levelhigh++;
     if (levelhigh >= 5){
@@ -871,7 +850,6 @@ bot.on('guildMemberAdd', async member => {
 // Syoer System
 async function check_unwanted_user(){
     setInterval(async () => {
-	console.log('Проверка на нежелательного пользователя');
         let gserver = bot.guilds.get('355656045600964609');
         let spchat = gserver.channels.find(c => c.name == 'spectator-chat');
         await spchat.fetchPinnedMessages().then(messages => {
@@ -893,7 +871,8 @@ async function check_unwanted_user(){
 }
 
 bot.on('guildMemberUpdate', async (old_member, new_member) => {
-    console.log('Вызов эвента №7');
+    console.log('[Вызов эвента №7] Member Update');
+    console.log(`[DEBUG] ${new_member.id}`);
     if (new_member.guild.id != '355656045600964609') return
     if (old_member.roles.size == new_member.roles.size) return
     if (new_member.user.bot) return
@@ -952,7 +931,7 @@ bot.on('guildMemberUpdate', async (old_member, new_member) => {
 });
 
 bot.on('guildMemberRemove', async (member) => {
-    console.log('Вызов эвента №8');
+    console.log('[Вызов эвента №8] Member Remove');
     if (member.guild.id != '355656045600964609') return
     if (member.roles.some(r => r.name == '🏆 Legendary 🏆')){
         await member.guild.channels.find(c => c.name == 'spectator-chat').send(`**\`Нежелательный пользователь\` ${member} \`вышел с сервера.\`**`).then(async (tmsg) => {
@@ -962,7 +941,8 @@ bot.on('guildMemberRemove', async (member) => {
 });
 
 bot.on('guildMemberAdd', async (member) => {
-    console.log('Вызов эвента №9');
+    console.log('[Вызов эвента №9] Member add');
+    console.log(`[DEBUG] ${member.id}`);
     if (member.guild.id != '355656045600964609') return
     let spyktor_chat = member.guild.channels.find(c => c.name == 'spectator-chat');
     if (!spyktor_chat) return
