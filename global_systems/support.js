@@ -63,7 +63,7 @@ exports.run = async (bot, message, support_loop, support_cooldown) => {
                 createdChans++;
             }
         });
-        if (createdChans >= 40){
+        if (createdChans >= 45){
             message.channel.send(`<@${message.author.id}>, \`попробуйте позже.\``).then(msg => msg.delete(7000));
             return message.delete();
         }
