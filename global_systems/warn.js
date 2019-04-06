@@ -151,13 +151,13 @@ exports.run = async (bot, message, warn_cooldown) => {
                 }
             });
             }else{
-            await acc.send(`Уровень модератора: 0\n` +
-            `Предупреждения модератора: 1\n` +
-            `${reason}==>${+message.createdAt.valueOf() + 604800000}==>${message.member.displayName}\n` +
-            `Предупреждений: 0`);
-            let ann = message.guild.channels.find(c => c.name == "spectator-chat");
-            ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение (1/3). Причина: ${reason}\``);
-            return message.delete();
+                await acc.send(`Уровень модератора: 0\n` +
+                `Предупреждения модератора: 1\n` +
+                `${reason}==>${+message.createdAt.valueOf() + 604800000}==>${message.member.displayName}\n` +
+                `Предупреждений: 0`);
+                let ann = message.guild.channels.find(c => c.name == "spectator-chat");
+                ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение (1/3). Причина: ${reason}\``);
+                return message.delete();
             }
         });
         }
@@ -635,7 +635,7 @@ exports.run = async (bot, message, warn_cooldown) => {
                 
                 user_warns++
                 user_reason.push(reason);
-                user_time.push(259200000 * +user_warns + 259200000 + +message.createdAt.valueOf());
+                user_time.push(604800000 * +user_warns + 604800000 + +message.createdAt.valueOf());
                 user_give.push(message.member.displayName);
                 
                 let text_end = `Уровень модератора: ${moderation_level}\n` + 
@@ -667,7 +667,7 @@ exports.run = async (bot, message, warn_cooldown) => {
             await acc.send(`Уровень модератора: 0\n` +
             `Предупреждения модератора: 0\n` +
             `Предупреждений: 1\n` +
-            `${reason}==>${+message.createdAt.valueOf() + 259200000}==>${message.member.displayName}`);
+            `${reason}==>${+message.createdAt.valueOf() + 604800000}==>${message.member.displayName}`);
             let ann = message.guild.channels.find(c => c.name == "general");
             ann.send(`<@${user.id}>, \`модератор\` <@${message.author.id}> \`выдал вам предупреждение. Причина: ${reason}\nЕсли вы не согласны с модератором, вы можете написать в нашу поддержку\` <#${message.guild.channels.find(c => c.name == "support").id}>`);
             return message.delete();

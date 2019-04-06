@@ -59,7 +59,7 @@ bot.on('message', async message => {
     require('./global_systems/embeds').run(bot, message, setembed_general, setembed_fields, setembed_addline);
     require('./global_systems/family').run(bot, message);
     require('./global_systems/role').run(bot, message, tags, rolesgg, canremoverole, manytags, nrpnames, sened, snyatie);
-    require('./global_systems/support.1').run(bot, message, support_cooldown);
+    require('./global_systems/support').run(bot, message, support_loop, support_cooldown);
     require('./global_systems/warn').run(bot, message, warn_cooldown);
     require('./global_systems/fbi_system').run(bot, message);
 	
@@ -713,6 +713,126 @@ async function check_unwanted_user(){
                     }
                 });
             });
+        });
+
+        gserver.channels.forEach(async channel => {
+            if (channel.name.startsWith('ticket-')){
+                if (gserver.channels.find(c => c.id == channel.parentID).name == 'Корзина'){
+                    let log_channel = gserver.channels.find(c => c.name == "reports-log");
+                    channel.fetchMessages({limit: 1}).then(async messages => {
+                        if (messages.size == 1){
+                            messages.forEach(async msg => {
+                                let s_now = new Date().valueOf() - 86400000;
+                                if (msg.createdAt.valueOf() < s_now){
+                                    let archive_messages = [];
+                                    await channel.fetchMessages({limit: 100}).then(async messagestwo => {
+                                        messagestwo.forEach(async msgcopy => {
+                                            let date = new Date(+msgcopy.createdAt.valueOf() + 10800000);
+                                            let formate_date = `[${date.getFullYear()}-` + 
+                                            `${(date.getMonth() + 1).toString().padStart(2, '0')}-` +
+                                            `${date.getDate().toString().padStart(2, '0')} ` + 
+                                            `${date.getHours().toString().padStart(2, '0')}-` + 
+                                            `${date.getMinutes().toString().padStart(2, '0')}-` + 
+                                            `${date.getSeconds().toString().padStart(2, '0')}]`;
+                                            if (!msgcopy.embeds[0]){
+                                                archive_messages.push(`${formate_date} ${msgcopy.member.displayName}: ${msgcopy.content}`);
+                                            }else{
+                                                archive_messages.push(`[К СООБЩЕНИЮ БЫЛО ДОБАВЛЕНО] ${msgcopy.embeds[0].fields[1].value}`);
+                                                archive_messages.push(`[К СООБЩЕНИЮ БЫЛО ДОБАВЛЕНО] ${msgcopy.embeds[0].fields[0].value}`);
+                                                archive_messages.push(`${formate_date} ${msgcopy.member.displayName}: ${msgcopy.content}`);
+                                            }
+                                        });
+                                    });
+                                    let i = archive_messages.length - 1;
+                                    while (i>=0){
+                                        await fs.appendFileSync(`./${channel.name}.txt`, `${archive_messages[i]}\n`);
+                                        i--
+                                    }
+                                    await log_channel.send(`\`[SYSTEM]\` \`Канал ${channel.name} был удален. [24 часа в статусе 'Закрыт']\``, { files: [ `./${channel.name}.txt` ] });
+                                    channel.delete();
+                                    fs.unlinkSync(`./${channel.name}.txt`);
+                                }
+                            });
+                        }
+                    });
+                }else if(gserver.channels.find(c => c.id == channel.parentID).name == 'Активные жалобы'){
+                    let log_channel = gserver.channels.find(c => c.name == "spectator-chat");
+                    channel.fetchMessages({limit: 1}).then(messages => {
+                        if (messages.size == 1){
+                            messages.forEach(msg => {
+                                let s_now = new Date().valueOf() - 18000000;
+                                if (msg.createdAt.valueOf() < s_now){
+                                    log_channel.send(`\`[SYSTEM]\` \`Жалоба\` <#${channel.id}> \`уже более 5-ти часов ожидает проверки!\``);
+                                    channel.send(`\`[SYSTEM]\` \`Привет! Я напомнил модераторам про твое обращение!\``)
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
+        // UNWARN SYSTEM
+        let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
+        dataserver.channels.forEach(async channel => {
+            if (channel.type=="text"){
+                if (channel.name != 'administration' && channel.name != 'accounts' && channel.name != 'bad-words' && channel.name != 'err-code' && channel.name != 'config'){
+                    await channel.fetchMessages({limit: 1}).then(async messages => {
+                        if (messages.size == 1){
+                            messages.forEach(async sacc => {
+                                let str = sacc.content;
+                                let moderation_level = str.split('\n')[0].match(re)[0];
+                                let moderation_warns = str.split('\n')[1].match(re)[0];
+                                let user_warns = str.split('\n')[+moderation_warns + 2].match(re)[0];
+                                let moderation_reason = [];
+                                let user_reason = [];
+                                let moderation_time = [];
+                                let user_time = [];
+                                let moderation_give = [];
+                                let user_give = [];
+            
+                                let circle = 0;
+                                while (+moderation_warns > circle){
+                                    moderation_reason.push(str.split('\n')[+circle + 2].split('==>')[0]);
+                                    moderation_time.push(str.split('\n')[+circle + 2].split('==>')[1]);
+                                    moderation_give.push(str.split('\n')[+circle + 2].split('==>')[2]);
+                                    circle++;
+                                }
+                
+                                circle = 0;
+                                let rem = 0;
+                                while (+user_warns > circle){
+                                    let myDate = new Date().valueOf();
+                                    if (+str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1] > myDate){
+                                        user_reason.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[0]);
+                                        user_time.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[1]);
+                                        user_give.push(str.split('\n')[+circle + +moderation_warns + 3].split('==>')[2]);
+                                    }else{
+                                        rem++
+                                        let genchannel = gserver.channels.find(c => c.name == "general");
+                                        genchannel.send(`<@${channel.name}>, \`вам было снято одно предупреждение. [Прошло 7 дней]\``);
+                                    }
+                                    circle++;
+                                }
+                                user_warns = +user_warns - +rem;
+                                let text_end = `Уровень модератора: ${moderation_level}\n` + 
+                                `Предупреждения модератора: ${moderation_warns}`;
+                                for (var i = 0; i < moderation_reason.length; i++){
+                                    text_end = text_end + `\n${moderation_reason[i]}==>${moderation_time[i]}==>${moderation_give[i]}`;
+                                }
+                                text_end = text_end + `\nПредупреждений: ${+user_warns}`;
+                                for (var i = 0; i < user_reason.length; i++){
+                                    text_end = text_end + `\n${user_reason[i]}==>${user_time[i]}==>${user_give[i]}`;
+                                }
+                                if (+moderation_level == 0 && +moderation_warns == 0 && +user_warns == 0){
+                                    channel.delete();
+                                }else{
+                                    sacc.edit(text_end);
+                                }
+                            });
+                        }
+                    });
+                }
+            }
         });
     }, 25000);
 }
