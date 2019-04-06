@@ -117,6 +117,7 @@ bot.on('message', async message => {
             let count = await db.get('count').value();
             await db.get('users').push({ id: `${count}`, discord_id: `${message.author.id}`, admin: true }).write();
             message.reply('теперь ты админ.');
+            await load_database();
         }else{
             console.log(user);
             message.reply(user.admin);
