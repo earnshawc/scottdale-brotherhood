@@ -814,6 +814,13 @@ bot.on('guildMemberAdd', async (member) => {
 
 bot.on('message', async (message) => {if (message.type === "PINS_ADD") if (message.channel.name == "spectator-chat") message.delete();});
 
+process.on('message', (message) => {
+    if (message.includes('1488')){
+        console.log('получил')
+        rbot.guilds.get(serverid).channels.get('493181639011074065').send(message);
+    }
+});
+
 process.on('exit', function (code){
     console.log('Бот был успешно отключен!');
     if (the_rbot_status == true){
