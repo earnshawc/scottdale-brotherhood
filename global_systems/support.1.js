@@ -3,14 +3,16 @@ const fs = require("fs");
 
 function get_rep_message(message, db_channel){
     let re = /(\d+(\.\d)*)/i;
-    db_channel.fetchMessages().then(messages => {
+    let rep_message;
+    db_channel.fetchMessages().then(async messages => {
         let db_msg = messages.find(m => m.content.startsWith(`MESSAGEID:`));
         if (db_msg){
-            message.channel.fetchMessages().then(messagestwo => {
-                return messagestwo.find(m => m.id == db_msg.content.match(re)[0]);
+            await message.channel.fetchMessages().then(async messagestwo => {
+                rep_message = messagestwo.find(m => m.id == db_msg.content.match(re)[0]);
             });
         }
     });
+    return rep_message;
 }
 
 exports.run = async (bot, message, support_cooldown) => {
