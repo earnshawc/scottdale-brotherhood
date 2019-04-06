@@ -44,6 +44,9 @@ async function get_database(){
     let channel = server.channels.find(c => c.name == 'database-test');
     if (!channel) return
     await channel.fetchMessages({limit: 1}).then(async messages => {
+        if (messages.size = 0){
+            await db.defaults({ server_enabled: 'none' }).write();
+        }
         let message = messages.first();
         if (!message){
             await db.defaults({ server_enabled: 'none' }).write();
