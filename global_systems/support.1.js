@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const fs = require("fs");
 
-function get_rep_message(db_channel){
+function get_rep_message(message, db_channel){
     let re = /(\d+(\.\d)*)/i;
     db_channel.fetchMessages().then(messages => {
         let db_msg = messages.find(m => m.content.startsWith(`MESSAGEID:`));
@@ -25,7 +25,7 @@ exports.run = async (bot, message, support_cooldown) => {
             if (support_cooldown.has(message.author.id)) support_cooldown.delete(message.author.id);
         }, 300000);
         let db_channel = bot.guilds.find(g => g.id == "493459379878625320").channels.find(c => c.name == "config");
-        let rep_message = await get_rep_message(db_channel);
+        let rep_message = await get_rep_message(message, db_channel);
         console.log(rep_message);
         message.reply(1).then(msg => msg.delete(12000));
     }
