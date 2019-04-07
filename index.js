@@ -661,8 +661,8 @@ bot.on('guildBanAdd', async (guild, user) => {
 tbot.on('voiceStateUpdate', async (oldMember, newMember) => {
     if (oldMember.voiceChannelID == newMember.voiceChannelID) return
     if (newMember.hasPermission("ADMINISTRATOR")) return
-    let member_oldchannel = newMember.guild.channels.get(oldMember.voiceChannelID);
-    let member_newchannel = newMember.guild.channels.get(newMember.voiceChannelID);
+    let member_oldchannel = await newMember.guild.channels.get(oldMember.voiceChannelID);
+    let member_newchannel = await newMember.guild.channels.get(newMember.voiceChannelID);
     if (member_newchannel){
         if (member_newchannel.name == '✔ Обзвон ✔'){
             let edit_channel = newMember.guild.channels.find(c => c.name == "closed-accept");
