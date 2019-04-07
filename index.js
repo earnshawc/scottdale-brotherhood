@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
+const tbot = new Discord.Client();
 const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
@@ -80,6 +81,11 @@ const warn_cooldown = new Set();
 const support_loop = new Set();
 
 bot.login(process.env.token);
+tbot.login(process.env.recovery_token);
+
+tbot.on('ready', () => {
+    console.log('TБот был успешно запущен.'); 
+});
 
 bot.on('ready', () => {
     console.log("Бот был успешно запущен!");
@@ -650,6 +656,50 @@ bot.on('guildBanAdd', async (guild, user) => {
             guild.channels.find(c => c.name == "general").send(`**${user} был заблокирован.**`)
         })
     }, 2000);
+});
+
+tbot.on('voiceStateUpdate', async (oldMember, newMember) => {
+    if (oldMember.voiceChannelID == newMember.voiceChannelID) return
+    if (newMember.hasPermission("ADMINISTRATOR")) return
+    let member_oldchannel = newMember.guild.channels.get(oldMember.voiceChannelID);
+    let member_newchannel = newMember.guild.channels.get(newMember.voiceChannelID);
+    if (member_newchannel){
+        if (member_newchannel.name == '✔ Обзвон ✔'){
+            let edit_channel = newMember.guild.channels.find(c => c.name == "closed-accept");
+            if (!edit_channel) return console.log('[ERROR] Не возможно найти текстовой канал конференции.');
+            await edit_channel.overwritePermissions(newMember, {
+                // GENERAL PERMISSIONS
+                CREATE_INSTANT_INVITE: false,
+                MANAGE_CHANNELS: false,
+                MANAGE_ROLES: false,
+                MANAGE_WEBHOOKS: false,
+                // TEXT PERMISSIONS
+                VIEW_CHANNEL: true,
+                SEND_MESSAGES: true,
+                SEND_TTS_MESSAGES: false,
+                MANAGE_MESSAGES: false,
+                EMBED_LINKS: true,
+                ATTACH_FILES: true,
+                READ_MESSAGE_HISTORY: false,
+                MENTION_EVERYONE: false,
+                USE_EXTERNAL_EMOJIS: false,
+                ADD_REACTIONS: false,
+            }, 'подключение (конференция)');
+            edit_channel.send(`**<@${newMember.id}> \`успешно подключился.\`**`).then(msg => msg.delete(12000));
+        }
+    }
+    if (member_oldchannel){
+        if (member_oldchannel.name == '✔ Обзвон ✔'){
+        let edit_channel = newMember.guild.channels.find(c => c.name == "closed-accept");
+            if (!edit_channel) return console.log('[ERROR] Не возможно найти текстовой канал конференции.');
+            edit_channel.permissionOverwrites.forEach(async (perm) => {
+                if (perm.type != 'member') return
+                if (perm.id != newMember.id) return
+                await perm.delete('отключение (конференция)');
+            });
+            edit_channel.send(`**<@${newMember.id}> \`отключился.\`**`).then(msg => msg.delete(15000));
+        }
+    }
 });
 
 bot.on('voiceStateUpdate', async (oldMember, newMember) => {
