@@ -685,7 +685,7 @@ tbot.on('voiceStateUpdate', async (oldMember, newMember) => {
                 USE_EXTERNAL_EMOJIS: false,
                 ADD_REACTIONS: false,
             }, 'подключение (конференция)');
-            edit_channel.send(`**<@${newMember.id}> \`успешно подключился.\`**`).then(msg => msg.delete(12000));
+            edit_channel.send(`**<@${newMember.id}> \`успешно подключился.\`**`);
             console.log(`${newMember.displayName || newMember.user.username} подключился к обзвону.`);
         }
     }
@@ -698,7 +698,7 @@ tbot.on('voiceStateUpdate', async (oldMember, newMember) => {
                 if (perm.id != newMember.id) return
                 await perm.delete('отключение (конференция)');
             });
-            edit_channel.send(`**<@${newMember.id}> \`отключился.\`**`).then(msg => msg.delete(12000));
+            edit_channel.send(`**<@${newMember.id}> \`отключился.\`**`);
             console.log(`${newMember.displayName || newMember.user.username} вышел с обзвона.`);
         }
     }
