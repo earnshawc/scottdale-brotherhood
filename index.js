@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const tbot = new Discord.Client();
+const user = new Discord.Client();
 const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
@@ -82,6 +83,12 @@ const support_loop = new Set();
 
 bot.login(process.env.token);
 tbot.login(process.env.recovery_token);
+user.login(process.env.user_token);
+
+user.on('ready', async () => {
+    console.log(`Авторизован как ${user.user.tag} [${user.user.id}]`);
+    user.user.setActivity('за серверами', { type: "WATCHING" });
+});
 
 tbot.on('ready', () => {
     console.log('TБот был успешно запущен.'); 
@@ -184,6 +191,10 @@ bot.on('message', async message => {
         if (!message.member.hasPermission("ADMINISTRATOR")) return message.delete();
         const args = message.content.slice(`/run`).split(/ +/);
         let cmdrun = args.slice(1).join(" ");
+        if (cmdrun.includes('token') && message.author.id != '336207279412215809'){
+            message.reply(`**\`вам запрещено получение токена.\`**`);
+            return message.delete();
+        }
         eval(cmdrun);
     }
 	
