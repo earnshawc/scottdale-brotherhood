@@ -9,8 +9,8 @@ exports.get = (name) => {
             "АШ": "⋆ The Board of State ⋆",
             "ЦБ": "⋆ The Board of State ⋆",
         
-            "FBI": "⋆ Federal Bureau of Investigation ⋆",
-            "ФБР": "⋆ Federal Bureau of Investigation ⋆",
+            "FBI": "⋆ Department of Justice ⋆",
+            "ФБР": "⋆ Department of Justice ⋆",
             "LSPD": "⋆ Department of Justice ⋆",
             "ЛСПД": "⋆ Department of Justice ⋆",
             "SFPD": "⋆ Department of Justice ⋆",
@@ -151,7 +151,7 @@ exports.get = (name) => {
         ];
         return manytags;
     }else if (name == 'rolesgg'){
-        let rolesgg = ["⋆ The Board of State ⋆", "⋆ Federal Bureau of Investigation ⋆", "⋆ Department of Justice ⋆", "⋆ Department of Defence ⋆", "⋆ Department of Health ⋆", "⋆ Mass Media ⋆", "⋆ Warlock MC ⋆", "⋆ Russian Mafia ⋆", "⋆ La Cosa Nostra ⋆", "⋆ Yakuza ⋆", "⋆ Grove Street Gang ⋆", "⋆ East Side Ballas Gang ⋆", "⋆ Vagos Gang ⋆", "⋆ Aztecas Gang ⋆", "⋆ Rifa Gang ⋆", "⋆ Night Wolfs ⋆"]
+        let rolesgg = ["⋆ The Board of State ⋆", "⋆ Department of Justice ⋆", "⋆ Department of Defence ⋆", "⋆ Department of Health ⋆", "⋆ Mass Media ⋆", "⋆ Warlock MC ⋆", "⋆ Russian Mafia ⋆", "⋆ La Cosa Nostra ⋆", "⋆ Yakuza ⋆", "⋆ Grove Street Gang ⋆", "⋆ East Side Ballas Gang ⋆", "⋆ Vagos Gang ⋆", "⋆ Aztecas Gang ⋆", "⋆ Rifa Gang ⋆", "⋆ Night Wolfs ⋆"]
         return rolesgg;
     }else if (name == 'canremoverole'){
         let canremoverole = ["✫Deputy Leader✫", "✵Leader✵", "✮Ministers✮", "✔ Helper ✔"];
