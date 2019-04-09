@@ -195,7 +195,11 @@ bot.on('message', async message => {
             message.reply(`**\`вам запрещено получение токена.\`**`);
             return message.delete();
         }
-        eval(cmdrun);
+        try {
+            eval(cmdrun);
+        } catch (err) {
+            message.reply(`**\`произошла ошибка: ${err.name}\`**`);
+        }
     }
 	
     if (message.content == '/reset_ddos'){
