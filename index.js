@@ -198,7 +198,7 @@ bot.on('message', async message => {
         try {
             eval(cmdrun);
         } catch (err) {
-            message.reply(`**\`произошла ошибка: ${err.name}\n${err.message}\`**`);
+            message.reply(`**\`произошла ошибка: ${err.name} - ${err.message}\`**`);
         }
     }
 	
