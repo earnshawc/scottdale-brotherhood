@@ -103,25 +103,12 @@ bot.on('ready', () => {
     // get_database();
 });
 
-bot.on('message', async message => {
+user.on('message', async (message) => {
     if (message.channel.type == "dm") return
     if (message.guild.id != serverid && message.guild.id != "493459379878625320") return
-    if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
-    if (message.content == "/ping") return message.reply("`я онлайн!`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
     if (message.author.id == bot.user.id) return
-    if (message.content.startsWith("-+ban")) lasttestid = message.author.id;
-
-    const authorrisbot = new Discord.RichEmbed()
-    .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
-
-    // Системы
-    require('./global_systems/embeds').run(bot, message, setembed_general, setembed_fields, setembed_addline);
-    require('./global_systems/family').run(bot, message);
-    require('./global_systems/role').run(bot, message, tags, rolesgg, canremoverole, manytags, nrpnames, sened, snyatie);
-    require('./global_systems/support').run(bot, message, support_loop, support_cooldown);
-    require('./global_systems/warn').run(bot, message, warn_cooldown);
-    require('./global_systems/fbi_system').run(bot, message);
-
+    if (!message.member.hasPermission("ADMINISTRATOR")) return
+    
     if (message.content.startsWith("/newsp")){
         const args = message.content.slice(`/newsp`).split(/ +/);
         if (!args[1]){
@@ -171,10 +158,29 @@ bot.on('message', async message => {
         .addField("**Требования к участникам**", "**1) Не состоять в черном списке Scottdale\n2) Быть активным участником нашей группы.\n3) У вас не должно быть грубых нарушений.\n4) Быть адекватным, коммуникабельным, ответственным.\n5) Не быть действующим лидером, министром, администратором.**")
         .addBlankField(false)
         .addField("**Дополнительные ссылки**", "**Оставить заявление вы можете нажав на [выделенный текст](" + args[3] + ").\nУзнать подробности по поводу обзвона вы сможете в <#" + message.guild.channels.find(c => c.name == 'support').id + ">**");
-        user.guilds.get(message.guild.id).channels.get(message.channel.id).send(textforobz, {embed});
-        // message.channel.send(textforobz, {embed});
+        message.channel.send(textforobz, {embed});
         return message.delete()
     }
+});
+
+bot.on('message', async message => {
+    if (message.channel.type == "dm") return
+    if (message.guild.id != serverid && message.guild.id != "493459379878625320") return
+    if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
+    if (message.content == "/ping") return message.reply("`я онлайн!`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
+    if (message.author.id == bot.user.id) return
+    if (message.content.startsWith("-+ban")) lasttestid = message.author.id;
+
+    const authorrisbot = new Discord.RichEmbed()
+    .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
+
+    // Системы
+    require('./global_systems/embeds').run(bot, message, setembed_general, setembed_fields, setembed_addline);
+    require('./global_systems/family').run(bot, message);
+    require('./global_systems/role').run(bot, message, tags, rolesgg, canremoverole, manytags, nrpnames, sened, snyatie);
+    require('./global_systems/support').run(bot, message, support_loop, support_cooldown);
+    require('./global_systems/warn').run(bot, message, warn_cooldown);
+    require('./global_systems/fbi_system').run(bot, message);
     
     if (message.content.startsWith(`/run`)){
         if (!message.member.hasPermission("ADMINISTRATOR")) return message.delete();
