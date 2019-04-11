@@ -108,7 +108,7 @@ user.on('message', async (message) => {
     if (message.guild.id != serverid && message.guild.id != "493459379878625320") return
     if (message.author.id == bot.user.id) return
     if (!message.member.hasPermission("ADMINISTRATOR")) return
-    
+
     if (message.content.startsWith("/newsp")){
         const args = message.content.slice(`/newsp`).split(/ +/);
         if (!args[1]){
@@ -144,7 +144,7 @@ user.on('message', async (message) => {
             return message.delete();
         }
         if (!message.member.hasPermission("ADMINISTRATOR")) return message.delete();
-        let textforobz = "тут будет упоминание"; // "**  ╔┓┏╦━━╦┓╔┓╔━━╗ @everyone\n  ║┗┛║┗━╣┃║┃║╯╰║ @everyone\n  ║┏┓║┏━╣┗╣┗╣╰╯║ @everyone\n  ╚┛┗╩━━╩━╩━╩━━╝ @everyone**";
+        let textforobz = "**  ╔┓┏╦━━╦┓╔┓╔━━╗ @everyone\n  ║┗┛║┗━╣┃║┃║╯╰║ @everyone\n  ║┏┓║┏━╣┗╣┗╣╰╯║ @everyone\n  ╚┛┗╩━━╩━╩━╩━━╝ @everyone**";
         const embed = new Discord.RichEmbed()
         .setTitle("**Заявления на пост модератора группы**")
         .setColor("#FF8E01")
@@ -269,7 +269,7 @@ bot.on('message', async message => {
                     if (foundedusers_tag == null) foundedusers_tag = `НЕ НАЙДЕНЫ`;
                     if (foundedusers_nick == null) foundedusers_nick = `НЕ НАЙДЕНЫ`;
                     const embed = new Discord.RichEmbed()
-		    .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
+		            .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
                     .addField(`BY NICKNAME`, foundedusers_nick, true)
                     .addField("BY DISCORD TAG", foundedusers_tag, true)
                     message.reply(`\`по вашему запросу найдена следующая информация:\``, embed); 
