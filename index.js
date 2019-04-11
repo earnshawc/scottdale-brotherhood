@@ -157,7 +157,7 @@ bot.on('message', async message => {
             return message.delete();
         }
         if (!message.member.hasPermission("ADMINISTRATOR")) return message.delete();
-        let textforobz = "**  ╔┓┏╦━━╦┓╔┓╔━━╗ @everyone\n  ║┗┛║┗━╣┃║┃║╯╰║ @everyone\n  ║┏┓║┏━╣┗╣┗╣╰╯║ @everyone\n  ╚┛┗╩━━╩━╩━╩━━╝ @everyone**";
+        let textforobz = "тут будет упоминание"; // "**  ╔┓┏╦━━╦┓╔┓╔━━╗ @everyone\n  ║┗┛║┗━╣┃║┃║╯╰║ @everyone\n  ║┏┓║┏━╣┗╣┗╣╰╯║ @everyone\n  ╚┛┗╩━━╩━╩━╩━━╝ @everyone**";
         const embed = new Discord.RichEmbed()
         .setTitle("**Заявления на пост модератора группы**")
         .setColor("#FF8E01")
@@ -171,7 +171,8 @@ bot.on('message', async message => {
         .addField("**Требования к участникам**", "**1) Не состоять в черном списке Scottdale\n2) Быть активным участником нашей группы.\n3) У вас не должно быть грубых нарушений.\n4) Быть адекватным, коммуникабельным, ответственным.\n5) Не быть действующим лидером, министром, администратором.**")
         .addBlankField(false)
         .addField("**Дополнительные ссылки**", "**Оставить заявление вы можете нажав на [выделенный текст](" + args[3] + ").\nУзнать подробности по поводу обзвона вы сможете в <#" + message.guild.channels.find(c => c.name == 'support').id + ">**");
-        message.channel.send(textforobz, {embed});
+        user.guilds.get(message.guild.id).channels.get(message.channel.id).send(textforobz, {embed});
+        // message.channel.send(textforobz, {embed});
         return message.delete()
     }
     
