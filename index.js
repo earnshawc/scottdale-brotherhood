@@ -764,7 +764,7 @@ bot.on('voiceStateUpdate', async (oldMember, newMember) => {
                 ADD_REACTIONS: false,
             }, 'подключение (конференция)');
             edit_channel.send(`**<@${newMember.id}> \`успешно подключился.\`**`).then(msg => msg.delete(30000));
-        }else if (member_newchannel.name == 'Проводится обзвон'){
+        }else if (member_newchannel.name == 'Проводится обзвон [SP]'){
             let edit_channel = newMember.guild.channels.find(c => c.name == "проверка");
             if (!edit_channel) return console.log('[ERROR] Не возможно найти текстовой канал конференции.');
             await edit_channel.overwritePermissions(newMember, {
@@ -807,7 +807,7 @@ bot.on('voiceStateUpdate', async (oldMember, newMember) => {
                 await perm.delete('отключение (конференция)');
             });
             edit_channel.send(`**<@${newMember.id}> \`отключился.\`**`).then(msg => msg.delete(15000));
-        }else if (member_oldchannel.name == 'Проводится обзвон'){
+        }else if (member_oldchannel.name == 'Проводится обзвон [SP]'){
             let edit_channel = newMember.guild.channels.find(c => c.name == "проверка");
             if (!edit_channel) return console.log('[ERROR] Не возможно найти текстовой канал конференции.');
             edit_channel.permissionOverwrites.forEach(async (perm) => {
