@@ -14,7 +14,7 @@
 
 'use strict'
 
-var extend = require('extend')
+var extend = require('../extend')
 var cookies = require('./lib/cookies')
 var helpers = require('./lib/helpers')
 
