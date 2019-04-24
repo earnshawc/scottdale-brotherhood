@@ -125,7 +125,6 @@ const events = {
 
 const warn_cooldown = new Set();
 const support_loop = new Set();
-const money_cd = new Set();
 
 bot.login(process.env.token);
 tbot.login(process.env.recovery_token);
@@ -226,31 +225,6 @@ bot.on('message', async message => {
     require('./global_systems/support').run(bot, message, support_loop, support_cooldown);
     require('./global_systems/warn').run(bot, message, warn_cooldown);
     require('./global_systems/fbi_system').run(bot, message);
-
-    if (!money_cd.has(message.author.id)){
-        if (message.author.bot) return money_cd.add(message.author.id);
-        money_cd.add(message.author.id);
-        setTimeout(() => {
-            if (money_cd.has(message.author.id)) money_cd.delete(message.author.id);
-        }, 60000);
-        get_profile(3, message.author.id).then(async profile => {
-            if (profile == false){
-                await add_profile(3, message.author.id);
-            }else{
-                if (profile[2] >= 10){
-                    change_profile(3, message.author.id, 'money', +profile[3] + 1).then(() => {
-                        setTimeout(() => {
-                            change_profile(3, message.author.id, 'exp', 0).then(() => {
-                                message.reply('вы получили 1 монету!')
-                            });
-                        }, 5000);
-                    });
-                }else{
-                    change_profile(3, message.author.id, 'exp', +profile[2] + 1);
-                }
-            }
-        });
-    }
     
     if (message.content.startsWith(`/run`)){
         if (!message.member.hasPermission("ADMINISTRATOR")) return message.delete();
