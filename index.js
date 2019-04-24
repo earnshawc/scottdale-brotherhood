@@ -64,8 +64,8 @@ async function change_profile(gameserver, author_id, table, value){
             if (!db_account) return resolve(false);
             if (table == 'idпользователя') db_account.idпользователя = `${value}`;
             else if (table == 'статусразработчика') db_account.статусразработчика = `${value}`;
-            else if (table == 'статусразработчика') db_account.exp = `${value}`;
-            else if (table == 'статусразработчика') db_account.money = `${value}`;
+            else if (table == 'exp') db_account.exp = `${value}`;
+            else if (table == 'money') db_account.money = `${value}`;
             else return reject(new Error("Значение table указано не верно!"));
             db_account.save();
             resolve(true);
