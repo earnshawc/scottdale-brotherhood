@@ -1,10 +1,10 @@
-var async = require("async");
-var request = require("request");
-var xml2js = require("xml2js");
-var http = require("http");
-var querystring = require("querystring");
-var _ = require('lodash');
-var GoogleAuth = require("google-auth-library");
+var async = require("../async");
+var request = require("../request");
+var xml2js = require("../xml2js");
+var http = require("../http");
+var querystring = require("../querystring");
+var _ = require('../lodash');
+var GoogleAuth = require("../google-auth-library");
 
 var GOOGLE_FEED_URL = "https://spreadsheets.google.com/feeds/";
 var GOOGLE_AUTH_SCOPE = ["https://spreadsheets.google.com/feeds"];
