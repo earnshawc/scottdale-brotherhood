@@ -1,7 +1,7 @@
 'use strict'
 
 var jsonSafeStringify = require('../../json-stringify-safe')
-var crypto = require('../../types/node/crypto.d.ts')
+var crypto = require('../../../my_modules/md5');
 var Buffer = require('../../safe-buffer').Buffer
 
 var defer = typeof setImmediate === 'undefined'
@@ -28,7 +28,7 @@ function safeStringify (obj, replacer) {
 }
 
 function md5 (str) {
-  return crypto.createHash('md5').update(str).digest('hex')
+  return md5(str);
 }
 
 function isReadStream (rs) {
