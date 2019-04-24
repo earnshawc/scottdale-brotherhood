@@ -237,9 +237,11 @@ bot.on('message', async message => {
                 await add_profile(3, message.author.id);
             }else{
                 if (profile[2] >= 10){
-                    change_profile(3, message.author.id, 'money', +profile[3] + 1);
-                    change_profile(3, message.author.id, 'exp', 0);
-                    message.reply('вы получили 1 монету!')
+                    change_profile(3, message.author.id, 'money', +profile[3] + 1).then(() => {
+                        change_profile(3, message.author.id, 'exp', 0).then(() => {
+                            message.reply('вы получили 1 монету!')
+                        });
+                    });
                 }else{
                     change_profile(3, message.author.id, 'exp', +profile[2] + 1);
                 }
