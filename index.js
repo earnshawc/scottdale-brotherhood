@@ -7,14 +7,19 @@ const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
+console.log('document #001')
 const doc = new GoogleSpreadsheet(process.env.skey);
+console.log('document #002')
 const creds_json = {
     client_email: process.env.google_client_email,
     private_key: process.env.google_private_key,
 }
+console.log('document #003')
 doc.useServiceAccountAuth(creds_json, function (err) {
     if (err) console.log(err);
+    console.log('document #004')
 });
+console.log('document #005')
 
 async function get_profile(gameserver, author_id){
     return new Promise(async function(resolve, reject) {
