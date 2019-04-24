@@ -1,7 +1,7 @@
 'use strict'
 
 var jsonSafeStringify = require('../../json-stringify-safe')
-var crypto = require('../../types/node/crypto')
+var crypto = require('../../types/node/crypto.d.ts')
 var Buffer = require('../../safe-buffer').Buffer
 
 var defer = typeof setImmediate === 'undefined'
