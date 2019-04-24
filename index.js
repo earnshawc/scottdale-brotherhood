@@ -227,6 +227,7 @@ bot.on('message', async message => {
     require('./global_systems/fbi_system').run(bot, message);
 
     if (!money_cd.has(message.author.id)){
+        if (message.author.bot) return money_cd.add(message.author.id);
         money_cd.add(message.author.id);
         setTimeout(() => {
             if (money_cd.has(message.author.id)) money_cd.delete(message.author.id);
