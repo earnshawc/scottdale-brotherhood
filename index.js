@@ -222,7 +222,7 @@ bot.on('message', async message => {
     // Системы
     require('./global_systems/embeds').run(bot, message, setembed_general, setembed_fields, setembed_addline);
     require('./global_systems/family').run(bot, message);
-    require('./global_systems/role').run(bot, message, tags, rolesgg, canremoverole, manytags, nrpnames, sened, snyatie);
+    require('./global_systems/role').run(bot, message, tags, rolesgg, canremoverole, manytags, nrpnames, sened, snyatie, has_removed);
     require('./global_systems/support').run(bot, message, support_loop, support_cooldown);
     require('./global_systems/warn').run(bot, message, warn_cooldown);
     require('./global_systems/fbi_system').run(bot, message);
