@@ -101,6 +101,7 @@ const nrpnames = new Set(); // Невалидные ники будут запи
 const sened = new Set(); // Уже отправленные запросы будут записаны в sened
 const support_cooldown = new Set(); // Запросы от игроков.
 const snyatie = new Set(); // Уже отправленные запросы на снятие роли быдут записаны в snyatie
+const has_removed = new Set();
 
 let antislivsp1 = new Set();
 let antislivsp2 = new Set();
@@ -238,9 +239,11 @@ bot.on('message', async message => {
             }else{
                 if (profile[2] >= 10){
                     change_profile(3, message.author.id, 'money', +profile[3] + 1).then(() => {
-                        change_profile(3, message.author.id, 'exp', 0).then(() => {
-                            message.reply('вы получили 1 монету!')
-                        });
+                        setTimeout(() => {
+                            change_profile(3, message.author.id, 'exp', 0).then(() => {
+                                message.reply('вы получили 1 монету!')
+                            });
+                        }, 5000);
                     });
                 }else{
                     change_profile(3, message.author.id, 'exp', +profile[2] + 1);
@@ -706,6 +709,7 @@ bot.on('raw', async event => {
                 channel.send(`\`[ACCEPT]\` <@${member.id}> \`одобрил снятие роли (${field_role.name}) от\` <@${field_author.id}>, \`пользователю\` <@${field_user.id}>, \`с ID: \`||${field_user.id}||`);
                 field_channel.send(`**<@${field_user.id}>, с вас сняли роль**  <@&${field_role.id}>  **по запросу от <@${field_author.id}>.**`)
                 if (snyatie.has(field_author.id + `=>` + field_user.id)) snyatie.delete(field_author.id + `=>` + field_user.id)
+                if (!has_removed.has(field_user.id)) has_removed.add(field_user.id);
                 return message.delete()
             }
         }

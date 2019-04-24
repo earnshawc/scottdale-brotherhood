@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const fs = require("fs");
 
-exports.run = async (bot, message, tags, rolesgg, canremoverole, manytags, nrpnames, sened, snyatie) => {
+exports.run = async (bot, message, tags, rolesgg, canremoverole, manytags, nrpnames, sened, snyatie, has_removed) => {
     let re = /(\d+(\.\d)*)/i;
 
     if (message.content.toLowerCase().includes("сними") || message.content.toLowerCase().includes("снять")){
@@ -101,9 +101,12 @@ exports.run = async (bot, message, tags, rolesgg, canremoverole, manytags, nrpna
                 .addField("Информация по выдачи", `\`[✔] - выдать роль\`\n` + `\`[❌] - отказать в выдачи роли\`\n` + `\`[D] - удалить сообщение\``)
                 .setFooter("© Support Team | by Kory_McGregor")
                 .setTimestamp();
-		if (message.member.roles.some(r => r.name == '🏆 Legendary 🏆')){
-		    embed.addField(`ВНИМАНИЕ!!!`, `\`\`\`diff\n- ОБРАТИТЕ ВНИМАНИЕ, ЧТО ДАННЫЙ ПОЛЬЗОВАТЕЛЬ ЯВЛЯЕТСЯ НЕЖЕЛАТЕЛЬНЫМ, ЭТО ОЗНАЧАЕТ ЧТО ОН МОЖЕТ ВАС ОБМАНУТЬ!!!\`\`\``);	
-		}
+                if (message.member.roles.some(r => r.name == '🏆 Legendary 🏆')){
+                    embed.addField(`ВНИМАНИЕ!!!`, `\`\`\`diff\n- ОБРАТИТЕ ВНИМАНИЕ, ЧТО ДАННЫЙ ПОЛЬЗОВАТЕЛЬ ЯВЛЯЕТСЯ НЕЖЕЛАТЕЛЬНЫМ, ЭТО ОЗНАЧАЕТ ЧТО ОН МОЖЕТ ВАС ОБМАНУТЬ!!!\`\`\``);	
+                }
+                if (has_removed.has(message.author.id)){
+                    embed.addField(`ВНИМАНИЕ!!!`, `\`\`\`diff\n+ Данному пользователю недавно снимали роль, возможно он не состоит во фракции. Проверьте перед выдачей!\`\`\``)
+                }
                 reqchat.send(embed).then(async msgsen => {
                     await msgsen.react('✔')
                     await msgsen.react('❌')
