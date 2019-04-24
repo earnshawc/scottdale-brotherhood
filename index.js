@@ -28,6 +28,8 @@ async function get_profile(gameserver, author_id){
             let account_info = [
                 db_account.idпользователя, // Вывод ID пользователя.
                 db_account.статусразработчика, // Вывод статуса разработчика.
+                db_account.exp, // Вывод опыта (сообщения)
+                db_account.money, // Виртуальная валюта.
             ];
             resolve(account_info);
         });
@@ -38,7 +40,9 @@ async function add_profile(gameserver, author_id){
     return new Promise(async function(resolve, reject) {
         doc.addRow(gameserver, {
             idпользователя: `${author_id}`,
-            статусразработчика: '0'
+            статусразработчика: '0',
+            exp: '0',
+            money: '0'
         }, async function(err){
             if (err){
                 console.error(`[DB] Ошибка добавления профиля на лист!`);
@@ -60,6 +64,8 @@ async function change_profile(gameserver, author_id, table, value){
             if (!db_account) return resolve(false);
             if (table == 'idпользователя') db_account.idпользователя = `${value}`;
             else if (table == 'статусразработчика') db_account.статусразработчика = `${value}`;
+            else if (table == 'статусразработчика') db_account.exp = `${value}`;
+            else if (table == 'статусразработчика') db_account.money = `${value}`;
             else return reject(new Error("Значение table указано не верно!"));
             db_account.save();
             resolve(true);
@@ -118,6 +124,7 @@ const events = {
 
 const warn_cooldown = new Set();
 const support_loop = new Set();
+const money_cd = new Set();
 
 bot.login(process.env.token);
 tbot.login(process.env.recovery_token);
@@ -144,9 +151,9 @@ user.on('message', async (message) => {
     if (message.channel.type == "dm") return
     if (message.guild.id != serverid && message.guild.id != "493459379878625320") return
     if (message.author.id == bot.user.id) return
-    if (!message.member.hasPermission("ADMINISTRATOR")) return
 
     if (message.content.startsWith("/newsp")){
+        if (!message.member.hasPermission("ADMINISTRATOR")) return
         const args = message.content.slice(`/newsp`).split(/ +/);
         if (!args[1]){
             message.reply(`\`укажите день! '/newsp [номер дня] [номер месяца] [url на заявку]\``).then(msg => msg.delete(30000));
@@ -218,6 +225,28 @@ bot.on('message', async message => {
     require('./global_systems/support').run(bot, message, support_loop, support_cooldown);
     require('./global_systems/warn').run(bot, message, warn_cooldown);
     require('./global_systems/fbi_system').run(bot, message);
+
+    if (!money_cd.has(message.author.id)){
+        money_cd.add(message.author.id);
+        setTimeout(() => {
+            if (money_cd.has(message.author.id)) money_cd.delete(message.author.id);
+        }, 60000);
+        get_profile(3, message.author.id).then(profile => {
+            if (profile == false){
+                add_profile(3, message.author.id).then(() => {
+                    change_profile(3, message.author.id, 'exp', 1);
+                });
+            }else{
+                if (profile[2] >= 10){
+                    change_profile(3, message.author.id, 'money', +profile[3] + 1);
+                    change_profile(3, message.author.id, 'exp', 0);
+                    message.reply('вы получили 1 монету!')
+                }else{
+                    change_profile(3, message.author.id, 'exp', +profile[2] + 1);
+                }
+            }
+        });
+    }
     
     if (message.content.startsWith(`/run`)){
         if (!message.member.hasPermission("ADMINISTRATOR")) return message.delete();
