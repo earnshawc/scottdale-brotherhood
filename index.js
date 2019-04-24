@@ -7,19 +7,14 @@ const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
-console.log('document #001')
 const doc = new GoogleSpreadsheet(process.env.skey);
-console.log('document #002')
 const creds_json = {
     client_email: process.env.google_client_email,
     private_key: `-----BEGIN PRIVATE KEY-----\n${process.env.google_private_key}\n${process.env.google_key_two}\n${process.env.google_key_three}\nKPAu6SL9OraGwtioCgWyBwlTHuN3yn2o9mpnAzNmzqTh6WbRPD5PrB2jq8Pk1MiV\nbz/I+0DRPhcA/37t23q6UUo16gSofFFLaD0npMaoOY2aK+os0NdnmGai8Y8XzVoN\nbbgXKgDvpIy7TLpS4z79mpAsrSl109+evVhOSp4SP4NIWUb0Mu+OkYcNWmIhfFUF\nkLMDgWqJAgMBAAECggEAKmTuCmLFEIUDFeRBd5i+Xex/B9BJDoexCzX9LwacqN8D\n79FCoZmL/0aqt6VNBbA4d1q017j6WgUxw/HI2H40CQY9xqy+F/e9xP7NuWHmhmqZ\nTnjVrc4azpGfiQxWkD/waStbC5XuVdBMo9xWKaBW8ySKEIYOgUSZteDK4uIB+rmn\nbT6993l0elYZClt7hQuZtEqi/o/YOdYj6FMx0ONlkqqh4TmHG4s0rBNjzFuXfOwF\nVdrx2saEpORATA/UPOMf31ox2gqs2jays/HYnjxt6Q5sD750fMdY/4/vEkfpWeV2\nUDJg6tvIVWIUKN5ofQZfmGRqHkRxoC2U+beljvq2SQKBgQDpsP8xsaJaUt2guBhr\nHnSGS57PgrJ/NLPSmkgcG3hhhZ38VL7hPaT48CUZ1kGOOncjkUngl14tfmvPzkxp\n5XaO/VMNdrhk8Cg5/orQ1HjuxR5DzYWHDuTwFtlFtBZILA6cpN758zjYsAEHgMCD\nOoegeZPPf9BZ9Mkf5H4n5xG6rQKBgQDBwaU2RtiGbGIxMUN+1LuZFgexw86Q0v+I\nLE196ZQCUxgdJv58YFQZQbvfaivd+ugoZE17DS99lyQvbfwIN0L/ngEcHuRZYIEN\nqi3FNO+ylcC3LLmD5h4jw9Lfgsy2992GOP/uIaCxGXzqkSGg2dmET7/akFdbwmys\nCOLFzWZmzQKBgFxcdh//4vjr82hIGm6L1OYXESdWspGQFNpR29owCT4R/0TxgZeo\nM4Gn+CHkCnjaJqhKDfbUHIbChn3VPWJFLLyK5r5Vg79xI5T4Q4kR0NId2j5WBkZA\n3r79aNYhvQS9VPEYQIBtXrRVq7J5cpzrDxufsYm7LG/BTZRrTGkc7GbpAoGAL+f9\nPWpO5w2tSZRwp89ZgwRbaqyLSmuhGr45esRiACEjeTHHAmGe6Y/DL/5EUmJTPIlw\nTth3wYm5PLDo++8N9b3PcHCC7UZbIlHNd1EbYwB74c6BIAeptBYa8YCZtTOb5i/5\nt5tA7AjtReIUenzit0Awo43Ey79Kt06LI3UhuJECgYATKkzkljEePsdYjWT6HyWj\n4GcG9OArgGHjvDuGjgav30qtfYSntDeRQBsnyTIHZ7V7vFDPK7qO2tyWsMW6YFi2\noTSqjNqNln1CdeS2zWLLtKoQY+5Y090ThJHLo16Neb+NNX15+TeCFdTs7QAEubJd\n+vOOQNHRvfnm63KuSIKlmw==\n-----END PRIVATE KEY-----\n`,
 }
-console.log('document #003')
 doc.useServiceAccountAuth(creds_json, function (err) {
     if (err) console.log(err);
-    console.log('document #004')
 });
-console.log('document #005')
 
 async function get_profile(gameserver, author_id){
     return new Promise(async function(resolve, reject) {
@@ -121,44 +116,6 @@ const events = {
     MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
 };
 
-async function get_database(){
-    let server = bot.guilds.get('355656045600964609');
-    if (!server) return
-    let channel = server.channels.find(c => c.name == 'database-test');
-    if (!channel) return
-    await channel.fetchMessages({limit: 1}).then(async messages => {
-        if (messages.size = 0){
-            return db.defaults({ count: -1, users: [] }).write();
-        }
-        let message = messages.first();
-        if (!message){
-            return db.defaults({ count: -1, users: [] }).write();
-        }
-        if (!message.attachments){
-            return db.defaults({ count: -1, users: [] }).write();
-        }
-        await download(message.attachments.first().url, './db.json', function (err, filepath) {})
-    });
-}
-
-async function load_database(){
-    let server = bot.guilds.get('355656045600964609');
-    if (!server) return
-    let channel = server.channels.find(c => c.name == 'database-test');
-    if (!channel) return
-    if (fs.existsSync('./db.json')) await channel.send({ files: [ `./db.json` ] });
-}
-
-async function change_database(title, value){
-    if (title == 'server_enabled'){
-        await get_database();
-        let status = await db.get('server_enabled').value();
-        if (status == value) return
-        await db.set('server_enabled', value).write();
-        return load_database();
-    }
-}
-
 const warn_cooldown = new Set();
 const support_loop = new Set();
 
@@ -169,16 +126,6 @@ user.login(process.env.user_token);
 user.on('ready', async () => {
     console.log(`Авторизован как ${user.user.tag} [${user.user.id}]`);
     user.user.setActivity('за серверами', { type: "WATCHING" });
-    add_profile(1, 'test').then(() => {
-        change_profile(1, 'test', 'idпользователя', 'testing').then(() => {
-            setTimeout(() => {
-                get_profile(1, 'testing').then(value => {
-                    console.log(value);
-                    delete_profile(1, 'testing');
-                });
-            }, 2000);
-        });
-    });
 });
 
 tbot.on('ready', () => {
@@ -191,7 +138,6 @@ bot.on('ready', () => {
     check_unwanted_user();
     require('./plugins/remote_access').start(bot); // Подгрузка плагина удаленного доступа.
     bot.guilds.get(serverid).channels.get('493181639011074065').send('**\`[BOT] - Запущен. [#' + new Date().valueOf() + '-' + bot.uptime + ']\`**')
-    // get_database();
 });
 
 user.on('message', async (message) => {
