@@ -232,11 +232,9 @@ bot.on('message', async message => {
         setTimeout(() => {
             if (money_cd.has(message.author.id)) money_cd.delete(message.author.id);
         }, 60000);
-        get_profile(3, message.author.id).then(profile => {
+        get_profile(3, message.author.id).then(async profile => {
             if (profile == false){
-                add_profile(3, message.author.id).then(() => {
-                    change_profile(3, message.author.id, 'exp', 1);
-                });
+                await add_profile(3, message.author.id);
             }else{
                 if (profile[2] >= 10){
                     change_profile(3, message.author.id, 'money', +profile[3] + 1);
