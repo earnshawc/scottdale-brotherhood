@@ -1,4 +1,4 @@
-var forge = require('node-forge');
+var forge = require('../node-forge');
 var fs = require('fs');
 
 /**

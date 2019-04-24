@@ -16,8 +16,8 @@
 
 'use strict';
 
-var jws = require('jws');
-var noop = require('lodash.noop');
+var jws = require('../../../jws');
+var noop = require('../../../lodash.noop');
 
 /**
  * JWTAccess service account credentials.

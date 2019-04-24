@@ -6,15 +6,81 @@ const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 
-// const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
-// const doc = new GoogleSpreadsheet(process.env.skey);
-// const creds_json = {
-//     client_email: process.env.google_client_email,
-//     private_key: process.env.google_private_key,
-// }
-// doc.useServiceAccountAuth(creds_json, function (err) {
-//     if (err) console.log(err);
-// });
+const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
+const doc = new GoogleSpreadsheet(process.env.skey);
+const creds_json = {
+    client_email: process.env.google_client_email,
+    private_key: process.env.google_private_key,
+}
+doc.useServiceAccountAuth(creds_json, function (err) {
+    if (err) console.log(err);
+});
+
+async function get_profile(gameserver, author_id){
+    return new Promise(async function(resolve, reject) {
+        await doc.getRows(gameserver, { offset: 1, limit: 5000000, orderby: 'col2' }, (err, rows) => {
+            if (err){
+                console.error(`[DB] При получении данных с листа произошла ошибка!`);
+                return reject(new Error(`При использовании 'getrows' произошла ошибка при получении данных.`));
+            }
+            let db_account = rows.find(row => row.idпользователя == author_id); // Поиск аккаунта в базе данных.
+            if (!db_account) return resolve(false); // Если аккаунт не существует, вывести false;
+            let account_info = [
+                db_account.idпользователя, // Вывод ID пользователя.
+                db_account.статусразработчика, // Вывод статуса разработчика.
+            ];
+            resolve(account_info);
+        });
+    });
+}
+
+async function add_profile(gameserver, author_id){
+    return new Promise(async function(resolve, reject) {
+        doc.addRow(gameserver, {
+            idпользователя: `${author_id}`,
+            статусразработчика: '0'
+        }, async function(err){
+            if (err){
+                console.error(`[DB] Ошибка добавления профиля на лист!`);
+                return reject(new Error(`При использовании 'addRow' произошла ошибка.`));
+            }
+            resolve(true);
+        });
+    });
+}
+
+async function change_profile(gameserver, author_id, table, value){
+    return new Promise(async function(resolve, reject) {
+        await doc.getRows(gameserver, { offset: 1, limit: 5000000, orderby: 'col2' }, (err, rows) => {
+            if (err){
+                console.error(`[DB] При получении данных с листа произошла ошибка!`);
+                return reject(new Error(`При использовании 'getrows' произошла ошибка при получении данных.`));
+            }
+            let db_account = rows.find(row => row.idпользователя == author_id); // Поиск аккаунта в базе данных.
+            if (!db_account) return resolve(false);
+            if (table == 'idпользователя') db_account.idпользователя = `${value}`;
+            else if (table == 'статусразработчика') db_account.статусразработчика = `${value}`;
+            else return reject(new Error("Значение table указано не верно!"));
+            db_account.save();
+            resolve(true);
+        });
+    });
+}
+
+async function delete_profile(gameserver, author_id){
+    return new Promise(async function(resolve, reject) {
+        await doc.getRows(gameserver, { offset: 1, limit: 5000000, orderby: 'col2' }, (err, rows) => {
+            if (err){
+                console.error(`[DB] При получении данных с листа произошла ошибка!`);
+                return reject(new Error(`При использовании 'getrows' произошла ошибка при получении данных.`));
+            }
+            let db_account = rows.find(row => row.idпользователя == author_id); // Поиск аккаунта в базе данных.
+            if (!db_account) return resolve(false);
+            db_account.del();
+            resolve(true);
+        });
+    });
+}
 
 const low = require('./lib/main');
 const FileSync = require('./lib/FileSync');
@@ -98,6 +164,16 @@ user.login(process.env.user_token);
 user.on('ready', async () => {
     console.log(`Авторизован как ${user.user.tag} [${user.user.id}]`);
     user.user.setActivity('за серверами', { type: "WATCHING" });
+    add_profile(1, 'test').then(() => {
+        change_profile(1, 'test', 'idпользователя', 'testing').then(() => {
+            setTimeout(() => {
+                get_profile(1, 'testing').then(value => {
+                    console.log(value);
+                    delete_profile(1, 'testing');
+                });
+            }, 2000);
+        });
+    });
 });
 
 tbot.on('ready', () => {

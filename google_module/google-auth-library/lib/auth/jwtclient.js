@@ -19,7 +19,7 @@
 var Auth2Client = require('./oauth2client.js');
 var gToken = require('../../../gtoken');
 var JWTAccess = require('./jwtaccess.js');
-var noop = require('lodash.noop');
+var noop = require('../../../lodash.noop');
 var util = require('util');
 
 

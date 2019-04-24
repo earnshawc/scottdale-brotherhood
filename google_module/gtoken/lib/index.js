@@ -1,7 +1,7 @@
-var gp12pem = require('google-p12-pem');
-var request = require('request');
+var gp12pem = require('../../google-p12-pem');
+var request = require('../../request');
 var mime = require('mime');
-var jws = require('jws');
+var jws = require('../../jws');
 var fs = require('fs');
 
 var GOOGLE_TOKEN_URL = 'https://accounts.google.com/o/oauth2/token';
