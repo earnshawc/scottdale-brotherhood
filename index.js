@@ -12,7 +12,7 @@ const doc = new GoogleSpreadsheet(process.env.skey);
 console.log('document #002')
 const creds_json = {
     client_email: process.env.google_client_email,
-    private_key: process.env.google_private_key,
+    private_key: 'ты лох',// process.env.google_private_key,
 }
 console.log('document #003')
 doc.useServiceAccountAuth(creds_json, function (err) {
