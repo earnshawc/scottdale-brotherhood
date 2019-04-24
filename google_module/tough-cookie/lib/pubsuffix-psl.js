@@ -29,7 +29,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 'use strict';
-var psl = require('psl');
+var psl = require('../../psl');
 
 function getPublicSuffix(domain) {
   return psl.get(domain);
