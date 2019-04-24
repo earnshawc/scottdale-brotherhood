@@ -4,7 +4,7 @@
   var builder, defaults, escapeCDATA, requiresCDATA, wrapCDATA,
     hasProp = {}.hasOwnProperty;
 
-  builder = require('xmlbuilder');
+  builder = require('../../xmlbuilder');
 
   defaults = require('./defaults').defaults;
 

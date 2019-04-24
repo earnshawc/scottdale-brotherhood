@@ -2,9 +2,9 @@
 
 var url = require('url')
 var qs = require('qs')
-var caseless = require('caseless')
-var uuid = require('uuid/v4')
-var oauth = require('oauth-sign')
+var caseless = require('../../caseless')
+var uuid = require('../../uuid/v4')
+var oauth = require('../../oauth-sign')
 var crypto = require('crypto')
 var Buffer = require('safe-buffer').Buffer
 

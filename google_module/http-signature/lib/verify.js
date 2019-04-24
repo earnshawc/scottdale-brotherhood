@@ -1,8 +1,8 @@
 // Copyright 2015 Joyent, Inc.
 
-var assert = require('assert-plus');
+var assert = require('../../assert-plus');
 var crypto = require('crypto');
-var sshpk = require('sshpk');
+var sshpk = require('../../sshpk');
 var utils = require('./utils');
 
 var HASH_ALGOS = utils.HASH_ALGOS;

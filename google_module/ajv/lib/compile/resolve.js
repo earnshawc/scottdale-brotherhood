@@ -1,10 +1,10 @@
 'use strict';
 
-var URI = require('uri-js')
-  , equal = require('fast-deep-equal')
+var URI = require('../../../uri-js')
+  , equal = require('../../../fast-deep-equal')
   , util = require('./util')
   , SchemaObject = require('./schema_obj')
-  , traverse = require('json-schema-traverse');
+  , traverse = require('../../../json-schema-traverse');
 
 module.exports = resolve;
 

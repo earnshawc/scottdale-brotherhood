@@ -8,8 +8,8 @@ module.exports = {
 var nacl = require('tweetnacl');
 var stream = require('stream');
 var util = require('util');
-var assert = require('assert-plus');
-var Buffer = require('safer-buffer').Buffer;
+var assert = require('../../assert-plus');
+var Buffer = require('../../safer-buffer').Buffer;
 var Signature = require('./signature');
 
 function Verifier(key, hashAlgo) {

@@ -1,7 +1,7 @@
 // Copyright 2012 Joyent, Inc.  All rights reserved.
 
-var assert = require('assert-plus');
-var sshpk = require('sshpk');
+var assert = require('../../assert-plus');
+var sshpk = require('../../sshpk');
 var util = require('util');
 
 var HASH_ALGOS = {

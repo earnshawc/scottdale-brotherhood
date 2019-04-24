@@ -2,8 +2,8 @@
 
 module.exports = PrivateKey;
 
-var assert = require('assert-plus');
-var Buffer = require('safer-buffer').Buffer;
+var assert = require('../../assert-plus');
+var Buffer = require('../../safer-buffer').Buffer;
 var algs = require('./algs');
 var crypto = require('crypto');
 var Fingerprint = require('./fingerprint');

@@ -13,8 +13,8 @@ module.exports = {
 	algToKeyType: algToKeyType
 };
 
-var assert = require('assert-plus');
-var Buffer = require('safer-buffer').Buffer;
+var assert = require('../../../assert-plus');
+var Buffer = require('../../../safer-buffer').Buffer;
 var algs = require('../algs');
 var utils = require('../utils');
 var Key = require('../key');

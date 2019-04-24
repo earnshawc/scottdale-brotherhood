@@ -2,8 +2,8 @@
 
 module.exports = SSHBuffer;
 
-var assert = require('assert-plus');
-var Buffer = require('safer-buffer').Buffer;
+var assert = require('../../assert-plus');
+var Buffer = require('../../safer-buffer').Buffer;
 
 function SSHBuffer(opts) {
 	assert.object(opts, 'options');

@@ -6,9 +6,9 @@ module.exports = {
 	generateED25519: generateED25519
 };
 
-var assert = require('assert-plus');
+var assert = require('../../assert-plus');
 var crypto = require('crypto');
-var Buffer = require('safer-buffer').Buffer;
+var Buffer = require('../../safer-buffer').Buffer;
 var algs = require('./algs');
 var utils = require('./utils');
 var nacl = require('tweetnacl');
@@ -18,9 +18,9 @@ var PrivateKey = require('./private-key');
 
 var CRYPTO_HAVE_ECDH = (crypto.createECDH !== undefined);
 
-var ecdh = require('ecc-jsbn');
-var ec = require('ecc-jsbn/lib/ec');
-var jsbn = require('jsbn').BigInteger;
+var ecdh = require('../../ecc-jsbn');
+var ec = require('../../ecc-jsbn/lib/ec');
+var jsbn = require('../../jsbn').BigInteger;
 
 function DiffieHellman(key) {
 	utils.assertCompatible(key, Key, [1, 4], 'key');

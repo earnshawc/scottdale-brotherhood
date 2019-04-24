@@ -5,10 +5,10 @@ module.exports = {
 	write: write
 };
 
-var assert = require('assert-plus');
-var asn1 = require('asn1');
+var assert = require('../../../assert-plus');
+var asn1 = require('../../../asn1');
 var crypto = require('crypto');
-var Buffer = require('safer-buffer').Buffer;
+var Buffer = require('../../../safer-buffer').Buffer;
 var algs = require('../algs');
 var utils = require('../utils');
 var Key = require('../key');

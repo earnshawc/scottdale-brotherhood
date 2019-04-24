@@ -7,9 +7,9 @@ module.exports = {
 	writePkcs1: writePkcs1
 };
 
-var assert = require('assert-plus');
-var asn1 = require('asn1');
-var Buffer = require('safer-buffer').Buffer;
+var assert = require('../../../assert-plus');
+var asn1 = require('../../../asn1');
+var Buffer = require('../../../safer-buffer').Buffer;
 var algs = require('../algs');
 var utils = require('../utils');
 

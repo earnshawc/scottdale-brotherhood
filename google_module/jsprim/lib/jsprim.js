@@ -2,12 +2,12 @@
  * lib/jsprim.js: utilities for primitive JavaScript types
  */
 
-var mod_assert = require('assert-plus');
+var mod_assert = require('../../assert-plus');
 var mod_util = require('util');
 
-var mod_extsprintf = require('extsprintf');
-var mod_verror = require('verror');
-var mod_jsonschema = require('json-schema');
+var mod_extsprintf = require('../../extsprintf');
+var mod_verror = require('../../verror');
+var mod_jsonschema = require('../../json-schema');
 
 /*
  * Public interface

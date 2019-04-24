@@ -1,11 +1,11 @@
 // Copyright 2012 Joyent, Inc.  All rights reserved.
 
-var assert = require('assert-plus');
+var assert = require('../../assert-plus');
 var crypto = require('crypto');
 var http = require('http');
 var util = require('util');
-var sshpk = require('sshpk');
-var jsprim = require('jsprim');
+var sshpk = require('../../sshpk');
+var jsprim = require('../../jsprim');
 var utils = require('./utils');
 
 var sprintf = require('util').format;

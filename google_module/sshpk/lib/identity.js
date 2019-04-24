@@ -2,7 +2,7 @@
 
 module.exports = Identity;
 
-var assert = require('assert-plus');
+var assert = require('../../assert-plus');
 var algs = require('./algs');
 var crypto = require('crypto');
 var Fingerprint = require('./fingerprint');
@@ -10,8 +10,8 @@ var Signature = require('./signature');
 var errs = require('./errors');
 var util = require('util');
 var utils = require('./utils');
-var asn1 = require('asn1');
-var Buffer = require('safer-buffer').Buffer;
+var asn1 = require('../../asn1');
+var Buffer = require('../../safer-buffer').Buffer;
 
 /*JSSTYLED*/
 var DNS_NAME_RE = /^([*]|[a-z0-9][a-z0-9\-]{0,62})(?:\.([*]|[a-z0-9][a-z0-9\-]{0,62}))*$/i;

@@ -3,7 +3,7 @@
 var resolve = require('./resolve')
   , util = require('./util')
   , errorClasses = require('./error_classes')
-  , stableStringify = require('fast-json-stable-stringify');
+  , stableStringify = require('../../../fast-json-stable-stringify');
 
 var validateGenerator = require('../dotjs/validate');
 
@@ -12,7 +12,7 @@ var validateGenerator = require('../dotjs/validate');
  */
 
 var ucs2length = util.ucs2length;
-var equal = require('fast-deep-equal');
+var equal = require('../../../fast-deep-equal');
 
 // this error is thrown by async schemas to return validation errors via exception
 var ValidationError = errorClasses.Validation;

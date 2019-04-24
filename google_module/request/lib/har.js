@@ -2,7 +2,7 @@
 
 var fs = require('fs')
 var qs = require('querystring')
-var validate = require('har-validator')
+var validate = require('../../har-validator')
 var extend = require('extend')
 
 function Har (request) {

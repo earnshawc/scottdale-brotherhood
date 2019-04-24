@@ -1,8 +1,8 @@
 var async = require("../async");
 var request = require("../request");
 var xml2js = require("../xml2js");
-var http = require("../http");
-var querystring = require("../querystring");
+// var http = require("../types/node/http");
+// var querystring = require("../types/node/querystring");
 var _ = require('../lodash');
 var GoogleAuth = require("../google-auth-library");
 

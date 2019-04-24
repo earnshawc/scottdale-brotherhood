@@ -2,10 +2,10 @@
  * verror.js: richer JavaScript errors
  */
 
-var mod_assertplus = require('assert-plus');
+var mod_assertplus = require('../../assert-plus');
 var mod_util = require('util');
 
-var mod_extsprintf = require('extsprintf');
+var mod_extsprintf = require('../../extsprintf');
 var mod_isError = require('core-util-is').isError;
 var sprintf = mod_extsprintf.sprintf;
 

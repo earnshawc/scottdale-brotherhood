@@ -21,16 +21,16 @@ module.exports = {
 	pbkdf2: pbkdf2
 };
 
-var assert = require('assert-plus');
-var Buffer = require('safer-buffer').Buffer;
+var assert = require('../../assert-plus');
+var Buffer = require('../../safer-buffer').Buffer;
 var PrivateKey = require('./private-key');
 var Key = require('./key');
 var crypto = require('crypto');
 var algs = require('./algs');
-var asn1 = require('asn1');
+var asn1 = require('../../asn1');
 
-var ec = require('ecc-jsbn/lib/ec');
-var jsbn = require('jsbn').BigInteger;
+var ec = require('../../ecc-jsbn/lib/ec');
+var jsbn = require('../../jsbn').BigInteger;
 var nacl = require('tweetnacl');
 
 var MAX_CLASS_DEPTH = 3;

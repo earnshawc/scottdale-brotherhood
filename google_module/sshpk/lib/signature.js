@@ -2,13 +2,13 @@
 
 module.exports = Signature;
 
-var assert = require('assert-plus');
-var Buffer = require('safer-buffer').Buffer;
+var assert = require('../../assert-plus');
+var Buffer = require('../../safer-buffer').Buffer;
 var algs = require('./algs');
 var crypto = require('crypto');
 var errs = require('./errors');
 var utils = require('./utils');
-var asn1 = require('asn1');
+var asn1 = require('../../asn1');
 var SSHBuffer = require('./ssh-buffer');
 
 var InvalidAlgorithmError = errs.InvalidAlgorithmError;

@@ -12,10 +12,10 @@ module.exports = {
 	toBuffer: toBuffer
 };
 
-var assert = require('assert-plus');
+var assert = require('../../../assert-plus');
 var SSHBuffer = require('../ssh-buffer');
 var crypto = require('crypto');
-var Buffer = require('safer-buffer').Buffer;
+var Buffer = require('../../../safer-buffer').Buffer;
 var algs = require('../algs');
 var Key = require('../key');
 var PrivateKey = require('../private-key');

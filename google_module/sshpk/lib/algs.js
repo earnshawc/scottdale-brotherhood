@@ -1,6 +1,6 @@
 // Copyright 2015 Joyent, Inc.
 
-var Buffer = require('safer-buffer').Buffer;
+var Buffer = require('../../safer-buffer').Buffer;
 
 var algInfo = {
 	'dsa': {

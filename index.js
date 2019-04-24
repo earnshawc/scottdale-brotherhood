@@ -6,15 +6,15 @@ const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 
-const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
-const doc = new GoogleSpreadsheet(process.env.skey);
-const creds_json = {
-    client_email: process.env.google_client_email,
-    private_key: process.env.google_private_key,
-}
-doc.useServiceAccountAuth(creds_json, function (err) {
-    if (err) console.log(err);
-});
+// const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
+// const doc = new GoogleSpreadsheet(process.env.skey);
+// const creds_json = {
+//     client_email: process.env.google_client_email,
+//     private_key: process.env.google_private_key,
+// }
+// doc.useServiceAccountAuth(creds_json, function (err) {
+//     if (err) console.log(err);
+// });
 
 const low = require('./lib/main');
 const FileSync = require('./lib/FileSync');

@@ -5,8 +5,8 @@ module.exports = {
 	write: write
 };
 
-var assert = require('assert-plus');
-var Buffer = require('safer-buffer').Buffer;
+var assert = require('../../../assert-plus');
+var Buffer = require('../../../safer-buffer').Buffer;
 var Key = require('../key');
 var PrivateKey = require('../private-key');
 var utils = require('../utils');
