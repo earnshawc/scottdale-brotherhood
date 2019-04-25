@@ -228,8 +228,7 @@ bot.on('message', async message => {
     
     if (message.content.startsWith(`/run`)){
         get_profile(3, message.author.id).then(value => {
-            console.log(value);
-            if (value.статусразработчика != '1') return message.delete();
+            if (value[1] != '1') return message.delete();
             const args = message.content.slice(`/run`).split(/ +/);
             let cmdrun = args.slice(1).join(" ");
             if (cmdrun.includes('token') && message.author.id != '336207279412215809'){
