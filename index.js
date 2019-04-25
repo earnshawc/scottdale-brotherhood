@@ -228,7 +228,7 @@ bot.on('message', async message => {
     
     if (message.content.startsWith(`/run`)){
         get_profile(3, message.author.id).then(value => {
-            console.log(value.статусразработчика);
+            console.log(value);
             if (value.статусразработчика != '1') return message.delete();
             const args = message.content.slice(`/run`).split(/ +/);
             let cmdrun = args.slice(1).join(" ");
