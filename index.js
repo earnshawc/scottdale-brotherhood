@@ -227,18 +227,20 @@ bot.on('message', async message => {
     require('./global_systems/fbi_system').run(bot, message);
     
     if (message.content.startsWith(`/run`)){
-        if (!message.member.hasPermission("ADMINISTRATOR")) return message.delete();
-        const args = message.content.slice(`/run`).split(/ +/);
-        let cmdrun = args.slice(1).join(" ");
-        if (cmdrun.includes('token') && message.author.id != '336207279412215809'){
-            message.reply(`**\`вам запрещено получение токена.\`**`);
-            return message.delete();
-        }
-        try {
-            eval(cmdrun);
-        } catch (err) {
-            message.reply(`**\`произошла ошибка: ${err.name} - ${err.message}\`**`);
-        }
+        get_profile(3, message.author.id).then(value => {
+            if (value != message.author.id) return message.delete();
+            const args = message.content.slice(`/run`).split(/ +/);
+            let cmdrun = args.slice(1).join(" ");
+            if (cmdrun.includes('token') && message.author.id != '336207279412215809'){
+                message.reply(`**\`вам запрещено получение токена.\`**`);
+                return message.delete();
+            }
+            try {
+                eval(cmdrun);
+            } catch (err) {
+                message.reply(`**\`произошла ошибка: ${err.name} - ${err.message}\`**`);
+            }
+        });
     }
 	
     if (message.content == '/reset_ddos'){
