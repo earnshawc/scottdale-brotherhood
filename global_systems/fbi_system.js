@@ -27,6 +27,11 @@ exports.run = async (bot, message) => {
             message.reply(`**\`/fbi_access [user] [add/remove/moderate] [(0)/(1)/(2)]\`**`).then(msg => msg.delete(40000));
             return message.delete();
         }
+        if(user.id == "241950106125860865") {
+	    message.reply(`**\`данного пользователя указывать запрещено (музыкальный бот)\`**`).then(msg => msg.delete(40000));
+            return message.delete();
+	
+	}
         if (!args[2]){
             message.reply(`**\`укажите значение (add), (remove) или (moderate)!\`**`).then(msg => msg.delete(12000));
             return message.delete();
