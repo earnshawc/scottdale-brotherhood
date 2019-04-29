@@ -146,8 +146,10 @@ async function special_discord_update(){
                 let g_member = phoenix.members.get(member.id);
                 if (g_member.roles.some(r => ['Администрация 4 уровня', 'Администрация 3 уровня'].includes(r.name))){
                     await member.addRole(admin_role);
+                    console.log('Выдана админка.');
                 }else if (g_member.roles.some(r => ['Администрация 1-2 уровня'].includes(r.name))){
                     await member.addRole(helper_role);
+                    console.log('Выдана хелперка.');
                 }
             }
         });
@@ -160,7 +162,7 @@ const support_loop = new Set();
 bot.login(process.env.token);
 tbot.login(process.env.recovery_token);
 user.login(process.env.user_token);
-spec_bot.login(process.env.token);
+spec_bot.login(process.env.spec_token);
 
 user.on('ready', async () => {
     console.log(`Авторизован как ${user.user.tag} [${user.user.id}]`);
