@@ -142,86 +142,88 @@ async function special_discord_update(){
         let yuma = user.guilds.get('528635749206196232');
         if (!phoenix || !tucson || !scottdale || !chandler || !brainburg || !saintrose || !mesa || !redrock || !yuma) return console.log('Один из серверов не найден!');
         special_server.members.forEach(async (member) => {
-            if (phoenix.members.get(member.id)){
-                let g_member = phoenix.members.get(member.id);
-                if (g_member.roles.some(r => ['Администрация 4 уровня', 'Администрация 3 уровня'].includes(r.name))){
-                    await member.addRole(admin_role);
-                    console.log('Выдана админка. [Phoenix]');
-                }else if (g_member.roles.some(r => ['Администрация 1-2 уровня'].includes(r.name))){
-                    await member.addRole(helper_role);
-                    console.log('Выдана хелперка. [Phoenix]');
-                }
-            } else if (tucson.members.get(member.id)){
-                let g_member = tucson.members.get(member.id);
-                if (g_member.roles.some(r => ['Администратор 4 уровня', 'Администратор 3 уровня'].includes(r.name))){
-                    await member.addRole(admin_role);
-                    console.log('Выдана админка. [Tucson]');
-                }else if (g_member.roles.some(r => ['Администратор 2 уровня', 'Администратор 1 уровня'].includes(r.name))){
-                    await member.addRole(helper_role);
-                    console.log('Выдана хелперка. [Tucson]');
-                }
-            } else if (scottdale.members.get(member.id)){
-                let g_member = scottdale.members.get(member.id);
-                if (g_member.roles.some(r => ['✔ Administrator ✔', '✔Jr.Administrator✔'].includes(r.name))){
-                    await member.addRole(admin_role);
-                    console.log('Выдана админка. [Scottdale]');
-                }else if (g_member.roles.some(r => ['✔ Helper ✔'].includes(r.name))){
-                    await member.addRole(helper_role);
-                    console.log('Выдана хелперка. [Scottdale]');
-                }
-            } else if (chandler.members.get(member.id)){
-                let g_member = chandler.members.get(member.id);
-                if (g_member.roles.some(r => ['Администратор 4 уровня', 'Администратор 3 уровня'].includes(r.name))){
-                    await member.addRole(admin_role);
-                    console.log('Выдана админка. [Chandler]');
-                }else if (g_member.roles.some(r => ['Хелпер'].includes(r.name))){
-                    await member.addRole(helper_role);
-                    console.log('Выдана хелперка. [Chandler]');
-                }
-            } else if (brainburg.members.get(member.id)){
-                let g_member = brainburg.members.get(member.id);
-                if (g_member.roles.some(r => ['⚃ Администратор 4 ур. ⚃', '⚂ Администратор 3 ур. ⚂'].includes(r.name))){
-                    await member.addRole(admin_role);
-                    console.log('Выдана админка. [Brainburg]');
-                }else if (g_member.roles.some(r => ['⚁ Администратор 2 ур. ⚁', '⚀ Администратор 1 ур. ⚀'].includes(r.name))){
-                    await member.addRole(helper_role);
-                    console.log('Выдана хелперка. [Brainburg]');
-                }
-            } else if (saintrose.members.get(member.id)){
-                let g_member = saintrose.members.get(member.id);
-                if (g_member.roles.some(r => ['◉ Ст. Администратор [4 LVL]', '◉ Мл. Администратор [3 LVL]'].includes(r.name))){
-                    await member.addRole(admin_role);
-                    console.log('Выдана админка. [Saint Rose]');
-                }else if (g_member.roles.some(r => ['◉ Хелпер [1-2 LVL]'].includes(r.name))){
-                    await member.addRole(helper_role);
-                    console.log('Выдана хелперка. [Saint Rose]');
-                }
-            } else if (mesa.members.get(member.id)){
-                let g_member = mesa.members.get(member.id);
-                if (g_member.roles.some(r => ['✔Administration✔', '✔Jr.Administration✔'].includes(r.name))){
-                    await member.addRole(admin_role);
-                    console.log('Выдана админка. [Mesa]');
-                }else if (g_member.roles.some(r => ['✔Moderator✔'].includes(r.name))){
-                    await member.addRole(helper_role);
-                    console.log('Выдана хелперка. [Mesa]');
-                }
-            } else if (redrock.members.get(member.id)){
-                let g_member = redrock.members.get(member.id);
-                if (g_member.roles.some(r => ['IV ⚡ Администратор', 'III ⚡ Старший модератор'].includes(r.name))){
-                    await member.addRole(admin_role);
-                    console.log('Выдана админка. [Red-Rock]');
-                }else if (g_member.roles.some(r => ['II ⚡ Модератор', 'I ⚡ Младший модератор'].includes(r.name))){
-                    await member.addRole(helper_role);
-                    console.log('Выдана хелперка. [Red-Rock]');
-                }
-            } else if (yuma.members.get(member.id)){
-                let g_member = yuma.members.get(member.id);
-                if (g_member.roles.some(r => ['✔ Administrator ✔', '✔Jr.Administrator✔'].includes(r.name))){
-                    await member.addRole(admin_role);
-                    console.log('Выдана админка. [Yuma]');
-                }else if (g_member.roles.some(r => ['✔ Helper ✔'].includes(r.name))){
-                    await member.addRole(helper_role);
-                    console.log('Выдана хелперка. [Yuma]');
+            if (!member.roles.some(r => [admin_role.id, helper_role.id].includes(r.id))){
+                if (phoenix.members.get(member.id)){
+                    let g_member = phoenix.members.get(member.id);
+                    if (g_member.roles.some(r => ['Администрация 4 уровня', 'Администрация 3 уровня'].includes(r.name))){
+                        await member.addRole(admin_role);
+                        console.log('Выдана админка. [Phoenix]');
+                    }else if (g_member.roles.some(r => ['Администрация 1-2 уровня'].includes(r.name))){
+                        await member.addRole(helper_role);
+                        console.log('Выдана хелперка. [Phoenix]');
+                    }
+                } else if (tucson.members.get(member.id)){
+                    let g_member = tucson.members.get(member.id);
+                    if (g_member.roles.some(r => ['Администратор 4 уровня', 'Администратор 3 уровня'].includes(r.name))){
+                        await member.addRole(admin_role);
+                        console.log('Выдана админка. [Tucson]');
+                    }else if (g_member.roles.some(r => ['Администратор 2 уровня', 'Администратор 1 уровня'].includes(r.name))){
+                        await member.addRole(helper_role);
+                        console.log('Выдана хелперка. [Tucson]');
+                    }
+                } else if (scottdale.members.get(member.id)){
+                    let g_member = scottdale.members.get(member.id);
+                    if (g_member.roles.some(r => ['✔ Administrator ✔', '✔Jr.Administrator✔'].includes(r.name))){
+                        await member.addRole(admin_role);
+                        console.log('Выдана админка. [Scottdale]');
+                    }else if (g_member.roles.some(r => ['✔ Helper ✔'].includes(r.name))){
+                        await member.addRole(helper_role);
+                        console.log('Выдана хелперка. [Scottdale]');
+                    }
+                } else if (chandler.members.get(member.id)){
+                    let g_member = chandler.members.get(member.id);
+                    if (g_member.roles.some(r => ['Администратор 4 уровня', 'Администратор 3 уровня'].includes(r.name))){
+                        await member.addRole(admin_role);
+                        console.log('Выдана админка. [Chandler]');
+                    }else if (g_member.roles.some(r => ['Хелпер'].includes(r.name))){
+                        await member.addRole(helper_role);
+                        console.log('Выдана хелперка. [Chandler]');
+                    }
+                } else if (brainburg.members.get(member.id)){
+                    let g_member = brainburg.members.get(member.id);
+                    if (g_member.roles.some(r => ['⚃ Администратор 4 ур. ⚃', '⚂ Администратор 3 ур. ⚂'].includes(r.name))){
+                        await member.addRole(admin_role);
+                        console.log('Выдана админка. [Brainburg]');
+                    }else if (g_member.roles.some(r => ['⚁ Администратор 2 ур. ⚁', '⚀ Администратор 1 ур. ⚀'].includes(r.name))){
+                        await member.addRole(helper_role);
+                        console.log('Выдана хелперка. [Brainburg]');
+                    }
+                } else if (saintrose.members.get(member.id)){
+                    let g_member = saintrose.members.get(member.id);
+                    if (g_member.roles.some(r => ['◉ Ст. Администратор [4 LVL]', '◉ Мл. Администратор [3 LVL]'].includes(r.name))){
+                        await member.addRole(admin_role);
+                        console.log('Выдана админка. [Saint Rose]');
+                    }else if (g_member.roles.some(r => ['◉ Хелпер [1-2 LVL]'].includes(r.name))){
+                        await member.addRole(helper_role);
+                        console.log('Выдана хелперка. [Saint Rose]');
+                    }
+                } else if (mesa.members.get(member.id)){
+                    let g_member = mesa.members.get(member.id);
+                    if (g_member.roles.some(r => ['✔Administration✔', '✔Jr.Administration✔'].includes(r.name))){
+                        await member.addRole(admin_role);
+                        console.log('Выдана админка. [Mesa]');
+                    }else if (g_member.roles.some(r => ['✔Moderator✔'].includes(r.name))){
+                        await member.addRole(helper_role);
+                        console.log('Выдана хелперка. [Mesa]');
+                    }
+                } else if (redrock.members.get(member.id)){
+                    let g_member = redrock.members.get(member.id);
+                    if (g_member.roles.some(r => ['IV ⚡ Администратор', 'III ⚡ Старший модератор'].includes(r.name))){
+                        await member.addRole(admin_role);
+                        console.log('Выдана админка. [Red-Rock]');
+                    }else if (g_member.roles.some(r => ['II ⚡ Модератор', 'I ⚡ Младший модератор'].includes(r.name))){
+                        await member.addRole(helper_role);
+                        console.log('Выдана хелперка. [Red-Rock]');
+                    }
+                } else if (yuma.members.get(member.id)){
+                    let g_member = yuma.members.get(member.id);
+                    if (g_member.roles.some(r => ['✔ Administrator ✔', '✔Jr.Administrator✔'].includes(r.name))){
+                        await member.addRole(admin_role);
+                        console.log('Выдана админка. [Yuma]');
+                    }else if (g_member.roles.some(r => ['✔ Helper ✔'].includes(r.name))){
+                        await member.addRole(helper_role);
+                        console.log('Выдана хелперка. [Yuma]');
+                    }
                 }
             }
         });
