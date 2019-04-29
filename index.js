@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const bot = new Discord.Client();
 const tbot = new Discord.Client();
 const user = new Discord.Client();
+const spec_bot = new Discord.Client();
 const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
@@ -123,12 +124,43 @@ const events = {
     MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
 };
 
+async function special_discord_update(){
+    setInterval(async () => {
+        let special_server = spec_bot.guilds.get('543799835652915241');
+        if (!special_server) return console.log('Сервер спец.администрации не найден!');
+        let admin_role = special_server.roles.find(r => r.name == 'Администратор [3-4]');
+        let helper_role = special_server.roles.find(r => r.name == 'Хелпер [1-2]');
+        if (!admin_role || !helper_role) return console.log('Роли хелпера или админа не найдены на спец админском');
+        let phoenix = user.guilds.get('544446632226324481');
+        let tucson = user.guilds.get('438803520288981004');
+        let scottdale = user.guilds.get('355656045600964609');
+        let chandler = user.guilds.get('555334013255155712');
+        let brainburg = user.guilds.get('282282840840732672');
+        let saintrose = user.guilds.get('347728316557426688');
+        let mesa = user.guilds.get('399241867914379265');
+        let redrock = user.guilds.get('470981734863994881');
+        let yuma = user.guilds.get('528635749206196232');
+        if (!phoenix || !tucson || !scottdale || !chandler || !brainburg || !saintrose || !mesa || !redrock || !yuma) return console.log('Один из серверов не найден!');
+        special_server.members.forEach(async (member) => {
+            if (phoenix.members.get(member.id)){
+                let g_member = phoenix.members.get(member.id);
+                if (g_member.roles.some(r => ['Администрация 4 уровня', 'Администрация 3 уровня'].includes(r.name))){
+                    await member.addRole(admin_role);
+                }else if (g_member.roles.some(r => ['Администрация 1-2 уровня'].includes(r.name))){
+                    await member.addRole(helper_role);
+                }
+            }
+        });
+    }, 20000);
+}
+
 const warn_cooldown = new Set();
 const support_loop = new Set();
 
 bot.login(process.env.token);
 tbot.login(process.env.recovery_token);
 user.login(process.env.user_token);
+spec_bot.login(process.env.token);
 
 user.on('ready', async () => {
     console.log(`Авторизован как ${user.user.tag} [${user.user.id}]`);
@@ -145,6 +177,11 @@ bot.on('ready', () => {
     check_unwanted_user();
     require('./plugins/remote_access').start(bot); // Подгрузка плагина удаленного доступа.
     bot.guilds.get(serverid).channels.get('493181639011074065').send('**\`[BOT] - Запущен. [#' + new Date().valueOf() + '-' + bot.uptime + ']\`**')
+});
+
+spec_bot.on('ready', () => {
+    console.log("Спец.Бот был успешно запущен!");
+    special_discord_update();
 });
 
 user.on('message', async (message) => {
