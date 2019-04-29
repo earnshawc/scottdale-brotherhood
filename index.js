@@ -298,6 +298,10 @@ bot.on('message', async message => {
         const args = message.content.slice('/ffuser').split(/ +/)
         if (!args[1]) return
         let name = args.slice(1).join(" ");
+	if(name.length < 4) {
+	    message.reply(`**\`вы ввели меньше 4 символов!\`**`).then(msg => msg.delete(12000));
+            return message.delete(); 
+	}
         let userfinders = false;
         let foundedusers_nick;
         let numberff_nick = 0;
