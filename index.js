@@ -353,11 +353,11 @@ async function special_discord_update(){
             }
 
             if (member_is_admin == 0){
-                if (!member.roles.some(r => helper_role.id == r.id)){
+                if (member.roles.some(r => helper_role.id == r.id)){
                     await member.removeRole(helper_role);
                     console.log('Снял хелперку.');
                 }
-                if (!member.roles.some(r => admin_role.id == r.id)){
+                if (member.roles.some(r => admin_role.id == r.id)){
                     await member.removeRole(admin_role);
                     console.log('Снял админку.');
                 }
