@@ -142,7 +142,12 @@ async function special_discord_update(){
         let mesa = user.guilds.get('399241867914379265');
         let redrock = user.guilds.get('470981734863994881');
         let yuma = user.guilds.get('528635749206196232');
-        if (!phoenix || !tucson || !scottdale || !chandler || !brainburg || !saintrose || !mesa || !redrock || !yuma) return console.log('Один из серверов не найден!');
+
+        let central = user.guilds.get('325607843547840522');
+        let eastern = user.guilds.get('465086262383083520');
+        let north = user.guilds.get('477547500232769536');
+        let vostok = user.guilds.get('530848070284607499');
+        if (!phoenix || !tucson || !scottdale || !chandler || !brainburg || !saintrose || !mesa || !redrock || !yuma || !central || !eastern || !north || !vostok) return console.log('Один из серверов не найден!');
         special_server.members.forEach(async (member) => {
             
             let server_were_admin = [];
@@ -226,6 +231,43 @@ async function special_discord_update(){
                     server_were_admin.push('Yuma');
                 }else if (g_member.roles.some(r => ['✔ Helper ✔'].includes(r.name))){
                     server_were_helper.push('Yuma');
+                }
+            }
+
+
+            if (central.members.get(member.id)){
+                let g_member = central.members.get(member.id);
+                if (g_member.roles.some(r => ['✦ Администратор ✦', '✦ Младший администратор ✦'].includes(r.name))){
+                    server_were_admin.push('Центральный Округ');
+                }else if (g_member.roles.some(r => ['✦ Модератор ✦', '✦ Хелпер ✦'].includes(r.name))){
+                    server_were_helper.push('Центральный Округ');
+                }
+            }
+
+            if (eastern.members.get(member.id)){
+                let g_member = eastern.members.get(member.id);
+                if (g_member.roles.some(r => ['☆ Администратор ☆', '☆ Старший Модератор ☆'].includes(r.name))){
+                    server_were_admin.push('Южный округ');
+                }else if (g_member.roles.some(r => ['☆ Модератор ☆', '☆  Младший Модератор  ☆'].includes(r.name))){
+                    server_were_helper.push('Южный округ');
+                }
+            }
+
+            if (north.members.get(member.id)){
+                let g_member = north.members.get(member.id);
+                if (g_member.roles.some(r => ['✔ Administrator ✔', '✔ Jr.Administrator ✔'].includes(r.name))){
+                    server_were_admin.push('Северный округ');
+                }else if (g_member.roles.some(r => ['✔ Moderator ✔', '✔ Helper ✔'].includes(r.name))){
+                    server_were_helper.push('Северный округ');
+                }
+            }
+
+            if (vostok.members.get(member.id)){
+                let g_member = vostok.members.get(member.id);
+                if (g_member.roles.some(r => ['★ Администратор ★', '★ Старший Модератор ★'].includes(r.name))){
+                    server_were_admin.push('Восточный округ');
+                }else if (g_member.roles.some(r => ['★ Модератор ★', '★ Младший Модератор ★'].includes(r.name))){
+                    server_were_helper.push('Восточный округ');
                 }
             }
 
