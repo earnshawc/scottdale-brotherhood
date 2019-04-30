@@ -148,7 +148,9 @@ async function special_discord_update(){
         let north = user.guilds.get('477547500232769536');
         let vostok = user.guilds.get('530848070284607499');
         if (!phoenix || !tucson || !scottdale || !chandler || !brainburg || !saintrose || !mesa || !redrock || !yuma || !central || !eastern || !north || !vostok) return console.log('Один из серверов не найден!');
-        special_server.members.forEach(async (member) => {
+        
+        for (let i = 0; i < special_server.members.size; i++){
+            let member = special_server.members[i];
             
             let server_were_admin = [];
             let server_were_helper = [];
@@ -302,7 +304,7 @@ async function special_discord_update(){
                     await all_chat.send(`**${member}, \`вам была снята роль ${helper_role.name}. Не является хелпером на одном из серверов.\`**`);
                 }
             }
-        });
+        };
     }, 20000);
 }
 
