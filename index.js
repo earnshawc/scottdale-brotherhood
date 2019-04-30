@@ -143,6 +143,8 @@ async function special_discord_update(){
         if (!phoenix || !tucson || !scottdale || !chandler || !brainburg || !saintrose || !mesa || !redrock || !yuma) return console.log('Один из серверов не найден!');
         special_server.members.forEach(async (member) => {
             
+            let member_is_admin = 9;
+
             if (phoenix.members.get(member.id)){
                 let g_member = phoenix.members.get(member.id);
                 if (g_member.roles.some(r => ['Администрация 4 уровня', 'Администрация 3 уровня'].includes(r.name))){
@@ -150,16 +152,20 @@ async function special_discord_update(){
                         await member.addRole(admin_role);
                         console.log('Выдана админка. [Phoenix]');
                     }else{
-                        console.log('У администратора Phoenix уже есть роль!');
+                        // console.log('У администратора Phoenix уже есть роль!');
                     }
                 }else if (g_member.roles.some(r => ['Администрация 1-2 уровня'].includes(r.name))){
                     if (!member.roles.some(r => helper_role.id == r.id)){
                         await member.addRole(helper_role);
                         console.log('Выдана хелперка. [Phoenix]');
                     }else{
-                        console.log('У хелпера Phoenix уже есть роль!');
+                        // console.log('У хелпера Phoenix уже есть роль!');
                     }
+                }else{
+                    member_is_admin--;
                 }
+            }else{
+                member_is_admin--;
             }
             
             if (tucson.members.get(member.id)){
@@ -169,16 +175,20 @@ async function special_discord_update(){
                         await member.addRole(admin_role);
                         console.log('Выдана админка. [Tucson]');
                     }else{
-                        console.log('У администратора Tucson уже есть роль!');
+                        // console.log('У администратора Tucson уже есть роль!');
                     }
                 }else if (g_member.roles.some(r => ['Администратор 2 уровня', 'Администратор 1 уровня'].includes(r.name))){
                     if (!member.roles.some(r => helper_role.id == r.id)){
                         await member.addRole(helper_role);
                         console.log('Выдана хелперка. [Tucson]');
                     }else{
-                        console.log('У хелпера Tucson уже есть роль!');
+                        // console.log('У хелпера Tucson уже есть роль!');
                     }
+                }else{
+                    member_is_admin--;
                 }
+            }else{
+                member_is_admin--;
             }
             
             if (scottdale.members.get(member.id)){
@@ -188,16 +198,20 @@ async function special_discord_update(){
                         await member.addRole(admin_role);
                         console.log('Выдана админка. [Scottdale]');
                     }else{
-                        console.log('У администратора Scottdale уже есть роль!');
+                        // console.log('У администратора Scottdale уже есть роль!');
                     }
                 }else if (g_member.roles.some(r => ['✔ Helper ✔'].includes(r.name))){
                     if (!member.roles.some(r => helper_role.id == r.id)){
                         await member.addRole(helper_role);
                         console.log('Выдана хелперка. [Scottdale]');
                     }else{
-                        console.log('У хелпера Scottdale уже есть роль!');
+                        // console.log('У хелпера Scottdale уже есть роль!');
                     }
+                }else{
+                    member_is_admin--;
                 }
+            }else{
+                member_is_admin--;
             }
             
             if (chandler.members.get(member.id)){
@@ -207,16 +221,20 @@ async function special_discord_update(){
                         await member.addRole(admin_role);
                         console.log('Выдана админка. [Chandler]');
                     }else{
-                        console.log('У администратора Chandler уже есть роль!');
+                        // console.log('У администратора Chandler уже есть роль!');
                     }
                 }else if (g_member.roles.some(r => ['Хелпер'].includes(r.name))){
                     if (!member.roles.some(r => helper_role.id == r.id)){
                         await member.addRole(helper_role);
                         console.log('Выдана хелперка. [Chandler]');
                     }else{
-                        console.log('У хелпера Chandler уже есть роль!');
+                        // console.log('У хелпера Chandler уже есть роль!');
                     }
+                }else{
+                    member_is_admin--;
                 }
+            }else{
+                member_is_admin--;
             }
             
             if (brainburg.members.get(member.id)){
@@ -226,16 +244,20 @@ async function special_discord_update(){
                         await member.addRole(admin_role);
                         console.log('Выдана админка. [Brainburg]');
                     }else{
-                        console.log('У администратора Brainburg уже есть роль!');
+                        // console.log('У администратора Brainburg уже есть роль!');
                     }
                 }else if (g_member.roles.some(r => ['⚁ Администратор 2 ур. ⚁', '⚀ Администратор 1 ур. ⚀'].includes(r.name))){
                     if (!member.roles.some(r => helper_role.id == r.id)){
                         await member.addRole(helper_role);
                         console.log('Выдана хелперка. [Brainburg]');
                     }else{
-                        console.log('У хелпера Brainburg уже есть роль!');
+                        // console.log('У хелпера Brainburg уже есть роль!');
                     }
+                }else{
+                    member_is_admin--;
                 }
+            }else{
+                member_is_admin--;
             }
             
             if (saintrose.members.get(member.id)){
@@ -245,16 +267,20 @@ async function special_discord_update(){
                         await member.addRole(admin_role);
                         console.log('Выдана админка. [Saint Rose]');
                     }else{
-                        console.log('У администратора Saint Rose уже есть роль!');
+                        // console.log('У администратора Saint Rose уже есть роль!');
                     }
                 }else if (g_member.roles.some(r => ['◉ Хелпер [1-2 LVL]'].includes(r.name))){
                     if (!member.roles.some(r => helper_role.id == r.id)){
                         await member.addRole(helper_role);
                         console.log('Выдана хелперка. [Saint Rose]');
                     }else{
-                        console.log('У хелпера Saint Rose уже есть роль!');
+                        // console.log('У хелпера Saint Rose уже есть роль!');
                     }
+                }else{
+                    member_is_admin--;
                 }
+            }else{
+                member_is_admin--;
             }
             
             if (mesa.members.get(member.id)){
@@ -264,16 +290,20 @@ async function special_discord_update(){
                         await member.addRole(admin_role);
                         console.log('Выдана админка. [Mesa]');
                     }else{
-                        console.log('У администратора Mesa уже есть роль!');
+                        // console.log('У администратора Mesa уже есть роль!');
                     }
                 }else if (g_member.roles.some(r => ['✔Moderator✔'].includes(r.name))){
                     if (!member.roles.some(r => helper_role.id == r.id)){
                         await member.addRole(helper_role);
                         console.log('Выдана хелперка. [Mesa]');
                     }else{
-                        console.log('У хелпера Mesa уже есть роль!');
+                        // console.log('У хелпера Mesa уже есть роль!');
                     }
+                }else{
+                    member_is_admin--;
                 }
+            }else{
+                member_is_admin--;
             }
             
             if (redrock.members.get(member.id)){
@@ -283,16 +313,20 @@ async function special_discord_update(){
                         await member.addRole(admin_role);
                         console.log('Выдана админка. [Red-Rock]');
                     }else{
-                        console.log('У администратора Red-Rock уже есть роль!');
+                        // console.log('У администратора Red-Rock уже есть роль!');
                     }
                 }else if (g_member.roles.some(r => ['II ⚡ Модератор', 'I ⚡ Младший модератор'].includes(r.name))){
                     if (!member.roles.some(r => helper_role.id == r.id)){
                         await member.addRole(helper_role);
                         console.log('Выдана хелперка. [Red-Rock]');
                     }else{
-                        console.log('У хелпера Red-Rock уже есть роль!');
+                        // console.log('У хелпера Red-Rock уже есть роль!');
                     }
+                }else{
+                    member_is_admin--;
                 }
+            }else{
+                member_is_admin--;
             }
             
             if (yuma.members.get(member.id)){
@@ -302,15 +336,30 @@ async function special_discord_update(){
                         await member.addRole(admin_role);
                         console.log('Выдана админка. [Yuma]');
                     }else{
-                        console.log('У администратора Yuma уже есть роль!');
+                        // console.log('У администратора Yuma уже есть роль!');
                     }
                 }else if (g_member.roles.some(r => ['✔ Helper ✔'].includes(r.name))){
                     if (!member.roles.some(r => helper_role.id == r.id)){
                         await member.addRole(helper_role);
                         console.log('Выдана хелперка. [Yuma]');
                     }else{
-                        console.log('У хелпера Yuma уже есть роль!');
+                        // console.log('У хелпера Yuma уже есть роль!');
                     }
+                }else{
+                    member_is_admin--;
+                }
+            }else{
+                member_is_admin--;
+            }
+
+            if (member_is_admin == 0){
+                if (!member.roles.some(r => helper_role.id == r.id)){
+                    await member.removeRole(helper_role);
+                    console.log('Снял хелперку.');
+                }
+                if (!member.roles.some(r => admin_role.id == r.id)){
+                    await member.removeRole(admin_role);
+                    console.log('Снял админку.');
                 }
             }
         });
