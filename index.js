@@ -232,7 +232,7 @@ async function special_discord_update(){
             if (server_were_admin.length > 0){
                 if (!member.roles.some(r => admin_role.id == r.id)){
                     await member.addRole(admin_role);
-                    all_chat.send(`${member} вам была выдана роль ${admin_role.name}. Администратор на: ${server_were_admin.join(', ')}`);
+                    all_chat.send(`**${member} вам была выдана роль ${admin_role.name}. Администратор на: ${server_were_admin.join(', ')}**`);
                     if (member.roles.some(r => helper_role.id == r.id)){
                         await member.removeRole(helper_role);
                     }
@@ -240,19 +240,21 @@ async function special_discord_update(){
             }else if (server_were_helper.length > 0){
                 if (!member.roles.some(r => helper_role.id == r.id)){
                     await member.addRole(helper_role);
-                    all_chat.send(`${member} вам была выдана роль ${helper_role.name}. Хелпер на: ${helper_role.join(', ')}`);
+                    all_chat.send(`**${member} вам была выдана роль ${helper_role.name}. Хелпер на: ${helper_role.join(', ')}**`);
                 }
             }
             
             if (server_were_admin.length == 0){
                 if (member.roles.some(r => admin_role.id == r.id)){
                     await member.removeRole(admin_role);
+                    all_chat.send(`**${member} вам была снята роль ${admin_role.name}. Не является администратором на одном из серверов.**`);
                 }
             }
             
             if (server_were_helper.length == 0){
                 if (member.roles.some(r => helper_role.id == r.id)){
                     await member.removeRole(helper_role);
+                    all_chat.send(`**${member} вам была снята роль ${helper_role.name}. Не является хелпером на одном из серверов.**`);
                 }
             }
 
