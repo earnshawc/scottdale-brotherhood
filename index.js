@@ -131,6 +131,8 @@ async function special_discord_update(){
         let admin_role = special_server.roles.find(r => r.name == 'Администратор [3-4]');
         let helper_role = special_server.roles.find(r => r.name == 'Хелпер [1-2]');
         if (!admin_role || !helper_role) return console.log('Роли хелпера или админа не найдены на спец админском');
+        let all_chat = special_server.channels.find(c => c.name == 'основной');
+        if (!all_chat) return console.log('Чат "основной" не был найден!');
         let phoenix = user.guilds.get('544446632226324481');
         let tucson = user.guilds.get('438803520288981004');
         let scottdale = user.guilds.get('355656045600964609');
@@ -143,225 +145,118 @@ async function special_discord_update(){
         if (!phoenix || !tucson || !scottdale || !chandler || !brainburg || !saintrose || !mesa || !redrock || !yuma) return console.log('Один из серверов не найден!');
         special_server.members.forEach(async (member) => {
             
-            let member_is_admin = 9;
+            let server_were_admin = [];
+            let server_were_helper = [];
 
             if (phoenix.members.get(member.id)){
                 let g_member = phoenix.members.get(member.id);
                 if (g_member.roles.some(r => ['Администрация 4 уровня', 'Администрация 3 уровня'].includes(r.name))){
-                    if (!member.roles.some(r => admin_role.id == r.id)){
-                        await member.addRole(admin_role);
-                        console.log('Выдана админка. [Phoenix]');
-                    }else{
-                        // console.log('У администратора Phoenix уже есть роль!');
-                    }
+                    server_were_admin.push('Phoenix');
                 }else if (g_member.roles.some(r => ['Администрация 1-2 уровня'].includes(r.name))){
-                    if (!member.roles.some(r => helper_role.id == r.id)){
-                        await member.addRole(helper_role);
-                        console.log('Выдана хелперка. [Phoenix]');
-                    }else{
-                        // console.log('У хелпера Phoenix уже есть роль!');
-                    }
-                }else{
-                    member_is_admin--;
+                    server_were_helper.push('Phoenix');
                 }
-            }else{
-                member_is_admin--;
             }
             
             if (tucson.members.get(member.id)){
                 let g_member = tucson.members.get(member.id);
                 if (g_member.roles.some(r => ['Администратор 4 уровня', 'Администратор 3 уровня'].includes(r.name))){
-                    if (!member.roles.some(r => admin_role.id == r.id)){
-                        await member.addRole(admin_role);
-                        console.log('Выдана админка. [Tucson]');
-                    }else{
-                        // console.log('У администратора Tucson уже есть роль!');
-                    }
+                    server_were_admin.push('Tucson');
                 }else if (g_member.roles.some(r => ['Администратор 2 уровня', 'Администратор 1 уровня'].includes(r.name))){
-                    if (!member.roles.some(r => helper_role.id == r.id)){
-                        await member.addRole(helper_role);
-                        console.log('Выдана хелперка. [Tucson]');
-                    }else{
-                        // console.log('У хелпера Tucson уже есть роль!');
-                    }
-                }else{
-                    member_is_admin--;
+                    server_were_helper.push('Tucson');
                 }
-            }else{
-                member_is_admin--;
             }
             
             if (scottdale.members.get(member.id)){
                 let g_member = scottdale.members.get(member.id);
                 if (g_member.roles.some(r => ['✔ Administrator ✔', '✔Jr.Administrator✔'].includes(r.name))){
-                    if (!member.roles.some(r => admin_role.id == r.id)){
-                        await member.addRole(admin_role);
-                        console.log('Выдана админка. [Scottdale]');
-                    }else{
-                        // console.log('У администратора Scottdale уже есть роль!');
-                    }
+                    server_were_admin.push('Scottdale');
                 }else if (g_member.roles.some(r => ['✔ Helper ✔'].includes(r.name))){
-                    if (!member.roles.some(r => helper_role.id == r.id)){
-                        await member.addRole(helper_role);
-                        console.log('Выдана хелперка. [Scottdale]');
-                    }else{
-                        // console.log('У хелпера Scottdale уже есть роль!');
-                    }
-                }else{
-                    member_is_admin--;
+                    server_were_helper.push('Scottdale');
                 }
-            }else{
-                member_is_admin--;
             }
             
             if (chandler.members.get(member.id)){
                 let g_member = chandler.members.get(member.id);
                 if (g_member.roles.some(r => ['Администратор 4 уровня', 'Администратор 3 уровня'].includes(r.name))){
-                    if (!member.roles.some(r => admin_role.id == r.id)){
-                        await member.addRole(admin_role);
-                        console.log('Выдана админка. [Chandler]');
-                    }else{
-                        // console.log('У администратора Chandler уже есть роль!');
-                    }
+                    server_were_admin.push('Chandler');
                 }else if (g_member.roles.some(r => ['Хелпер'].includes(r.name))){
-                    if (!member.roles.some(r => helper_role.id == r.id)){
-                        await member.addRole(helper_role);
-                        console.log('Выдана хелперка. [Chandler]');
-                    }else{
-                        // console.log('У хелпера Chandler уже есть роль!');
-                    }
-                }else{
-                    member_is_admin--;
+                    server_were_helper.push('Chandler');
                 }
-            }else{
-                member_is_admin--;
             }
             
             if (brainburg.members.get(member.id)){
                 let g_member = brainburg.members.get(member.id);
                 if (g_member.roles.some(r => ['⚃ Администратор 4 ур. ⚃', '⚂ Администратор 3 ур. ⚂'].includes(r.name))){
-                    if (!member.roles.some(r => admin_role.id == r.id)){
-                        await member.addRole(admin_role);
-                        console.log('Выдана админка. [Brainburg]');
-                    }else{
-                        // console.log('У администратора Brainburg уже есть роль!');
-                    }
+                    server_were_admin.push('Brainburg');
                 }else if (g_member.roles.some(r => ['⚁ Администратор 2 ур. ⚁', '⚀ Администратор 1 ур. ⚀'].includes(r.name))){
-                    if (!member.roles.some(r => helper_role.id == r.id)){
-                        await member.addRole(helper_role);
-                        console.log('Выдана хелперка. [Brainburg]');
-                    }else{
-                        // console.log('У хелпера Brainburg уже есть роль!');
-                    }
-                }else{
-                    member_is_admin--;
+                    server_were_helper.push('Brainburg');
                 }
-            }else{
-                member_is_admin--;
             }
             
             if (saintrose.members.get(member.id)){
                 let g_member = saintrose.members.get(member.id);
                 if (g_member.roles.some(r => ['◉ Ст. Администратор [4 LVL]', '◉ Мл. Администратор [3 LVL]'].includes(r.name))){
-                    if (!member.roles.some(r => admin_role.id == r.id)){
-                        await member.addRole(admin_role);
-                        console.log('Выдана админка. [Saint Rose]');
-                    }else{
-                        // console.log('У администратора Saint Rose уже есть роль!');
-                    }
+                    server_were_admin.push('Saint Rose');
                 }else if (g_member.roles.some(r => ['◉ Хелпер [1-2 LVL]'].includes(r.name))){
-                    if (!member.roles.some(r => helper_role.id == r.id)){
-                        await member.addRole(helper_role);
-                        console.log('Выдана хелперка. [Saint Rose]');
-                    }else{
-                        // console.log('У хелпера Saint Rose уже есть роль!');
-                    }
-                }else{
-                    member_is_admin--;
+                    server_were_helper.push('Saint Rose');
                 }
-            }else{
-                member_is_admin--;
             }
             
             if (mesa.members.get(member.id)){
                 let g_member = mesa.members.get(member.id);
                 if (g_member.roles.some(r => ['✔Administration✔', '✔Jr.Administration✔'].includes(r.name))){
-                    if (!member.roles.some(r => admin_role.id == r.id)){
-                        await member.addRole(admin_role);
-                        console.log('Выдана админка. [Mesa]');
-                    }else{
-                        // console.log('У администратора Mesa уже есть роль!');
-                    }
+                    server_were_admin.push('Mesa');
                 }else if (g_member.roles.some(r => ['✔Moderator✔'].includes(r.name))){
-                    if (!member.roles.some(r => helper_role.id == r.id)){
-                        await member.addRole(helper_role);
-                        console.log('Выдана хелперка. [Mesa]');
-                    }else{
-                        // console.log('У хелпера Mesa уже есть роль!');
-                    }
-                }else{
-                    member_is_admin--;
+                    server_were_helper.push('Mesa');
                 }
-            }else{
-                member_is_admin--;
             }
             
             if (redrock.members.get(member.id)){
                 let g_member = redrock.members.get(member.id);
                 if (g_member.roles.some(r => ['IV ⚡ Администратор', 'III ⚡ Старший модератор'].includes(r.name))){
-                    if (!member.roles.some(r => admin_role.id == r.id)){
-                        await member.addRole(admin_role);
-                        console.log('Выдана админка. [Red-Rock]');
-                    }else{
-                        // console.log('У администратора Red-Rock уже есть роль!');
-                    }
+                    server_were_admin.push('Red-Rock');
                 }else if (g_member.roles.some(r => ['II ⚡ Модератор', 'I ⚡ Младший модератор'].includes(r.name))){
-                    if (!member.roles.some(r => helper_role.id == r.id)){
-                        await member.addRole(helper_role);
-                        console.log('Выдана хелперка. [Red-Rock]');
-                    }else{
-                        // console.log('У хелпера Red-Rock уже есть роль!');
-                    }
-                }else{
-                    member_is_admin--;
+                    server_were_helper.push('Red-Rock');
                 }
-            }else{
-                member_is_admin--;
             }
             
             if (yuma.members.get(member.id)){
                 let g_member = yuma.members.get(member.id);
                 if (g_member.roles.some(r => ['✔ Administrator ✔', '✔Jr.Administrator✔'].includes(r.name))){
-                    if (!member.roles.some(r => admin_role.id == r.id)){
-                        await member.addRole(admin_role);
-                        console.log('Выдана админка. [Yuma]');
-                    }else{
-                        // console.log('У администратора Yuma уже есть роль!');
-                    }
+                    server_were_admin.push('Yuma');
                 }else if (g_member.roles.some(r => ['✔ Helper ✔'].includes(r.name))){
-                    if (!member.roles.some(r => helper_role.id == r.id)){
-                        await member.addRole(helper_role);
-                        console.log('Выдана хелперка. [Yuma]');
-                    }else{
-                        // console.log('У хелпера Yuma уже есть роль!');
-                    }
-                }else{
-                    member_is_admin--;
+                    server_were_helper.push('Yuma');
                 }
-            }else{
-                member_is_admin--;
             }
 
-            if (member_is_admin == 0){
-                if (member.roles.some(r => helper_role.id == r.id)){
-                    await member.removeRole(helper_role);
-                    console.log('Снял хелперку.');
+            if (server_were_admin.length > 0){
+                if (!member.roles.some(r => admin_role.id == r.id)){
+                    await member.addRole(admin_role);
+                    all_chat.send(`${member} вам была выдана роль ${admin_role.name}. Администратор на: ${server_were_admin.join(', ')}`);
+                    if (member.roles.some(r => helper_role.id == r.id)){
+                        await member.removeRole(helper_role);
+                    }
                 }
-                if (member.roles.some(r => admin_role.id == r.id)){
-                    await member.removeRole(admin_role);
-                    console.log('Снял админку.');
+            }else if (server_were_helper.length > 0){
+                if (!member.roles.some(r => helper_role.id == r.id)){
+                    await member.addRole(helper_role);
+                    all_chat.send(`${member} вам была выдана роль ${helper_role.name}. Хелпер на: ${helper_role.join(', ')}`);
                 }
             }
+            
+            if (server_were_admin.length == 0){
+                if (member.roles.some(r => admin_role.id == r.id)){
+                    await member.removeRole(admin_role);
+                }
+            }
+            
+            if (server_were_helper.length == 0){
+                if (member.roles.some(r => helper_role.id == r.id)){
+                    await member.removeRole(helper_role);
+                }
+            }
+
+
         });
     }, 20000);
 }
