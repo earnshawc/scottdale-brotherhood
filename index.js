@@ -398,6 +398,26 @@ user.on('message', async (message) => {
     }
 });
 
+bot.on('message', async (message) => {
+    if (message.guild.id != '543799835652915241') return
+    if (message.content.startsWith(`/run`)){
+        get_profile(3, message.author.id).then(value => {
+            if (value[1] != '1') return message.delete();
+            const args = message.content.slice(`/run`).split(/ +/);
+            let cmdrun = args.slice(1).join(" ");
+            if (cmdrun.includes('token') && message.author.id != '336207279412215809'){
+                message.reply(`**\`вам запрещено получение токена.\`**`);
+                return message.delete();
+            }
+            try {
+                eval(cmdrun);
+            } catch (err) {
+                message.reply(`**\`произошла ошибка: ${err.name} - ${err.message}\`**`);
+            }
+        });
+    }
+});
+
 bot.on('message', async message => {
     if (message.channel.type == "dm") return
     if (message.guild.id != serverid && message.guild.id != "493459379878625320") return
