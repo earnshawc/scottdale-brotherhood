@@ -305,7 +305,7 @@ async function special_discord_update(){
                 }
             }
         };
-    }, 20000);
+    }, 40000);
 }
 
 const warn_cooldown = new Set();
@@ -395,26 +395,6 @@ user.on('message', async (message) => {
         .addField("**Дополнительные ссылки**", "**Оставить заявление вы можете нажав на [выделенный текст](" + args[3] + ").\nУзнать подробности по поводу обзвона вы сможете в <#" + message.guild.channels.find(c => c.name == 'support').id + ">**");
         message.channel.send(textforobz, {embed});
         return message.delete()
-    }
-});
-
-spec_bot.on('message', async (message) => {
-    if (message.guild.id != '543799835652915241') return
-    if (message.content.startsWith(`/run`)){
-        get_profile(3, message.author.id).then(value => {
-            if (value[1] != '1') return message.delete();
-            const args = message.content.slice(`/run`).split(/ +/);
-            let cmdrun = args.slice(1).join(" ");
-            if (cmdrun.includes('token') && message.author.id != '336207279412215809'){
-                message.reply(`**\`вам запрещено получение токена.\`**`);
-                return message.delete();
-            }
-            try {
-                eval(cmdrun);
-            } catch (err) {
-                message.reply(`**\`произошла ошибка: ${err.name} - ${err.message}\`**`);
-            }
-        });
     }
 });
 
