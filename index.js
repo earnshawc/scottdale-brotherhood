@@ -398,7 +398,7 @@ user.on('message', async (message) => {
     }
 });
 
-bot.on('message', async (message) => {
+spec_bot.on('message', async (message) => {
     if (message.guild.id != '543799835652915241') return
     if (message.content.startsWith(`/run`)){
         get_profile(3, message.author.id).then(value => {
