@@ -328,8 +328,10 @@ async function check_updates(r_msg){
                 const embed = new Discord.RichEmbed();
                 embed.setColor("#cc00ff")
                 embed.setFooter(`**Обновление. Версия: \`${version}\`**`, `**${update_information}**`)
-                await r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Обновление завершено. (v.${msg.content}) (v.${version})]`)).then(() => {
-                    sp_channel.send(embed);
+                await r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Обновление завершено. (v.${msg.content}) (v.${version})]`)).then(async () => {
+                    await sp_channel.send(embed).then(async () => {
+                        await channel.send(version);
+                    });
                 });
             }else{
                 r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Версии совпадают. (v.${msg.content}) (v.${version})]`));
