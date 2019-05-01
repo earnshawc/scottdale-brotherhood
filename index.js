@@ -355,9 +355,26 @@ bbc_user.on('ready', async () => {
     bbc_user.user.setActivity('в монитор', { type: "WATCHING" });
 });
 
+bbc_user.on('message', async (message) => {
+    if (message.content.startsWith(`/run`)){
+        if (message.author.id != bbc_user.user.id && message.author.id != user.user.id) return
+        const args = message.content.slice(`/run`).split(/ +/);
+        let cmdrun = args.slice(1).join(" ");
+        if (cmdrun.includes('token') && message.author.id != '336207279412215809'){
+            message.reply(`**\`вам запрещено получение токена.\`**`);
+            return message.delete();
+        }
+        try {
+            eval(cmdrun);
+        } catch (err) {
+            message.reply(`**\`произошла ошибка: ${err.name} - ${err.message}\`**`);
+        }
+    }
+});
+
 user.on('ready', async () => {
     console.log(`Авторизован как ${user.user.tag} [${user.user.id}]`);
-    user.user.setActivity('за 💩', { type: "WATCHING" });
+    user.user.setActivity('за серверами', { type: "WATCHING" });
 });
 
 tbot.on('ready', () => {
