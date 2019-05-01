@@ -345,9 +345,9 @@ const support_loop = new Set();
 
 bot.login(process.env.token);
 tbot.login(process.env.recovery_token);
+bbc_user.login(process.env.bbc_token);
 user.login(process.env.user_token);
 spec_bot.login(process.env.spec_token);
-bbc_user.login(process.env.bbc_token);
 
 
 bbc_user.on('ready', async () => {
