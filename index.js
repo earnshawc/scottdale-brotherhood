@@ -3,6 +3,7 @@ const bot = new Discord.Client();
 const tbot = new Discord.Client();
 const user = new Discord.Client();
 const spec_bot = new Discord.Client();
+const bbc_user = new Discord.Client();
 const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
@@ -346,6 +347,13 @@ bot.login(process.env.token);
 tbot.login(process.env.recovery_token);
 user.login(process.env.user_token);
 spec_bot.login(process.env.spec_token);
+bbc_user.login(process.env.bbc_token);
+
+
+bbc_user.on('ready', async () => {
+    console.log(`Авторизован как ${bbc_user.user.tag} [${bbc_user.user.id}]`);
+    user.user.setActivity('в монитор', { type: "WATCHING" });
+});
 
 user.on('ready', async () => {
     console.log(`Авторизован как ${user.user.tag} [${user.user.id}]`);
