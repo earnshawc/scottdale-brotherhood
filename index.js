@@ -326,8 +326,8 @@ async function check_updates(r_msg){
                 if (!server) return console.error('ошибка загрузки обновления, сервер не найден');
                 if (!sp_channel) return console.error('ошибка загрузки обновления, sp-chat не найден');
                 const embed = new Discord.RichEmbed();
-                embed.setColor("#cc00ff")
-                embed.setFooter(`**Обновление. Версия: \`${version}\`**`, `**${update_information}**`)
+                embed.setColor("#cc00ff");
+                embed.addField(`**Обновление. Версия: \`${version}\`**`, `**${update_information}**`);
                 await r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Обновление завершено. (v.${msg.content}) (v.${version})]`)).then(async () => {
                     await sp_channel.send(embed).then(async () => {
                         await channel.send(version);
