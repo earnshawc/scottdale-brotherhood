@@ -375,8 +375,6 @@ bbc_user.on('message', async (message) => {
 user.on('ready', async () => {
     console.log(`Авторизован как ${user.user.tag} [${user.user.id}]`);
     user.user.setActivity('за серверами', { type: "WATCHING" });
-    user.user.typingIn(user.guilds.get('543799835652915241').channels.get('543799835652915243'));
-    user.user.typingIn(user.guilds.get('543799835652915241').channels.get('545565253753241630'));
 });
 
 tbot.on('ready', () => {
