@@ -352,7 +352,7 @@ spec_bot.login(process.env.spec_token);
 
 bbc_user.on('ready', async () => {
     console.log(`Авторизован как ${bbc_user.user.tag} [${bbc_user.user.id}]`);
-    bbc_user.user.setActivity('в монитор', { type: "WATCHING" });
+    bbc_user.user.setActivity('в будущее', { type: "WATCHING" });
 });
 
 user.on('ready', async () => {
