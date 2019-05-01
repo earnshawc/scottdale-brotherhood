@@ -6,7 +6,14 @@ const spec_bot = new Discord.Client();
 const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
-// restart
+
+const version = '1.0.0';
+// Первая цифра означает глобальное обновление. (global_systems)
+// Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
+// Третяя цифра обозначает количество мелких фиксов. (например опечатка)
+
+const update_information = "Обновления будут логироваться в канал. Теперь доступны версии."
+
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
 const doc = new GoogleSpreadsheet(process.env.skey);
 const creds_json = {
@@ -307,6 +314,27 @@ async function special_discord_update(){
     }, 40000);
 }
 
+async function check_updates(r_msg){
+    setTimeout(async () => {
+        let channel = bot.guilds.get('493459379878625320').channels.find(c => c.name == 'bot-updates');
+        if (!channel) return console.error(`Канал обновлений не найден!`);
+        channel.fetchMessages({limit: 1}).then(async messages => {
+            let msg = messages.first();
+            if (msg.content != version){
+                let server = bot.guilds.get('355656045600964609');
+                let sp_channel = server.channels.find(c => c.name == 'spectator-chat');
+                if (!server) return console.error('ошибка загрузки обновления, сервер не найден');
+                if (!sp_channel) return console.error('ошибка загрузки обновления, sp-chat не найден');
+                await sp_channel.send(`**Обновление. Версия: \`${version}\`.**\n**Содержание: ${update_information}**`);
+                await channel.send(version);
+                await r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Обновление завершено. (v.${msg.content}) (v.${version})]`));
+            }else{
+                r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Версии совпадают. (v.${msg.content}) (v.${version})]`));
+            }
+        });
+    }, 10000);
+};
+
 const warn_cooldown = new Set();
 const support_loop = new Set();
 
@@ -329,7 +357,9 @@ bot.on('ready', () => {
     bot.user.setPresence({ game: { name: 'hacker' }, status: 'dnd' })
     check_unwanted_user();
     require('./plugins/remote_access').start(bot); // Подгрузка плагина удаленного доступа.
-    bot.guilds.get(serverid).channels.get('493181639011074065').send('**\`[BOT] - Запущен. [#' + new Date().valueOf() + '-' + bot.uptime + ']\`**')
+    await bot.guilds.get(serverid).channels.get('493181639011074065').send('**\`[BOT] - Запущен. [#' + new Date().valueOf() + '-' + bot.uptime + '] [Проверка наличия обновлений...]\`**').then(msg => {
+        check_updates(msg);
+    });
 });
 
 spec_bot.on('ready', () => {
