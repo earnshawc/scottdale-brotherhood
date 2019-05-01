@@ -7,12 +7,12 @@ const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 
-const version = '1.0.0';
+const version = '1.0.1';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
 
-const update_information = "Обновления будут логироваться в канал. Теперь доступны версии."
+const update_information = "Обновления теперь будут в табличке."
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
 const doc = new GoogleSpreadsheet(process.env.skey);
@@ -325,9 +325,10 @@ async function check_updates(r_msg){
                 let sp_channel = server.channels.find(c => c.name == 'spectator-chat');
                 if (!server) return console.error('ошибка загрузки обновления, сервер не найден');
                 if (!sp_channel) return console.error('ошибка загрузки обновления, sp-chat не найден');
-                await sp_channel.send(`**Обновление. Версия: \`${version}\`.**\n**Содержание: ${update_information}**`);
-                await channel.send(version);
-                await r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Обновление завершено. (v.${msg.content}) (v.${version})]`));
+                const embed = new Discord.RichEmbed();
+                embed.setColor("#cc00ff")
+                embed.setFooter(`**Обновление. Версия: \`${version}\`**`, `**${update_information}**`)
+                await r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Обновление завершено. (v.${msg.content}) (v.${version})]`), embed);
             }else{
                 r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Версии совпадают. (v.${msg.content}) (v.${version})]`));
             }
