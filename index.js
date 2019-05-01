@@ -357,7 +357,7 @@ bbc_user.on('ready', async () => {
 
 user.on('ready', async () => {
     console.log(`Авторизован как ${user.user.tag} [${user.user.id}]`);
-    user.user.setActivity('за серверами', { type: "WATCHING" });
+    user.user.setActivity('за 💩', { type: "WATCHING" });
 });
 
 tbot.on('ready', () => {
