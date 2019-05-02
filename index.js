@@ -447,6 +447,19 @@ user.on('message', async (message) => {
         .addField('**Правила подачи жалобы**', '**Справа у вас будет доступно быстрое меню, нажав на которое вас перебросит в выбранный вами раздел. После перехода в раздел жалоб, вам необходимо выбрать пункт \`« Жалобы на администрацию »\`. Внимательно ознакомьтесь с информацией в темах от администрации перед подачей жалобы! После ознакомления вам нужно нажать на кнопку \`« Создать тему »\` и составить жалобу.**')
         .addField('**Дополнительные ссылки**', '**Раздел жалоб Phoenix: [нажать](http://forum.arizona-rp.com/index.php?forums/525/)\nРаздел жалоб Tucson: [нажать](http://forum.arizona-rp.com/index.php?forums/523/)\nРаздел жалоб Scottdale: [нажать](http://forum.arizona-rp.com/index.php?forums/521/)\nРаздел жалоб Chandler: [нажать](http://forum.arizona-rp.com/index.php?forums/519/)\nРаздел жалоб Brainburg: [нажать](http://forum.arizona-rp.com/index.php?forums/540/)\nРаздел жалоб Saint Rose: [нажать](http://forum.arizona-rp.com/index.php?forums/682/)\nРаздел жалоб Mesa: [нажать](http://forum.arizona-rp.com/index.php?forums/754/)\nРаздел жалоб Red-Rock: [нажать](http://forum.arizona-rp.com/index.php?forums/838/)\nРаздел жалоб Yuma: [нажать](http://forum.arizona-rp.com/index.php?forums/956/)**')
         .setImage('https://i.imgur.com/i6c8OHq.jpg')
+        .setTimestamp()
+        .setFooter("Техническая поддержка » Arizona Role Play", "https://i.imgur.com/5qSrUJW.png")
+        message.channel.send(embed);
+        return message.delete();
+    }
+
+    if (message.content == '/my_user_card'){
+        if (message.author.id != user.user.id) return
+        const embed = new Discord.RichEmbed()
+        .setTitle("**Arizona Role Play » Карточка пользователя**")
+        .setColor("#FF8E01")
+        .setThumbnail(user.user.avatarURL)
+        .setTimestamp()
         .setFooter("Техническая поддержка » Arizona Role Play", "https://i.imgur.com/5qSrUJW.png")
         message.channel.send(embed);
         return message.delete();
