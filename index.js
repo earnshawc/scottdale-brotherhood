@@ -443,11 +443,13 @@ user.on('message', async (message) => {
         const embed = new Discord.RichEmbed()
         .setTitle("**Arizona Role Play » Правила подачи жалобы на администрацию**")
         .setColor("#FF8E01")
-        .addField('Регистрация на форуме', 'Для подачи жалобы вам необходимо пройти регистрацию на форуме. Сделать это можно нажав на [выделенный текст](http://forum.arizona-rp.com/index.php?login/login). После подтверждения эл.адреса вы сможете воспользоваться форумом по ссылке [forum.arizona-rp.com](http://forum.arizona-rp.com/index.php)')
-        .addField('Подача жалобы', 'Справа у вас будет доступно быстрое меню, нажав на которое вас перебросит в выбранный вами раздел. После перехода в раздел жалоб, вам необходимо выбрать « Жалобы на администрацию ». В открытой вкладке вам нужно нажать на кнопку « Создать тему » и составить жалобу с принятым стандартом.')
+        .addField('Регистрация на форуме', '**Для подачи жалобы вам необходимо пройти регистрацию на форуме. Сделать это можно нажав на [выделенный текст](http://forum.arizona-rp.com/index.php?login/login). После подтверждения эл.адреса вы сможете воспользоваться форумом по ссылке [forum.arizona-rp.com](http://forum.arizona-rp.com/index.php)**')
+        .addField('Правила подачи жалобы', '**Справа у вас будет доступно быстрое меню, нажав на которое вас перебросит в выбранный вами раздел. После перехода в раздел жалоб, вам необходимо выбрать пункт \`« Жалобы на администрацию »\`. Внимательно ознакомьтесь с информацией в темах от администрации перед подачей жалобы! После ознакомления вам нужно нажать на кнопку \`« Создать тему »\` и составить жалобу.**')
+        .addField('Дополнительные ссылки', '**Раздел жалоб Phoenix: [нажать](http://forum.arizona-rp.com/index.php?forums/%D0%96%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B.525/)\nРаздел жалоб Tucson: [нажать](http://forum.arizona-rp.com/index.php?forums/%D0%96%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B.523/)\nРаздел жалоб Scottdale: [нажать](http://forum.arizona-rp.com/index.php?forums/%D0%96%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B.521/)\nРаздел жалоб Chandler: [нажать](http://forum.arizona-rp.com/index.php?forums/%D0%96%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B.519/)\nРаздел жалоб Brainburg: [нажать](http://forum.arizona-rp.com/index.php?forums/%D0%96%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B.540/)\nРаздел жалоб Saint Rose: [нажать](http://forum.arizona-rp.com/index.php?forums/%D0%96%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B.682/)\nРаздел жалоб Mesa: [нажать](http://forum.arizona-rp.com/index.php?forums/%D0%96%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B.754/)\nРаздел жалоб Red-Rock: [нажать](http://forum.arizona-rp.com/index.php?forums/%D0%96%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B.838/)\nРаздел жалоб Yuma: [нажать](http://forum.arizona-rp.com/index.php?forums/%D0%96%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B-%D0%BD%D0%B0-%D0%B0%D0%B4%D0%BC%D0%B8%D0%BD%D0%B8%D1%81%D1%82%D1%80%D0%B0%D1%86%D0%B8%D1%8E.956/)**')
         .setImage('https://i.imgur.com/i6c8OHq.jpg')
         .setFooter("Техническая поддержка » Arizona Role Play", "https://i.imgur.com/5qSrUJW.png")
         message.channel.send(embed);
+        return message.delete();
     }
 });
 
