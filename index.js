@@ -380,7 +380,6 @@ spec_bot.on('ready', () => {
 });
 
 user.on('message', async (message) => {
-    if (message.channel.type == "dm") return
     if (message.guild.id != serverid && message.guild.id != "493459379878625320" && message.author.id != user.user.id) return
     if (message.author.id == bot.user.id) return
 
