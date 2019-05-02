@@ -8,12 +8,12 @@ const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 
-const version = '1.0.1';
+const version = '1.0.2';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
 
-const update_information = "Обновления теперь будут в табличке."
+const update_information = "Исправление варнингов в консоли."
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
 const doc = new GoogleSpreadsheet(process.env.skey);
@@ -1207,7 +1207,7 @@ async function check_unwanted_user(){
         let dataserver = bot.guilds.find(g => g.id == "493459379878625320");
         dataserver.channels.forEach(async channel => {
             if (channel.type=="text"){
-                if (channel.name != 'administration' && channel.name != 'accounts' && channel.name != 'bad-words' && channel.name != 'err-code' && channel.name != 'config'){
+                if (!['administration', 'accounts', 'bad-words', 'err-code', 'config', 'bot-updates'].includes(channel.name)){
                     await channel.fetchMessages({limit: 1}).then(async messages => {
                         if (messages.size == 1){
                             messages.forEach(async sacc => {
