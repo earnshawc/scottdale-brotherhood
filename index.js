@@ -8,12 +8,12 @@ const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 
-const version = '1.0.3';
+const version = '1.1.0';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
 
-const update_information = "В request-dev больше ничего не отправляется."
+const update_information = "Добавил для себя возможность отправлять embed сообщения от своего профиля."
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
 const doc = new GoogleSpreadsheet(process.env.skey);
@@ -436,6 +436,17 @@ user.on('message', async (message) => {
         .addField("**Дополнительные ссылки**", "**Оставить заявление вы можете нажав на [выделенный текст](" + args[3] + ").\nУзнать подробности по поводу обзвона вы сможете в <#" + message.guild.channels.find(c => c.name == 'support').id + ">**");
         message.channel.send(textforobz, {embed});
         return message.delete()
+    }
+
+    if (message.content == '/send_to_forum'){
+        if (message.author.id != user.user.id) return
+        const embed = new Discord.RichEmbed()
+        .setTitle("**Arizona Role Play » Правила подачи жалобы на администрацию**")
+        .setColor("#FF8E01")
+        .addField('Регистрация на форуме', 'Для подачи жалобы вам необходимо пройти регистрацию на форуме. Сделать это можно нажав на [выделенный текст](http://forum.arizona-rp.com/index.php?login/login). После подтверждения эл.адреса вы сможете воспользоваться форумом по ссылке [forum.arizona-rp.com](http://forum.arizona-rp.com/index.php)')
+        .addField('Подача жалобы', 'Справа у вас будет доступно быстрое меню, нажав на которое вас перебросит в выбранный вами раздел. После перехода в раздел жалоб, вам необходимо выбрать « Жалобы на администрацию ». В открытой вкладке вам нужно нажать на кнопку « Создать тему » и составить жалобу с принятым стандартом.')
+        .setImage('https://i.imgur.com/i6c8OHq.jpg')
+        .setFooter("Техническая поддержка » Arizona Role Play", "https://i.imgur.com/5qSrUJW.png")
     }
 });
 
