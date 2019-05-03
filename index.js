@@ -14,7 +14,7 @@ const version = '1.1.0';
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
 
-const update_information = "Добавил для себя возможность отправлять embed сообщения от своего профиля."
+const update_information = "Версии."
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
 const doc = new GoogleSpreadsheet(process.env.skey);
