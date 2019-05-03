@@ -7,6 +7,7 @@ const bbc_user = new Discord.Client();
 const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
+const file_length = require('./index.js').length;
 
 const version = '1.1.0';
 // Первая цифра означает глобальное обновление. (global_systems)
@@ -37,8 +38,6 @@ async function get_profile(gameserver, author_id){
             let account_info = [
                 db_account.idпользователя, // Вывод ID пользователя.
                 db_account.статусразработчика, // Вывод статуса разработчика.
-                db_account.exp, // Вывод опыта (сообщения)
-                db_account.money, // Виртуальная валюта.
             ];
             resolve(account_info);
         });
@@ -73,8 +72,6 @@ async function change_profile(gameserver, author_id, table, value){
             if (!db_account) return resolve(false);
             if (table == 'idпользователя') db_account.idпользователя = `${value}`;
             else if (table == 'статусразработчика') db_account.статусразработчика = `${value}`;
-            else if (table == 'exp') db_account.exp = `${value}`;
-            else if (table == 'money') db_account.money = `${value}`;
             else return reject(new Error("Значение table указано не верно!"));
             db_account.save();
             resolve(true);
@@ -319,23 +316,37 @@ async function check_updates(r_msg){
     setTimeout(async () => {
         let channel = bot.guilds.get('493459379878625320').channels.find(c => c.name == 'bot-updates');
         if (!channel) return console.error(`Канал обновлений не найден!`);
-        channel.fetchMessages({limit: 1}).then(async messages => {
-            let msg = messages.first();
-            if (msg.content != version){
-                let server = bot.guilds.get('355656045600964609');
-                let sp_channel = server.channels.find(c => c.name == 'spectator-chat');
-                if (!server) return console.error('ошибка загрузки обновления, сервер не найден');
-                if (!sp_channel) return console.error('ошибка загрузки обновления, sp-chat не найден');
-                const embed = new Discord.RichEmbed();
-                embed.addField(`**Обновление. Версия: \`${version}\`**`, `**${update_information}**`);
-                await r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Обновление завершено. (v.${msg.content}) (v.${version})]`)).then(async () => {
-                    await sp_channel.send(embed).then(async () => {
-                        await channel.send(version);
+        get_profile(10, serverid).then(async value => {
+            channel.fetchMessages({limit: 1}).then(async messages => {
+                let msg = messages.first();
+                if (msg.content != version){
+                    let server = bot.guilds.get('355656045600964609');
+                    let sp_channel = server.channels.find(c => c.name == 'spectator-chat');
+                    if (!server) return console.error('ошибка загрузки обновления, сервер не найден');
+                    if (!sp_channel) return console.error('ошибка загрузки обновления, sp-chat не найден');
+                    const embed = new Discord.RichEmbed();
+                    embed.addField(`**Обновление. Версия: \`${version}\`**`, `**${update_information}**`);
+                    await r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Обновление завершено. (v.${msg.content}) (v.${version})]`)).then(async () => {
+                        if (version.includes('-hide')){
+                            await channel.send(version);
+                            if (value[1] != file_length) change_profile(10, serverid, 'статусразработчика', file_length);
+                        }else{
+                            await sp_channel.send(embed).then(async () => {
+                                await channel.send(version);
+                                if (value[1] != file_length) change_profile(10, serverid, 'статусразработчика', file_length);
+                            });
+                        }
                     });
-                });
-            }else{
-                r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Версии совпадают. (v.${msg.content}) (v.${version})]`));
-            }
+                }else{
+                    if (value[1] != file_length){
+                        let sp_channel = server.channels.find(c => c.name == 'spectator-chat');
+                        await r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Ошибка проверки версии.]`));
+                        await sp_channel.send(`\`[ERROR]\` \`Версия не обновлена. Автоматическое отключение во избежания ошибок.\``);
+                        return process.exit();
+                    }
+                    r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Версии совпадают. (v.${msg.content}) (v.${version})]`));
+                }
+            });
         });
     }, 10000);
 };
