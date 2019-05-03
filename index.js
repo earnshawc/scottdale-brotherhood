@@ -9,12 +9,12 @@ const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 const file_length = fs.readFileSync('./index.js').length;
 
-const version = '1.1.10-hide';
+const version = '2.0.0';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
 
-const update_information = "Проверка файла."
+const update_information = "Теперь в спец.админском дискорде можно мутить нажав на замочек (:lock:), мут выдается на 30 минут.\nЕсли нажать еще раз или поставить на другое сообщение, то блокировка продливается.\nСнять блокировку можно поставив ключик (:key:)."
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
 const doc = new GoogleSpreadsheet(process.env.skey);
@@ -495,10 +495,9 @@ user.on('message', async (message) => {
     if (message.content == '/all_discord_servers'){
         if (message.author.id != user.user.id) return
         const embed = new Discord.RichEmbed()
-        .setTitle("**Arizona Role Play » Карточка пользователя**")
-        .setDescription('**Связь со мной: [vk.com/artemka076](https://vk.com/artemka076)\nФорум: [kory-mcgregor.201454](http://forum.arizona-rp.com/index.php?members/kory-mcgregor.201454/)\nDiscord: [Artemka076#6715](https://discordapp.com/channels/@me/336207279412215809)**')
+        .setTitle("**Arizona Role Play » Все discord-сервера Arizona Role Play.**")
+        .setDescription('**Phoenix: [нажми](https://discord.gg/5Kq9pjB)\nTucson: [нажми](https://discord.gg/23fwg3s)\nScottdale: [нажми](https://discord.gg/m3TbZyZ)\nChandler: [нажми](https://discordapp.com/invite/29sC6AC)\nBrainburg: [нажми](https://discord.gg/vvXaw9V)\nSaint Rose: [нажми](https://discord.gg/cb2rQTB)\nMesa: [нажми](https://discord.gg/HaWKZVe)\nRed-Rock: [нажми](https://discord.gg/gsAWX5y)\nYuma: [нажми](https://discord.gg/qrsWEPQ)**')
         .setColor("#FF8E01")
-        .setThumbnail(user.user.avatarURL)
         .setTimestamp()
         .setFooter("Техническая поддержка » Arizona Role Play", "https://i.imgur.com/5qSrUJW.png")
         message.channel.send(embed);
