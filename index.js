@@ -9,7 +9,7 @@ const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 const file_length = fs.readFileSync('./index.js').length;
 
-const version = '1.1.8-hide';
+const version = '1.1.9-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -170,11 +170,12 @@ spec_bot.on('raw', async event => {
                         doc.addRow(11, {
                             idпользователя: `${message.author.id}`,
                             статусразработчика: '0',
-                            мутдо: `${+date + 60000}`, // 3 600 000 (hour)
+                            мутдо: `${+date + 1800000}`, // 3 600 000 (hour)
                         }, async function(err){
                             if (err) return console.error(`[DB] Ошибка добавления профиля на лист!`);
                             await message.member.addRole(role);
-                            all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 1 минуту.\`**`);
+                            const embed = new Discord.RichEmbed().setDescription(`Нажмите на [выделенный текст](${message.url}) для перехода.`);
+                            all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 1 минуту.\`**`, embed);
                         });
                     }else{
                         let date = new Date().valueOf();
@@ -182,11 +183,12 @@ spec_bot.on('raw', async event => {
                         doc.addRow(11, {
                             idпользователя: `${message.author.id}`,
                             статусразработчика: '0',
-                            мутдо: `${+date + 60000}`, // 3 600 000 (hour)
+                            мутдо: `${+date + 1800000}`, // 3 600 000 (hour)
                         }, async function(err){
                             if (err) return console.error(`[DB] Ошибка добавления профиля на лист!`);
                             await message.member.addRole(role);
-                            all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 1 минуту.\`**`);
+                            const embed = new Discord.RichEmbed().setDescription(`Нажмите на [выделенный текст](${message.url}) для перехода.`);
+                            all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 1 минуту.\`**`, embed);
                         });
                     }
                 });
@@ -210,15 +212,17 @@ spec_bot.on('raw', async event => {
                         doc.addRow(11, {
                             idпользователя: `${message.author.id}`,
                             статусразработчика: '0',
-                            мутдо: `${+date + 60000}`, // 3 600 000 (hour)
+                            мутдо: `${+date + 1800000}`, // 3 600 000 (hour)
                         }, async function(err){
                             if (err) return console.error(`[DB] Ошибка добавления профиля на лист!`);
-                            all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 1 минуту.\`**`);
+                            const embed = new Discord.RichEmbed().setDescription(`Нажмите на [выделенный текст](${message.url}) для перехода.`);
+                            all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 1 минуту.\`**`, embed);
                         });
                     }else{
-                        db_account.мутдо = +db_account.мутдо + 60000;
+                        db_account.мутдо = +db_account.мутдо + 1800000;
                         await db_account.save();
-                        all_chat.send(`${message.member}, **\`модератор\` ${member} \`продлил вам блокировку чата на 1 минуту.\`**`);
+                        const embed = new Discord.RichEmbed().setDescription(`Нажмите на [выделенный текст](${message.url}) для перехода.`);
+                        all_chat.send(`${message.member}, **\`модератор\` ${member} \`продлил вам блокировку чата на 1 минуту.\`**`, embed);
                     }
                 });
             }
@@ -498,6 +502,7 @@ bot.on('ready', async () => {
 
 spec_bot.on('ready', () => {
     console.log("Спец.Бот был успешно запущен!");
+    spec_bot.user.setPresence({ game: { name: `${version}` }, status: 'online' })
     special_discord_update();
 });
 
