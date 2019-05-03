@@ -9,7 +9,7 @@ const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 const file_length = fs.readFileSync('./index.js').length;
 
-const version = '1.1.4-hide';
+const version = '1.1.5-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -131,7 +131,7 @@ const events = {
     MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
 };
 
-bot.on('raw', async event => {
+spec_bot.on('raw', async event => {
     if (!events.hasOwnProperty(event.t)) return; // Если не будет добавление или удаление смайлика, то выход
     if (event.t == "MESSAGE_REACTION_ADD"){
         let event_guildid = event.d.guild_id // ID discord сервера
@@ -140,7 +140,7 @@ bot.on('raw', async event => {
         let event_messageid = event.d.message_id // ID сообщение куда поставлен смайлик
         let event_emoji_name = event.d.emoji.name // Название смайлика
 
-        if (event_userid == bot.user.id) return // Если поставил смайлик бот то выход
+        if (event_userid == spec_bot.user.id) return // Если поставил смайлик бот то выход
         if (event_guildid != '543799835652915241') return // Если сервер будет другой то выход
 
         let server = bot.guilds.find(g => g.id == event_guildid); // Получить сервер из его ID
