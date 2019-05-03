@@ -9,7 +9,7 @@ const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 const file_length = fs.readFileSync('./index.js').length;
 
-const version = '1.1.5-hide';
+const version = '1.1.6-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -143,10 +143,10 @@ spec_bot.on('raw', async event => {
         if (event_userid == spec_bot.user.id) return // Если поставил смайлик бот то выход
         if (event_guildid != '543799835652915241') return // Если сервер будет другой то выход
 
-        let server = bot.guilds.find(g => g.id == event_guildid); // Получить сервер из его ID
-        let channel = server.channels.find(c => c.id == event_channelid); // Получить канал на сервере по списку каналов
+        let server = await bot.guilds.get(event_guildid); // Получить сервер из его ID
+        let channel = await server.channels.get(event_channelid); // Получить канал на сервере по списку каналов
         let message = await channel.fetchMessage(event_messageid); // Получить сообщение из канала
-        let member = server.members.find(m => m.id == event_userid); // Получить пользователя с сервера
+        let member = await server.members.get(event_userid); // Получить пользователя с сервера
 
         if (event_emoji_name == "🔒"){
             if (!member.roles.some(r => ['Модератор ☠', 'Главная Администрация', 'Зам.Гл.Администратора'].includes(r.name)) && !member.hasPermission("ADMINISTRATOR")) return
