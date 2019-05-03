@@ -7,9 +7,9 @@ const bbc_user = new Discord.Client();
 const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
-const file_length = require('./index.js').length;
+const file_length = fs.readFileSync('./index.js').length;
 
-const version = '1.1.1';
+const version = '1.1.2';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -342,7 +342,7 @@ async function check_updates(r_msg){
                         let server = bot.guilds.get('355656045600964609');
                         let sp_channel = server.channels.find(c => c.name == 'spectator-chat');
                         await r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Ошибка проверки версии.]`));
-                        await sp_channel.send(`\`[ERROR]\` \`Версия не обновлена. Автоматическое отключение во избежания ошибок.\``);
+                        await sp_channel.send(`\`[ERROR]\` \`Версия не обновлена. Автоматическое отключение.\``);
                         return process.exit();
                     }
                     r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Версии совпадают. (v.${msg.content}) (v.${version})]`));
