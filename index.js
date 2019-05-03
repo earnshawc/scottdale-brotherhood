@@ -9,7 +9,7 @@ const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 const file_length = fs.readFileSync('./index.js').length;
 
-const version = '1.1.7-hide';
+const version = '1.1.8-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -216,8 +216,8 @@ spec_bot.on('raw', async event => {
                             all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 1 минуту.\`**`);
                         });
                     }else{
-                        db_account.мутдо = `${+db_account.мутдо + 60000}`;
-                        db_account.save();
+                        db_account.мутдо = +db_account.мутдо + 60000;
+                        await db_account.save();
                         all_chat.send(`${message.member}, **\`модератор\` ${member} \`продлил вам блокировку чата на 1 минуту.\`**`);
                     }
                 });
