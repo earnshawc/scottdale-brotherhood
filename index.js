@@ -342,7 +342,7 @@ async function check_updates(r_msg){
                         let server = bot.guilds.get('355656045600964609');
                         let sp_channel = server.channels.find(c => c.name == 'spectator-chat');
                         await r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Ошибка проверки версии.]`));
-                        await sp_channel.send(`\`[ERROR]\` \`Версия не обновлена. Автоматическое отключение.\``);
+                        await sp_channel.send(`\`[ERROR]\` \`Версия не обновлена. Автоматическое отключение. [до: ${value[1]}, после: ${file_length}]\``);
                         return process.exit();
                     }
                     r_msg.edit(r_msg.content.replace('[Проверка наличия обновлений...]', `[Версии совпадают. (v.${msg.content}) (v.${version})]`));
