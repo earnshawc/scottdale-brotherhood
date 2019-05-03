@@ -9,7 +9,7 @@ const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 const file_length = fs.readFileSync('./index.js').length;
 
-const version = '1.1.3-hide';
+const version = '1.1.4-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -38,6 +38,7 @@ async function get_profile(gameserver, author_id){
             let account_info = [
                 db_account.idпользователя, // Вывод ID пользователя.
                 db_account.статусразработчика, // Вывод статуса разработчика.
+                db_account.мутдо, // Вывод мута valueOf
             ];
             resolve(account_info);
         });
@@ -49,8 +50,7 @@ async function add_profile(gameserver, author_id){
         doc.addRow(gameserver, {
             idпользователя: `${author_id}`,
             статусразработчика: '0',
-            exp: '0',
-            money: '0'
+            мутдо: '0',
         }, async function(err){
             if (err){
                 console.error(`[DB] Ошибка добавления профиля на лист!`);
@@ -72,6 +72,7 @@ async function change_profile(gameserver, author_id, table, value){
             if (!db_account) return resolve(false);
             if (table == 'idпользователя') db_account.idпользователя = `${value}`;
             else if (table == 'статусразработчика') db_account.статусразработчика = `${value}`;
+            else if (table == 'мутдо') db_account.мутдо = `${value}`;
             else return reject(new Error("Значение table указано не верно!"));
             db_account.save();
             resolve(true);
@@ -111,6 +112,7 @@ const has_removed = new Set();
 
 let antislivsp1 = new Set();
 let antislivsp2 = new Set();
+let global_cd = new Set();
 
 let setembed_general = ["не указано", "не указано", "не указано", "не указано", "не указано", "не указано", "не указано"];
 let setembed_fields = ["нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет", "нет"];
@@ -128,6 +130,101 @@ const events = {
     MESSAGE_REACTION_ADD: 'messageReactionAdd',
     MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
 };
+
+bot.on('raw', async event => {
+    if (!events.hasOwnProperty(event.t)) return; // Если не будет добавление или удаление смайлика, то выход
+    if (event.t == "MESSAGE_REACTION_ADD"){
+        let event_guildid = event.d.guild_id // ID discord сервера
+        let event_channelid = event.d.channel_id // ID канала
+        let event_userid = event.d.user_id // ID того кто поставил смайлик
+        let event_messageid = event.d.message_id // ID сообщение куда поставлен смайлик
+        let event_emoji_name = event.d.emoji.name // Название смайлика
+
+        if (event_userid == bot.user.id) return // Если поставил смайлик бот то выход
+        if (event_guildid != '543799835652915241') return // Если сервер будет другой то выход
+
+        let server = bot.guilds.find(g => g.id == event_guildid); // Получить сервер из его ID
+        let channel = server.channels.find(c => c.id == event_channelid); // Получить канал на сервере по списку каналов
+        let message = await channel.fetchMessage(event_messageid); // Получить сообщение из канала
+        let member = server.members.find(m => m.id == event_userid); // Получить пользователя с сервера
+
+        if (event_emoji_name == "🔒"){
+            if (!member.roles.some(r => ['Модератор ☠', 'Главная Администрация', 'Зам.Гл.Администратора'].includes(r.name)) && !member.hasPermission("ADMINISTRATOR")) return
+            if (!message.member.roles.some(r => r.name == '🔒 Блокировка')){
+                let special_server = spec_bot.guilds.get('543799835652915241');
+                if (!special_server) return console.log('Сервер спец.администрации не найден!');
+                let all_chat = special_server.channels.find(c => c.name == 'основной');
+                if (!all_chat) return console.log('Чат "основной" не был найден!');
+                let role = special_server.roles.find(r => r.name == '🔒 Блокировка');
+                if (!role) return console.log('Роль Блокировка не найдена.');
+                if (global_cd.has(server.id)) return
+                global_cd.add(server.id);
+                setTimeout(() => {
+                    if (global_cd.has(server.id)) global_cd.delete(server.id);
+                }, 7000);
+
+                await doc.getRows(11, { offset: 1, limit: 5000000, orderby: 'col2' }, async (err, rows) => {
+                    let db_account = rows.find(row => row.idпользователя == message.author.id);
+                    if (!db_account){
+                        let date = new Date().valueOf();
+                        doc.addRow(11, {
+                            idпользователя: `${message.author.id}`,
+                            статусразработчика: '0',
+                            мутдо: `${+date + 60000}`, // 3 600 000 (hour)
+                        }, async function(err){
+                            if (err) return console.error(`[DB] Ошибка добавления профиля на лист!`);
+                            await message.member.addRole(role);
+                            all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 1 минуту.\`**`);
+                        });
+                    }else{
+                        let date = new Date().valueOf();
+                        await db_account.del();
+                        doc.addRow(11, {
+                            idпользователя: `${message.author.id}`,
+                            статусразработчика: '0',
+                            мутдо: `${+date + 60000}`, // 3 600 000 (hour)
+                        }, async function(err){
+                            if (err) return console.error(`[DB] Ошибка добавления профиля на лист!`);
+                            await message.member.addRole(role);
+                            all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 1 минуту.\`**`);
+                        });
+                    }
+                });
+            }else{
+                let special_server = spec_bot.guilds.get('543799835652915241');
+                if (!special_server) return console.log('Сервер спец.администрации не найден!');
+                let all_chat = special_server.channels.find(c => c.name == 'основной');
+                if (!all_chat) return console.log('Чат "основной" не был найден!');
+                let role = special_server.roles.find(r => r.name == '🔒 Блокировка');
+                if (!role) return console.log('Роль Блокировка не найдена.');
+                if (global_cd.has(server.id)) return
+                global_cd.add(server.id);
+                setTimeout(() => {
+                    if (global_cd.has(server.id)) global_cd.delete(server.id);
+                }, 7000);
+
+                await doc.getRows(11, { offset: 1, limit: 5000000, orderby: 'col2' }, async (err, rows) => {
+                    let db_account = rows.find(row => row.idпользователя == message.author.id);
+                    if (!db_account){
+                        let date = new Date().valueOf();
+                        doc.addRow(11, {
+                            idпользователя: `${message.author.id}`,
+                            статусразработчика: '0',
+                            мутдо: `${+date + 60000}`, // 3 600 000 (hour)
+                        }, async function(err){
+                            if (err) return console.error(`[DB] Ошибка добавления профиля на лист!`);
+                            all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 1 минуту.\`**`);
+                        });
+                    }else{
+                        db_account.мутдо = `${+db_account.мутдо + 60000}`;
+                        db_account.save();
+                        all_chat.send(`${message.member}, **\`модератор\` ${member} \`продлил вам блокировку чата на 1 минуту.\`**`);
+                    }
+                });
+            }
+        }
+    }
+});
 
 async function special_discord_update(){
     setInterval(async () => {
@@ -154,160 +251,173 @@ async function special_discord_update(){
         let vostok = user.guilds.get('530848070284607499');
         if (!phoenix || !tucson || !scottdale || !chandler || !brainburg || !saintrose || !mesa || !redrock || !yuma || !central || !eastern || !north || !vostok) return console.log('Один из серверов не найден!');
         
-        special_server.members.forEach(async (member) => {
-            
-            let server_were_admin = [];
-            let server_were_helper = [];
+        await doc.getRows(11, { offset: 1, limit: 5000000, orderby: 'col2' }, async (err, rows) => {
+            special_server.members.forEach(async (member) => {
 
-            if (phoenix.members.get(member.id)){
-                let g_member = phoenix.members.get(member.id);
-                if (g_member.roles.some(r => ['Администрация 4 уровня', 'Администрация 3 уровня'].includes(r.name))){
-                    server_were_admin.push('Phoenix');
-                }else if (g_member.roles.some(r => ['Администрация 1-2 уровня'].includes(r.name))){
-                    server_were_helper.push('Phoenix');
-                }
-            }
-            
-            if (tucson.members.get(member.id)){
-                let g_member = tucson.members.get(member.id);
-                if (g_member.roles.some(r => ['Администратор 4 уровня', 'Администратор 3 уровня'].includes(r.name))){
-                    server_were_admin.push('Tucson');
-                }else if (g_member.roles.some(r => ['Администратор 2 уровня', 'Администратор 1 уровня'].includes(r.name))){
-                    server_were_helper.push('Tucson');
-                }
-            }
-            
-            if (scottdale.members.get(member.id)){
-                let g_member = scottdale.members.get(member.id);
-                if (g_member.roles.some(r => ['✔ Administrator ✔', '✔Jr.Administrator✔'].includes(r.name))){
-                    server_were_admin.push('Scottdale');
-                }else if (g_member.roles.some(r => ['✔ Helper ✔'].includes(r.name))){
-                    server_were_helper.push('Scottdale');
-                }
-            }
-            
-            if (chandler.members.get(member.id)){
-                let g_member = chandler.members.get(member.id);
-                if (g_member.roles.some(r => ['Администратор 4 уровня', 'Администратор 3 уровня'].includes(r.name))){
-                    server_were_admin.push('Chandler');
-                }else if (g_member.roles.some(r => ['Хелпер'].includes(r.name))){
-                    server_were_helper.push('Chandler');
-                }
-            }
-            
-            if (brainburg.members.get(member.id)){
-                let g_member = brainburg.members.get(member.id);
-                if (g_member.roles.some(r => ['⚃ Администратор 4 ур. ⚃', '⚂ Администратор 3 ур. ⚂'].includes(r.name))){
-                    server_were_admin.push('Brainburg');
-                }else if (g_member.roles.some(r => ['⚁ Администратор 2 ур. ⚁', '⚀ Администратор 1 ур. ⚀'].includes(r.name))){
-                    server_were_helper.push('Brainburg');
-                }
-            }
-            
-            if (saintrose.members.get(member.id)){
-                let g_member = saintrose.members.get(member.id);
-                if (g_member.roles.some(r => ['◉ Ст. Администратор [4 LVL]', '◉ Мл. Администратор [3 LVL]'].includes(r.name))){
-                    server_were_admin.push('Saint Rose');
-                }else if (g_member.roles.some(r => ['◉ Хелпер [1-2 LVL]'].includes(r.name))){
-                    server_were_helper.push('Saint Rose');
-                }
-            }
-            
-            if (mesa.members.get(member.id)){
-                let g_member = mesa.members.get(member.id);
-                if (g_member.roles.some(r => ['✔Administration✔', '✔Jr.Administration✔'].includes(r.name))){
-                    server_were_admin.push('Mesa');
-                }else if (g_member.roles.some(r => ['✔Moderator✔'].includes(r.name))){
-                    server_were_helper.push('Mesa');
-                }
-            }
-            
-            if (redrock.members.get(member.id)){
-                let g_member = redrock.members.get(member.id);
-                if (g_member.roles.some(r => ['IV ⚡ Администратор', 'III ⚡ Старший модератор'].includes(r.name))){
-                    server_were_admin.push('Red-Rock');
-                }else if (g_member.roles.some(r => ['II ⚡ Модератор', 'I ⚡ Младший модератор'].includes(r.name))){
-                    server_were_helper.push('Red-Rock');
-                }
-            }
-            
-            if (yuma.members.get(member.id)){
-                let g_member = yuma.members.get(member.id);
-                if (g_member.roles.some(r => ['✔ Administrator ✔', '✔Jr.Administrator✔'].includes(r.name))){
-                    server_were_admin.push('Yuma');
-                }else if (g_member.roles.some(r => ['✔ Helper ✔'].includes(r.name))){
-                    server_were_helper.push('Yuma');
-                }
-            }
-
-
-            if (central.members.get(member.id)){
-                let g_member = central.members.get(member.id);
-                if (g_member.roles.some(r => ['✦ Администратор ✦', '✦ Младший администратор ✦'].includes(r.name))){
-                    server_were_admin.push('Центральный Округ');
-                }else if (g_member.roles.some(r => ['✦ Модератор ✦', '✦ Хелпер ✦'].includes(r.name))){
-                    server_were_helper.push('Центральный Округ');
-                }
-            }
-
-            if (eastern.members.get(member.id)){
-                let g_member = eastern.members.get(member.id);
-                if (g_member.roles.some(r => ['☆ Администратор ☆', '☆ Старший Модератор ☆'].includes(r.name))){
-                    server_were_admin.push('Южный округ');
-                }else if (g_member.roles.some(r => ['☆ Модератор ☆', '☆  Младший Модератор  ☆'].includes(r.name))){
-                    server_were_helper.push('Южный округ');
-                }
-            }
-
-            if (north.members.get(member.id)){
-                let g_member = north.members.get(member.id);
-                if (g_member.roles.some(r => ['✔ Administrator ✔', '✔ Jr.Administrator ✔'].includes(r.name))){
-                    server_were_admin.push('Северный округ');
-                }else if (g_member.roles.some(r => ['✔ Moderator ✔', '✔ Helper ✔'].includes(r.name))){
-                    server_were_helper.push('Северный округ');
-                }
-            }
-
-            if (vostok.members.get(member.id)){
-                let g_member = vostok.members.get(member.id);
-                if (g_member.roles.some(r => ['★ Администратор ★', '★ Старший Модератор ★'].includes(r.name))){
-                    server_were_admin.push('Восточный округ');
-                }else if (g_member.roles.some(r => ['★ Модератор ★', '★ Младший Модератор ★'].includes(r.name))){
-                    server_were_helper.push('Восточный округ');
-                }
-            }
-
-            if (server_were_admin.length > 0){
-                if (!member.roles.some(r => admin_role.id == r.id)){
-                    await member.addRole(admin_role);
-                    await all_chat.send(`**${member}, \`вам была выдана роль ${admin_role.name}. Администратор на: ${server_were_admin.join(', ')}\`**`);
-                    if (member.roles.some(r => helper_role.id == r.id)){
-                        await member.removeRole(helper_role);
+                if (member.roles.some(r => r.name == '🔒 Блокировка')){
+                    let db_account = rows.find(row => row.idпользователя == member.id); // Поиск аккаунта в базе данных.
+                    let date = new Date().valueOf();
+                    if (date > db_account.мутдо){
+                        let role = special_server.roles.find(r => r.name == '🔒 Блокировка');
+                        await member.removeRole(role);
+                        db_account.del();
+                        all_chat.send(`${member}, **\`блокировка чата была снята.\`**`);
                     }
                 }
-            }else if (server_were_helper.length > 0){
-                if (!member.roles.some(r => helper_role.id == r.id)){
-                    await member.addRole(helper_role);
-                    await all_chat.send(`**${member}, \`вам была выдана роль ${helper_role.name}. Хелпер на: ${server_were_helper.join(', ')}\`**`);
+                
+                let server_were_admin = [];
+                let server_were_helper = [];
+
+                if (phoenix.members.get(member.id)){
+                    let g_member = phoenix.members.get(member.id);
+                    if (g_member.roles.some(r => ['Администрация 4 уровня', 'Администрация 3 уровня'].includes(r.name))){
+                        server_were_admin.push('Phoenix');
+                    }else if (g_member.roles.some(r => ['Администрация 1-2 уровня'].includes(r.name))){
+                        server_were_helper.push('Phoenix');
+                    }
+                }
+                
+                if (tucson.members.get(member.id)){
+                    let g_member = tucson.members.get(member.id);
+                    if (g_member.roles.some(r => ['Администратор 4 уровня', 'Администратор 3 уровня'].includes(r.name))){
+                        server_were_admin.push('Tucson');
+                    }else if (g_member.roles.some(r => ['Администратор 2 уровня', 'Администратор 1 уровня'].includes(r.name))){
+                        server_were_helper.push('Tucson');
+                    }
+                }
+                
+                if (scottdale.members.get(member.id)){
+                    let g_member = scottdale.members.get(member.id);
+                    if (g_member.roles.some(r => ['✔ Administrator ✔', '✔Jr.Administrator✔'].includes(r.name))){
+                        server_were_admin.push('Scottdale');
+                    }else if (g_member.roles.some(r => ['✔ Helper ✔'].includes(r.name))){
+                        server_were_helper.push('Scottdale');
+                    }
+                }
+                
+                if (chandler.members.get(member.id)){
+                    let g_member = chandler.members.get(member.id);
+                    if (g_member.roles.some(r => ['Администратор 4 уровня', 'Администратор 3 уровня'].includes(r.name))){
+                        server_were_admin.push('Chandler');
+                    }else if (g_member.roles.some(r => ['Хелпер'].includes(r.name))){
+                        server_were_helper.push('Chandler');
+                    }
+                }
+                
+                if (brainburg.members.get(member.id)){
+                    let g_member = brainburg.members.get(member.id);
+                    if (g_member.roles.some(r => ['⚃ Администратор 4 ур. ⚃', '⚂ Администратор 3 ур. ⚂'].includes(r.name))){
+                        server_were_admin.push('Brainburg');
+                    }else if (g_member.roles.some(r => ['⚁ Администратор 2 ур. ⚁', '⚀ Администратор 1 ур. ⚀'].includes(r.name))){
+                        server_were_helper.push('Brainburg');
+                    }
+                }
+                
+                if (saintrose.members.get(member.id)){
+                    let g_member = saintrose.members.get(member.id);
+                    if (g_member.roles.some(r => ['◉ Ст. Администратор [4 LVL]', '◉ Мл. Администратор [3 LVL]'].includes(r.name))){
+                        server_were_admin.push('Saint Rose');
+                    }else if (g_member.roles.some(r => ['◉ Хелпер [1-2 LVL]'].includes(r.name))){
+                        server_were_helper.push('Saint Rose');
+                    }
+                }
+                
+                if (mesa.members.get(member.id)){
+                    let g_member = mesa.members.get(member.id);
+                    if (g_member.roles.some(r => ['✔Administration✔', '✔Jr.Administration✔'].includes(r.name))){
+                        server_were_admin.push('Mesa');
+                    }else if (g_member.roles.some(r => ['✔Moderator✔'].includes(r.name))){
+                        server_were_helper.push('Mesa');
+                    }
+                }
+                
+                if (redrock.members.get(member.id)){
+                    let g_member = redrock.members.get(member.id);
+                    if (g_member.roles.some(r => ['IV ⚡ Администратор', 'III ⚡ Старший модератор'].includes(r.name))){
+                        server_were_admin.push('Red-Rock');
+                    }else if (g_member.roles.some(r => ['II ⚡ Модератор', 'I ⚡ Младший модератор'].includes(r.name))){
+                        server_were_helper.push('Red-Rock');
+                    }
+                }
+                
+                if (yuma.members.get(member.id)){
+                    let g_member = yuma.members.get(member.id);
+                    if (g_member.roles.some(r => ['✔ Administrator ✔', '✔Jr.Administrator✔'].includes(r.name))){
+                        server_were_admin.push('Yuma');
+                    }else if (g_member.roles.some(r => ['✔ Helper ✔'].includes(r.name))){
+                        server_were_helper.push('Yuma');
+                    }
+                }
+
+
+                if (central.members.get(member.id)){
+                    let g_member = central.members.get(member.id);
+                    if (g_member.roles.some(r => ['✦ Администратор ✦', '✦ Младший администратор ✦'].includes(r.name))){
+                        server_were_admin.push('Центральный Округ');
+                    }else if (g_member.roles.some(r => ['✦ Модератор ✦', '✦ Хелпер ✦'].includes(r.name))){
+                        server_were_helper.push('Центральный Округ');
+                    }
+                }
+
+                if (eastern.members.get(member.id)){
+                    let g_member = eastern.members.get(member.id);
+                    if (g_member.roles.some(r => ['☆ Администратор ☆', '☆ Старший Модератор ☆'].includes(r.name))){
+                        server_were_admin.push('Южный округ');
+                    }else if (g_member.roles.some(r => ['☆ Модератор ☆', '☆  Младший Модератор  ☆'].includes(r.name))){
+                        server_were_helper.push('Южный округ');
+                    }
+                }
+
+                if (north.members.get(member.id)){
+                    let g_member = north.members.get(member.id);
+                    if (g_member.roles.some(r => ['✔ Administrator ✔', '✔ Jr.Administrator ✔'].includes(r.name))){
+                        server_were_admin.push('Северный округ');
+                    }else if (g_member.roles.some(r => ['✔ Moderator ✔', '✔ Helper ✔'].includes(r.name))){
+                        server_were_helper.push('Северный округ');
+                    }
+                }
+
+                if (vostok.members.get(member.id)){
+                    let g_member = vostok.members.get(member.id);
+                    if (g_member.roles.some(r => ['★ Администратор ★', '★ Старший Модератор ★'].includes(r.name))){
+                        server_were_admin.push('Восточный округ');
+                    }else if (g_member.roles.some(r => ['★ Модератор ★', '★ Младший Модератор ★'].includes(r.name))){
+                        server_were_helper.push('Восточный округ');
+                    }
+                }
+
+                if (server_were_admin.length > 0){
+                    if (!member.roles.some(r => admin_role.id == r.id)){
+                        await member.addRole(admin_role);
+                        await all_chat.send(`**${member}, \`вам была выдана роль ${admin_role.name}. Администратор на: ${server_were_admin.join(', ')}\`**`);
+                        if (member.roles.some(r => helper_role.id == r.id)){
+                            await member.removeRole(helper_role);
+                        }
+                    }
+                }else if (server_were_helper.length > 0){
+                    if (!member.roles.some(r => helper_role.id == r.id)){
+                        await member.addRole(helper_role);
+                        await all_chat.send(`**${member}, \`вам была выдана роль ${helper_role.name}. Хелпер на: ${server_were_helper.join(', ')}\`**`);
+                        if (member.roles.some(r => admin_role.id == r.id)){
+                            await member.removeRole(admin_role);
+                        }
+                    }
+                }
+
+                if (server_were_admin.length == 0){
                     if (member.roles.some(r => admin_role.id == r.id)){
                         await member.removeRole(admin_role);
+                        await all_chat.send(`**${member}, \`вам была снята роль ${admin_role.name}. Не является администратором на одном из серверов.\`**`);
                     }
                 }
-            }
 
-            if (server_were_admin.length == 0){
-                if (member.roles.some(r => admin_role.id == r.id)){
-                    await member.removeRole(admin_role);
-                    await all_chat.send(`**${member}, \`вам была снята роль ${admin_role.name}. Не является администратором на одном из серверов.\`**`);
+                if (server_were_helper.length == 0){
+                    if (member.roles.some(r => helper_role.id == r.id)){
+                        await member.removeRole(helper_role);
+                        await all_chat.send(`**${member}, \`вам была снята роль ${helper_role.name}. Не является хелпером на одном из серверов.\`**`);
+                    }
                 }
-            }
-
-            if (server_were_helper.length == 0){
-                if (member.roles.some(r => helper_role.id == r.id)){
-                    await member.removeRole(helper_role);
-                    await all_chat.send(`**${member}, \`вам была снята роль ${helper_role.name}. Не является хелпером на одном из серверов.\`**`);
-                }
-            }
+            });
         });
     }, 40000);
 }
@@ -467,6 +577,19 @@ user.on('message', async (message) => {
         if (message.author.id != user.user.id) return
         const embed = new Discord.RichEmbed()
         .setTitle("Arizona Role Play » Карточка пользователя")
+        .setDescription('**Связь со мной: [vk.com/artemka076](https://vk.com/artemka076)\nФорум: [kory-mcgregor.201454](http://forum.arizona-rp.com/index.php?members/kory-mcgregor.201454/)\nDiscord: [Artemka076#6715](https://discordapp.com/channels/@me/336207279412215809)**')
+        .setColor("#FF8E01")
+        .setThumbnail(user.user.avatarURL)
+        .setTimestamp()
+        .setFooter("Техническая поддержка » Arizona Role Play", "https://i.imgur.com/5qSrUJW.png")
+        message.channel.send(embed);
+        return message.delete();
+    }
+
+    if (message.content == '/all_discord_servers'){
+        if (message.author.id != user.user.id) return
+        const embed = new Discord.RichEmbed()
+        .setTitle("**Arizona Role Play » Карточка пользователя**")
         .setDescription('**Связь со мной: [vk.com/artemka076](https://vk.com/artemka076)\nФорум: [kory-mcgregor.201454](http://forum.arizona-rp.com/index.php?members/kory-mcgregor.201454/)\nDiscord: [Artemka076#6715](https://discordapp.com/channels/@me/336207279412215809)**')
         .setColor("#FF8E01")
         .setThumbnail(user.user.avatarURL)
