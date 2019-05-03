@@ -9,7 +9,7 @@ const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 const file_length = fs.readFileSync('./index.js').length;
 
-const version = '1.1.9-hide';
+const version = '1.1.10-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -130,105 +130,6 @@ const events = {
     MESSAGE_REACTION_ADD: 'messageReactionAdd',
     MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
 };
-
-spec_bot.on('raw', async event => {
-    if (!events.hasOwnProperty(event.t)) return; // Если не будет добавление или удаление смайлика, то выход
-    if (event.t == "MESSAGE_REACTION_ADD"){
-        let event_guildid = event.d.guild_id // ID discord сервера
-        let event_channelid = event.d.channel_id // ID канала
-        let event_userid = event.d.user_id // ID того кто поставил смайлик
-        let event_messageid = event.d.message_id // ID сообщение куда поставлен смайлик
-        let event_emoji_name = event.d.emoji.name // Название смайлика
-
-        if (event_userid == spec_bot.user.id) return // Если поставил смайлик бот то выход
-        if (event_guildid != '543799835652915241') return // Если сервер будет другой то выход
-
-        let server = await spec_bot.guilds.get(event_guildid); // Получить сервер из его ID
-        let channel = await server.channels.get(event_channelid); // Получить канал на сервере по списку каналов
-        let message = await channel.fetchMessage(event_messageid); // Получить сообщение из канала
-        let member = await server.members.get(event_userid); // Получить пользователя с сервера
-
-        if (event_emoji_name == "🔒"){
-            if (!member.roles.some(r => ['Модератор ☠', 'Главная Администрация', 'Зам.Гл.Администратора'].includes(r.name)) && !member.hasPermission("ADMINISTRATOR")) return
-            if (!message.member.roles.some(r => r.name == '🔒 Блокировка')){
-                let special_server = spec_bot.guilds.get('543799835652915241');
-                if (!special_server) return console.log('Сервер спец.администрации не найден!');
-                let all_chat = special_server.channels.find(c => c.name == 'основной');
-                if (!all_chat) return console.log('Чат "основной" не был найден!');
-                let role = special_server.roles.find(r => r.name == '🔒 Блокировка');
-                if (!role) return console.log('Роль Блокировка не найдена.');
-                if (global_cd.has(server.id)) return
-                global_cd.add(server.id);
-                setTimeout(() => {
-                    if (global_cd.has(server.id)) global_cd.delete(server.id);
-                }, 7000);
-
-                await doc.getRows(11, { offset: 1, limit: 5000000, orderby: 'col2' }, async (err, rows) => {
-                    let db_account = rows.find(row => row.idпользователя == message.author.id);
-                    if (!db_account){
-                        let date = new Date().valueOf();
-                        doc.addRow(11, {
-                            idпользователя: `${message.author.id}`,
-                            статусразработчика: '0',
-                            мутдо: `${+date + 1800000}`, // 3 600 000 (hour)
-                        }, async function(err){
-                            if (err) return console.error(`[DB] Ошибка добавления профиля на лист!`);
-                            await message.member.addRole(role);
-                            const embed = new Discord.RichEmbed().setDescription(`Нажмите на [выделенный текст](${message.url}) для перехода.`);
-                            all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 1 минуту.\`**`, embed);
-                        });
-                    }else{
-                        let date = new Date().valueOf();
-                        await db_account.del();
-                        doc.addRow(11, {
-                            idпользователя: `${message.author.id}`,
-                            статусразработчика: '0',
-                            мутдо: `${+date + 1800000}`, // 3 600 000 (hour)
-                        }, async function(err){
-                            if (err) return console.error(`[DB] Ошибка добавления профиля на лист!`);
-                            await message.member.addRole(role);
-                            const embed = new Discord.RichEmbed().setDescription(`Нажмите на [выделенный текст](${message.url}) для перехода.`);
-                            all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 1 минуту.\`**`, embed);
-                        });
-                    }
-                });
-            }else{
-                let special_server = spec_bot.guilds.get('543799835652915241');
-                if (!special_server) return console.log('Сервер спец.администрации не найден!');
-                let all_chat = special_server.channels.find(c => c.name == 'основной');
-                if (!all_chat) return console.log('Чат "основной" не был найден!');
-                let role = special_server.roles.find(r => r.name == '🔒 Блокировка');
-                if (!role) return console.log('Роль Блокировка не найдена.');
-                if (global_cd.has(server.id)) return
-                global_cd.add(server.id);
-                setTimeout(() => {
-                    if (global_cd.has(server.id)) global_cd.delete(server.id);
-                }, 7000);
-
-                await doc.getRows(11, { offset: 1, limit: 5000000, orderby: 'col2' }, async (err, rows) => {
-                    let db_account = rows.find(row => row.idпользователя == message.author.id);
-                    if (!db_account){
-                        let date = new Date().valueOf();
-                        doc.addRow(11, {
-                            idпользователя: `${message.author.id}`,
-                            статусразработчика: '0',
-                            мутдо: `${+date + 1800000}`, // 3 600 000 (hour)
-                        }, async function(err){
-                            if (err) return console.error(`[DB] Ошибка добавления профиля на лист!`);
-                            const embed = new Discord.RichEmbed().setDescription(`Нажмите на [выделенный текст](${message.url}) для перехода.`);
-                            all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 1 минуту.\`**`, embed);
-                        });
-                    }else{
-                        db_account.мутдо = +db_account.мутдо + 1800000;
-                        await db_account.save();
-                        const embed = new Discord.RichEmbed().setDescription(`Нажмите на [выделенный текст](${message.url}) для перехода.`);
-                        all_chat.send(`${message.member}, **\`модератор\` ${member} \`продлил вам блокировку чата на 1 минуту.\`**`, embed);
-                    }
-                });
-            }
-        }
-    }
-});
 
 async function special_discord_update(){
     setInterval(async () => {
@@ -1524,3 +1425,124 @@ bot.on('guildMemberAdd', async (member) => {
 });
 
 bot.on('message', async (message) => {if (message.type === "PINS_ADD") if (message.channel.name == "spectator-chat") message.delete();});
+
+spec_bot.on('raw', async event => {
+    if (!events.hasOwnProperty(event.t)) return; // Если не будет добавление или удаление смайлика, то выход
+    if (event.t == "MESSAGE_REACTION_ADD"){
+        let event_guildid = event.d.guild_id // ID discord сервера
+        let event_channelid = event.d.channel_id // ID канала
+        let event_userid = event.d.user_id // ID того кто поставил смайлик
+        let event_messageid = event.d.message_id // ID сообщение куда поставлен смайлик
+        let event_emoji_name = event.d.emoji.name // Название смайлика
+
+        if (event_userid == spec_bot.user.id) return // Если поставил смайлик бот то выход
+        if (event_guildid != '543799835652915241') return // Если сервер будет другой то выход
+
+        let server = await spec_bot.guilds.get(event_guildid); // Получить сервер из его ID
+        let channel = await server.channels.get(event_channelid); // Получить канал на сервере по списку каналов
+        let message = await channel.fetchMessage(event_messageid); // Получить сообщение из канала
+        let member = await server.members.get(event_userid); // Получить пользователя с сервера
+
+        if (event_emoji_name == "🔒"){
+            if (!member.roles.some(r => ['Модератор ☠', 'Главная Администрация', 'Зам.Гл.Администратора'].includes(r.name)) && !member.hasPermission("ADMINISTRATOR")) return
+            if (!message.member.roles.some(r => r.name == '🔒 Блокировка')){
+                let special_server = spec_bot.guilds.get('543799835652915241');
+                if (!special_server) return console.log('Сервер спец.администрации не найден!');
+                let all_chat = special_server.channels.find(c => c.name == 'основной');
+                if (!all_chat) return console.log('Чат "основной" не был найден!');
+                let role = special_server.roles.find(r => r.name == '🔒 Блокировка');
+                if (!role) return console.log('Роль Блокировка не найдена.');
+                if (global_cd.has(server.id)) return
+                global_cd.add(server.id);
+                setTimeout(() => {
+                    if (global_cd.has(server.id)) global_cd.delete(server.id);
+                }, 7000);
+
+                await doc.getRows(11, { offset: 1, limit: 5000000, orderby: 'col2' }, async (err, rows) => {
+                    let db_account = rows.find(row => row.idпользователя == message.author.id);
+                    if (!db_account){
+                        let date = new Date().valueOf();
+                        doc.addRow(11, {
+                            idпользователя: `${message.author.id}`,
+                            статусразработчика: '0',
+                            мутдо: `${+date + 1800000}`, // 3 600 000 (hour)
+                        }, async function(err){
+                            if (err) return console.error(`[DB] Ошибка добавления профиля на лист!`);
+                            await message.member.addRole(role);
+                            const embed = new Discord.RichEmbed().setDescription(`**Нажмите на [выделенный текст](${message.url}) для перехода.**`);
+                            all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 30 минут.\`**`, embed);
+                        });
+                    }else{
+                        let date = new Date().valueOf();
+                        await db_account.del();
+                        doc.addRow(11, {
+                            idпользователя: `${message.author.id}`,
+                            статусразработчика: '0',
+                            мутдо: `${+date + 1800000}`, // 3 600 000 (hour)
+                        }, async function(err){
+                            if (err) return console.error(`[DB] Ошибка добавления профиля на лист!`);
+                            await message.member.addRole(role);
+                            const embed = new Discord.RichEmbed().setDescription(`**Нажмите на [выделенный текст](${message.url}) для перехода.**`);
+                            all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 30 минут.\`**`, embed);
+                        });
+                    }
+                });
+            }else{
+                let special_server = spec_bot.guilds.get('543799835652915241');
+                if (!special_server) return console.log('Сервер спец.администрации не найден!');
+                let all_chat = special_server.channels.find(c => c.name == 'основной');
+                if (!all_chat) return console.log('Чат "основной" не был найден!');
+                let role = special_server.roles.find(r => r.name == '🔒 Блокировка');
+                if (!role) return console.log('Роль Блокировка не найдена.');
+                if (global_cd.has(server.id)) return
+                global_cd.add(server.id);
+                setTimeout(() => {
+                    if (global_cd.has(server.id)) global_cd.delete(server.id);
+                }, 7000);
+
+                await doc.getRows(11, { offset: 1, limit: 5000000, orderby: 'col2' }, async (err, rows) => {
+                    let db_account = rows.find(row => row.idпользователя == message.author.id);
+                    if (!db_account){
+                        let date = new Date().valueOf();
+                        doc.addRow(11, {
+                            idпользователя: `${message.author.id}`,
+                            статусразработчика: '0',
+                            мутдо: `${+date + 1800000}`, // 3 600 000 (hour)
+                        }, async function(err){
+                            if (err) return console.error(`[DB] Ошибка добавления профиля на лист!`);
+                            const embed = new Discord.RichEmbed().setDescription(`**Нажмите на [выделенный текст](${message.url}) для перехода.**`);
+                            all_chat.send(`${message.member}, **\`модератор\` ${member} \`выдал вам блокировку чата на 30 минут.\`**`, embed);
+                        });
+                    }else{
+                        db_account.мутдо = +db_account.мутдо + 1800000;
+                        await db_account.save();
+                        const embed = new Discord.RichEmbed().setDescription(`**Нажмите на [выделенный текст](${message.url}) для перехода.**`);
+                        all_chat.send(`${message.member}, **\`модератор\` ${member} \`продлил вам блокировку чата на 30 минут.\`**`, embed);
+                    }
+                });
+            }
+        }else if (event_emoji_name == '🔑'){
+            if (!member.roles.some(r => ['Модератор ☠', 'Главная Администрация', 'Зам.Гл.Администратора'].includes(r.name)) && !member.hasPermission("ADMINISTRATOR")) return
+            if (message.member.roles.some(r => r.name == '🔒 Блокировка')){
+                let special_server = spec_bot.guilds.get('543799835652915241');
+                if (!special_server) return console.log('Сервер спец.администрации не найден!');
+                let all_chat = special_server.channels.find(c => c.name == 'основной');
+                if (!all_chat) return console.log('Чат "основной" не был найден!');
+                let role = special_server.roles.find(r => r.name == '🔒 Блокировка');
+                if (!role) return console.log('Роль Блокировка не найдена.');
+                if (global_cd.has(server.id)) return
+                global_cd.add(server.id);
+                setTimeout(() => {
+                    if (global_cd.has(server.id)) global_cd.delete(server.id);
+                }, 7000);
+
+                await doc.getRows(11, { offset: 1, limit: 5000000, orderby: 'col2' }, async (err, rows) => {
+                    let db_account = rows.find(row => row.idпользователя == message.author.id);
+                    if (db_account) db_account.del();
+                    await member.removeRole(role);
+                    all_chat.send(`${member}, **\`блокировка чата была снята модератором:\` ${member}**`);
+                });
+            }
+        }
+    }
+});
