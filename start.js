@@ -19,7 +19,6 @@ bot.on('message', async (message) => {
     if (message.guild.id != '355656045600964609') return
   
     if (message.content == '/dspanel'){
-      if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
       const password = md5(generator.generate({ length: 10, numbers: true, symbols: true }));
       access_tokens.push(`${password}<=+=>${message.author.id}<=+=>${message.guild.id}<=+=>${message.channel.id}`);
       const embed = new Discord.RichEmbed();

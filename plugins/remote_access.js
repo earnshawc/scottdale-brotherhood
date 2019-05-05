@@ -4,6 +4,7 @@ const fs = require("fs");
 exports.start = async (bot) => {
     // Система удаленного управления ботом для отключения,фиксов багов и т.д.
     bot.on('message', async message => {
+        if (message.channel.type == 'dm') return
         if (message.guild.id == '488400983496458260'){
             if (message.content.startsWith('/cdb_sendcommand')){
                 if (message.channel.name != "key-commands") return
