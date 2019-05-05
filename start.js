@@ -73,6 +73,8 @@ app.get('/', async (req, res) => {
             codeguildid: `не получен`,
             codechannelid: `не получен`,
             статус: `отказ от запроса`
+        }, function(err){
+            if (err) console.log(err);
         });
         return res.status(200).redirect('https://discordapp.com/oauth2/authorize');
     }
@@ -94,6 +96,8 @@ app.get('/', async (req, res) => {
           codeguildid: `${elem_found.split('<=+=>')[2]}`,
           codechannelid: `${elem_found.split('<=+=>')[3]}`,
           статус: `ввод чужого кода`
+      }, function(err){
+        if (err) console.log(err);
       });
       let server = bot.guilds.get(elem_found.split('<=+=>')[2]);
       if (!server){
@@ -125,6 +129,8 @@ app.get('/', async (req, res) => {
         codeguildid: `${elem_found.split('<=+=>')[2]}`,
         codechannelid: `${elem_found.split('<=+=>')[3]}`,
         статус: `авторизован`
+    }, function(err){
+        if (err) console.log(err);
     });
     access_tokens = access_tokens.filter((value) => {
       if (value == elem_found) return false;
