@@ -38,8 +38,8 @@ bot.on('message', async (message) => {
     }
 });
 
-app.listen(50451, () => {
-    console.log('Проверяю авторизации по порту 50451');
+app.listen(process.env.PORT, () => {
+    console.log(`Проверяю авторизации по порту ${process.env.PORT}`);
 });
 
 app.get('/', async (req, res) => {
