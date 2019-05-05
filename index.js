@@ -9,7 +9,7 @@ const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 const file_length = fs.readFileSync('./index.js').length;
 
-const version = '3.0.1-hide';
+const version = '3.0.2-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
