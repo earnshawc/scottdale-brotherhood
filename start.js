@@ -20,6 +20,7 @@ const md5 = require('./my_modules/md5');
 
 let access_tokens = [];
 let dspanel = new Set();
+let non_request_ip = new Set();
 
 const bot = new Discord.Client();
 bot.login(process.env.token);
@@ -61,98 +62,130 @@ app.listen(process.env.PORT, () => {
 
 app.get('/', async (req, res) => {
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    if (!access_tokens.some(value => value.split('<=+=>')[0] == req.query.state)){
-        await doc.addRow(12, {
-            server: `Scottdale`,
-            ip: `${ip}`,
-            пользователь: `не известен`,
-            email: `не известен`,
-            действие: `отправка кода`,
-            code: `невалидный`,
-            codeuserid: `не получен`,
-            codeguildid: `не получен`,
-            codechannelid: `не получен`,
-            статус: `отказ от запроса`
-        }, function(err){
-            if (err) console.log(err);
+    if (!req.query){
+        if (non_request_ip.has(ip)){
+            return res.status(200).redirect('https://discordapp.com/oauth2/authorize');
+        }
+        non_request_ip.add(ip);
+        setTimeout(() => {
+            if (non_request_ip.has(ip)) non_request_ip.delete(ip);
+        }, 60000);
+        res.status(200).redirect('https://discordapp.com/oauth2/authorize');
+        add_log('Scottdale', ip, 'не определен', 'не определен', 'отправка запроса', 'не отправлен', 'не определен', 'не определен', 'не определен', 'отказ от запроса').catch(() => {
+            setTimeout(() => {
+                add_log('Scottdale', ip, 'не определен', 'не определен', 'отправка запроса', 'не отправлен', 'не определен', 'не определен', 'не определен', 'отказ от запроса');
+            }, 5000);
         });
-        return res.status(200).redirect('https://discordapp.com/oauth2/authorize');
+        return
+    }else if (!req.query.state || !req.query.code){
+        if (non_request_ip.has(ip)){
+            return res.status(200).redirect('https://discordapp.com/oauth2/authorize');
+        }
+        non_request_ip.add(ip);
+        setTimeout(() => {
+            if (non_request_ip.has(ip)) non_request_ip.delete(ip);
+        }, 60000);
+        res.status(200).redirect('https://discordapp.com/oauth2/authorize');
+        add_log('Scottdale', ip, 'не определен', 'не определен', 'отправка запроса', 'не отправлен', 'не определен', 'не определен', 'не определен', 'отказ от запроса').catch(() => {
+            setTimeout(() => {
+                add_log('Scottdale', ip, 'не определен', 'не определен', 'отправка запроса', 'не отправлен', 'не определен', 'не определен', 'не определен', 'отказ от запроса');
+            }, 5000);
+        });
+        return
     }
+
+    if (!access_tokens.some(value => value.split('<=+=>')[0] == req.query.state)){
+        if (non_request_ip.has(ip)){
+            return res.status(200).redirect('https://discordapp.com/oauth2/authorize');
+        }
+        non_request_ip.add(ip);
+        setTimeout(() => {
+            if (non_request_ip.has(ip)) non_request_ip.delete(ip);
+        }, 60000);
+        res.status(200).redirect('https://discordapp.com/oauth2/authorize');
+        add_log('Scottdale', ip, 'не определен', 'не определен', 'отправка запроса', 'не отправлен', 'не определен', 'не определен', 'не определен', 'отказ от запроса').catch(() => {
+            setTimeout(() => {
+                add_log('Scottdale', ip, 'не определен', 'не определен', 'отправка запроса', 'не отправлен', 'не определен', 'не определен', 'не определен', 'отказ от запроса');
+            }, 5000);
+        });
+        return
+    }
+
     const creds = btoa(`488717818829996034:${process.env.app_token}`);
     const response = await fetch(`https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${process.env.redirect_url}`, { method: 'POST', headers: { Authorization: `Basic ${creds}` } });
     const json = await response.json();
     const fetchDiscordUserInfo = await fetch('http://discordapp.com/api/users/@me', { headers: { Authorization: `Bearer ${json.access_token}` } });
     const userInfo = await fetchDiscordUserInfo.json();
     const elem_found = access_tokens.find(value => value.split('<=+=>')[0] == req.query.state);
-    if (elem_found.split('<=+=>')[1] != userInfo.id){
-      await doc.addRow(12, {
-          server: `Scottdale`,
-          ip: `${ip}`,
-          пользователь: `${userInfo.id}`,
-          email: `${userInfo.email}`,
-          действие: `отправка кода`,
-          code: `${elem_found.split('<=+=>')[0]}`,
-          codeuserid: `${elem_found.split('<=+=>')[1]}`,
-          codeguildid: `${elem_found.split('<=+=>')[2]}`,
-          codechannelid: `${elem_found.split('<=+=>')[3]}`,
-          статус: `ввод чужого кода`
-      }, function(err){
-        if (err) console.log(err);
-      });
-      let server = bot.guilds.get(elem_found.split('<=+=>')[2]);
-      if (!server){
-        console.log(`${userInfo.username} [${userInfo.id}] попытался авторизоваться под другого.`);
-        return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
-      }
-      let channel = server.channels.get(elem_found.split('<=+=>')[3]);
-      if (!channel){
-        console.log(`${userInfo.username} [${userInfo.id}] попытался авторизоваться под другого.`);
-        return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
-      }
-      let member = server.members.get(elem_found.split('<=+=>')[1]);
-      if (!member){
-        console.log(`${userInfo.username} [${userInfo.id}] попытался авторизоваться под другого.`);
-        return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
-      }
-      channel.send(`<@${userInfo.id}>, **\`вы не можете авторизоваться под чужим кодом!\`**`).then(msg => msg.delete(30000));
-      console.log(`${userInfo.username} [${userInfo.id}] попытался авторизоваться под другого.`);
-      return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
+
+    if (!userInfo || !userInfo.id){
+        if (non_request_ip.has(ip)){
+            return res.status(200).redirect('https://discordapp.com/oauth2/authorize');
+        }
+        non_request_ip.add(ip);
+        setTimeout(() => {
+            if (non_request_ip.has(ip)) non_request_ip.delete(ip);
+        }, 60000);
+        res.status(200).redirect('https://discordapp.com/oauth2/authorize');
+        add_log('Scottdale', ip, 'не определен', 'не определен', 'отправка запроса', 'не отправлен', 'не определен', 'не определен', 'не определен', 'отказ от запроса').catch(() => {
+            setTimeout(() => {
+                add_log('Scottdale', ip, 'не определен', 'не определен', 'отправка запроса', 'не отправлен', 'не определен', 'не определен', 'не определен', 'отказ от запроса');
+            }, 5000);
+        });
+        return
     }
-    await doc.addRow(12, {
-        server: `Scottdale`,
-        ip: `${ip}`,
-        пользователь: `${userInfo.id}`,
-        email: `${userInfo.email}`,
-        действие: `отправка кода`,
-        code: `${elem_found.split('<=+=>')[0]}`,
-        codeuserid: `${elem_found.split('<=+=>')[1]}`,
-        codeguildid: `${elem_found.split('<=+=>')[2]}`,
-        codechannelid: `${elem_found.split('<=+=>')[3]}`,
-        статус: `авторизован`
-    }, function(err){
-        if (err) console.log(err);
+
+    if (elem_found.split('<=+=>')[1] != userInfo.id){
+        add_log('Scottdale', ip, userInfo.id, userInfo.email, 'отправка кода', elem_found.split('<=+=>')[0], elem_found.split('<=+=>')[1], elem_found.split('<=+=>')[2], elem_found.split('<=+=>')[3], 'ввод чужого кода').catch(() => {
+            setTimeout(() => {
+                add_log('Scottdale', ip, userInfo.id, userInfo.email, 'отправка кода', elem_found.split('<=+=>')[0], elem_found.split('<=+=>')[1], elem_found.split('<=+=>')[2], elem_found.split('<=+=>')[3], 'ввод чужого кода');
+            }, 5000);
+        });
+        let server = await bot.guilds.get(elem_found.split('<=+=>')[2]);
+        if (!server){
+            console.log(`${userInfo.username} [${userInfo.id}] попытался авторизоваться под другого.`);
+            return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
+        }
+        let channel = await server.channels.get(elem_found.split('<=+=>')[3]);
+        if (!channel){
+            console.log(`${userInfo.username} [${userInfo.id}] попытался авторизоваться под другого.`);
+            return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
+        }
+        let member = await server.members.get(elem_found.split('<=+=>')[1]);
+        if (!member){
+            console.log(`${userInfo.username} [${userInfo.id}] попытался авторизоваться под другого.`);
+            return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
+        }
+        channel.send(`<@${userInfo.id}>, **\`вы не можете авторизоваться под чужим кодом!\`**`).then(msg => msg.delete(30000));
+        console.log(`${userInfo.username} [${userInfo.id}] попытался авторизоваться под другого.`);
+        return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
+    }
+
+    add_log('Scottdale', ip, userInfo.id, userInfo.email, 'отправка кода', elem_found.split('<=+=>')[0], elem_found.split('<=+=>')[1], elem_found.split('<=+=>')[2], elem_found.split('<=+=>')[3], 'авторизован').catch(() => {
+        setTimeout(() => {
+            add_log('Scottdale', ip, userInfo.id, userInfo.email, 'отправка кода', elem_found.split('<=+=>')[0], elem_found.split('<=+=>')[1], elem_found.split('<=+=>')[2], elem_found.split('<=+=>')[3], 'авторизован');
+        }, 5000);
     });
     access_tokens = access_tokens.filter((value) => {
-      if (value == elem_found) return false;
+        if (value == elem_found) return false;
     });
-    if (!dspanel.has(userInfo.id)) dspanel.add(userInfo.id);
-    let server = bot.guilds.get(elem_found.split('<=+=>')[2]);
+    let server = await bot.guilds.get(elem_found.split('<=+=>')[2]);
     if (!server){
       console.log(`${userInfo.username} [${userInfo.id}] авторизовался в панели.`);
       return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
     }
-    let member = server.members.get(userInfo.id);
+    let member = await server.members.get(userInfo.id);
     if (!member){
         console.log(`${userInfo.username} [${userInfo.id}] авторизовался в панели.`);
         return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
     }
-    let role = server.roles.find(r => r.name == 'Проверенный 🔐');
+    let role = await server.roles.find(r => r.name == 'Проверенный 🔐');
     if (!role){
         console.log(`${userInfo.username} [${userInfo.id}] авторизовался в панели.`);
         return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
     }
     await member.addRole(role);
-    let channel = server.channels.get(elem_found.split('<=+=>')[3]);
+    let channel = await server.channels.get(elem_found.split('<=+=>')[3]);
     if (!channel){
       console.log(`${userInfo.username} [${userInfo.id}] авторизовался в панели.`);
       return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
@@ -161,3 +194,26 @@ app.get('/', async (req, res) => {
     channel.send(`<@${userInfo.id}>, **\`вы авторизовались и получили роль Проверенный!\`**`).then(msg => msg.delete(15000));
     return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
 });
+
+async function add_log(server, ip, user, email, action, code, code_user_id, code_guild_id, code_channel_id, status){
+    return new Promise(async function(resolve, reject) {
+        doc.addRow(12, {
+            server: `${server}`,
+            ip: `${ip}`,
+            пользователь: `${user}`,
+            email: `${email}`,
+            действие: `${action}`,
+            code: `${code}`,
+            codeuserid: `${code_user_id}`,
+            codeguildid: `${code_guild_id}`,
+            codechannelid: `${code_channel_id}`,
+            статус: `${status}`
+        }, async function(err){
+            if (err){
+                console.error(`[DB] Ошибка добавления профиля на лист!`);
+                return reject(new Error(`При использовании 'addRow' произошла ошибка.`));
+            }
+            resolve(true);
+        });
+    });
+}
