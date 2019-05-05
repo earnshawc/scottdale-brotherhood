@@ -28,13 +28,21 @@ bot.on('message', async (message) => {
     if (message.channel.type == 'dm') return
     if (message.guild.id != '355656045600964609') return
   
-    if (message.content == '/dspanel'){
+    if (message.content == '/authme'){
+      if (message.member.roles.some(r => r.name == 'Проверенный 🔐')){
+        message.reply(`**\`вы уже авторизовывались ранее.\`**`);
+        return message.delete();
+      }
+      if (access_tokens.some(value => value.split('<=+=>')[1] == message.author.id)){
+        message.reply(`**\`запрашивать код авторизации можно раз в 3 минуты.\`**`);
+        return message.delete();
+      }
       const password = md5(generator.generate({ length: 10, numbers: true, symbols: true }));
       access_tokens.push(`${password}<=+=>${message.author.id}<=+=>${message.guild.id}<=+=>${message.channel.id}`);
       const embed = new Discord.RichEmbed();
       embed.setDescription(`**${message.member}, для авторизации нажмите на [выделенный текст](https://discordapp.com/oauth2/authorize?response_type=code&client_id=488717818829996034&redirect_uri=${process.env.redirect_url}&scope=identify+guilds+email&state=${password}).**`);
       message.member.send(embed).catch(err => {
-        message.reply(`**\`ошибка при отпрвке в личные сообщения! [${err.name} - ${err.message}]\`**`, embed);
+        message.reply(`**\`ошибка при отправке в личные сообщения, оставлю код тут!\`**`, embed);
       });
       setTimeout(() => {
         if (access_tokens.some(value => value == `${password}<=+=>${message.author.id}<=+=>${message.guild.id}<=+=>${message.channel.id}`)){
@@ -58,6 +66,7 @@ app.get('/', async (req, res) => {
             server: `Scottdale`,
             ip: `${ip}`,
             пользователь: `не известен`,
+            email: `не известен`,
             действие: `отправка кода`,
             code: `невалидный`,
             codeuserid: `не получен`,
@@ -78,6 +87,7 @@ app.get('/', async (req, res) => {
           server: `Scottdale`,
           ip: `${ip}`,
           пользователь: `${userInfo.id}`,
+          email: `${userInfo.mail}`,
           действие: `отправка кода`,
           code: `${elem_found.split('<=+=>')[0]}`,
           codeuserid: `${elem_found.split('<=+=>')[1]}`,
@@ -108,6 +118,7 @@ app.get('/', async (req, res) => {
         server: `Scottdale`,
         ip: `${ip}`,
         пользователь: `${userInfo.id}`,
+        email: `${userInfo.mail}`,
         действие: `отправка кода`,
         code: `${elem_found.split('<=+=>')[0]}`,
         codeuserid: `${elem_found.split('<=+=>')[1]}`,
@@ -124,12 +135,23 @@ app.get('/', async (req, res) => {
       console.log(`${userInfo.username} [${userInfo.id}] авторизовался в панели.`);
       return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
     }
+    let member = server.members.get(userInfo.id);
+    if (!member){
+        console.log(`${userInfo.username} [${userInfo.id}] авторизовался в панели.`);
+        return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
+    }
+    let role = server.roles.find(r => r.name == 'Проверенный 🔐');
+    if (!role){
+        console.log(`${userInfo.username} [${userInfo.id}] авторизовался в панели.`);
+        return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
+    }
+    await member.addRole(role);
     let channel = server.channels.get(elem_found.split('<=+=>')[3]);
     if (!channel){
       console.log(`${userInfo.username} [${userInfo.id}] авторизовался в панели.`);
       return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
     }
     console.log(`${userInfo.username} [${userInfo.id}] авторизовался в панели.`);
-    channel.send(`<@${userInfo.id}>, **\`успешно авторизован!\`**`).then(msg => msg.delete(15000));
+    channel.send(`<@${userInfo.id}>, **\`вы авторизовались и получили роль Проверенный!\`**`).then(msg => msg.delete(15000));
     return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
 });
