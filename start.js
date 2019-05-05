@@ -62,7 +62,7 @@ app.listen(process.env.PORT, () => {
 app.get('/', async (req, res) => {
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     if (!access_tokens.some(value => value.split('<=+=>')[0] == req.query.state)){
-        doc.addRow(12, {
+        await doc.addRow(12, {
             server: `Scottdale`,
             ip: `${ip}`,
             пользователь: `не известен`,
@@ -83,7 +83,7 @@ app.get('/', async (req, res) => {
     const userInfo = await fetchDiscordUserInfo.json();
     const elem_found = access_tokens.find(value => value.split('<=+=>')[0] == req.query.state);
     if (elem_found.split('<=+=>')[1] != userInfo.id){
-      doc.addRow(12, {
+      await doc.addRow(12, {
           server: `Scottdale`,
           ip: `${ip}`,
           пользователь: `${userInfo.id}`,
@@ -114,7 +114,7 @@ app.get('/', async (req, res) => {
       console.log(`${userInfo.username} [${userInfo.id}] попытался авторизоваться под другого.`);
       return res.status(200).redirect('https://discordapp.com/oauth2/authorized');
     }
-    doc.addRow(12, {
+    await doc.addRow(12, {
         server: `Scottdale`,
         ip: `${ip}`,
         пользователь: `${userInfo.id}`,
