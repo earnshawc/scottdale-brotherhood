@@ -1,23 +1,15 @@
 const Discord = require('discord.js');
-const express = require('./oauth2/express');
-const btoa = require('./oauth2/btoa');
-const fetch = require('./oauth2/node-fetch');
-const generator = require('./oauth2/generate-password');
 const bot = new Discord.Client();
 const tbot = new Discord.Client();
 const user = new Discord.Client();
 const spec_bot = new Discord.Client();
 const bbc_user = new Discord.Client();
-const app = express();
 const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 const file_length = fs.readFileSync('./index.js').length;
 
-let access_tokens = [];
-let dspanel = new Set();
-
-const version = '3.0.0';
+const version = '3.0.1-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
