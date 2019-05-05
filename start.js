@@ -1,1 +1,3 @@
-console.log('hello world!');
+setInterval(() => {
+    console.log('Странно, но это работает.')
+}, 60000);
