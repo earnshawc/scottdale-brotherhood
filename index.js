@@ -19,7 +19,7 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
-const version = '4.0.4-hide';
+const version = '4.0.5-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -1597,7 +1597,7 @@ bot.on('message', async (message) => {
             if (auth_request.has(message.author.id)) auth_request.delete(message.author.id);           
         }, 120000);
         console.log('sql')
-        await connection.query(`SELECT \`state\`, \`userid\`, \`serverid\`, \`channelid\` FROM \`scottdale_auth\` WHERE \`userid\` = '${message.author.id}'`), async function(error, result, fields){
+        await connection.query(`SELECT \`state\`, \`userid\`, \`serverid\`, \`channelid\` FROM \`scottdale_auth\` WHERE \`userid\` = '${message.author.id}'`, async function(error, result, fields){
             console.log('sql done')
             if (error) return message.delete();
             console.log(result);
@@ -1623,6 +1623,6 @@ bot.on('message', async (message) => {
                 message.reply(`\`ошибка mysql запроса, код 994\``);
                 return message.delete();
             }
-        }
+        });
     }
 });
