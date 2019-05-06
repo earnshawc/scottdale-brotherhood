@@ -68,8 +68,8 @@ module.exports = Transform;
 var Duplex = require('./_stream_duplex');
 
 /*<replacement>*/
-var util = require('core-util-is');
-util.inherits = require('inherits');
+var util = require('../../core-util-is');
+util.inherits = require('../../inherits');
 /*</replacement>*/
 
 util.inherits(Transform, Duplex);

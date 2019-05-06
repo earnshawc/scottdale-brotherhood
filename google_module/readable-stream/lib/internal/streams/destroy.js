@@ -2,7 +2,7 @@
 
 /*<replacement>*/
 
-var pna = require('process-nextick-args');
+var pna = require('../../../../process-nextick-args');
 /*</replacement>*/
 
 // undocumented cb() API, needed for core, not for public API

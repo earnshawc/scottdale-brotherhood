@@ -2,7 +2,7 @@
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Buffer = require('safe-buffer').Buffer;
+var Buffer = require('../../../../safe-buffer').Buffer;
 var util = require('util');
 
 function copyBuffer(src, target, offset) {

@@ -23,13 +23,13 @@
 
 /*<replacement>*/
 
-var pna = require('process-nextick-args');
+var pna = require('../../process-nextick-args');
 /*</replacement>*/
 
 module.exports = Readable;
 
 /*<replacement>*/
-var isArray = require('isarray');
+var isArray = require('../../isarray');
 /*</replacement>*/
 
 /*<replacement>*/
@@ -52,7 +52,7 @@ var Stream = require('./internal/streams/stream');
 
 /*<replacement>*/
 
-var Buffer = require('safe-buffer').Buffer;
+var Buffer = require('../../safe-buffer').Buffer;
 var OurUint8Array = global.Uint8Array || function () {};
 function _uint8ArrayToBuffer(chunk) {
   return Buffer.from(chunk);
@@ -64,8 +64,8 @@ function _isUint8Array(obj) {
 /*</replacement>*/
 
 /*<replacement>*/
-var util = require('core-util-is');
-util.inherits = require('inherits');
+var util = require('../../core-util-is');
+util.inherits = require('../../inherits');
 /*</replacement>*/
 
 /*<replacement>*/

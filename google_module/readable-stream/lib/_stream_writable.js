@@ -27,7 +27,7 @@
 
 /*<replacement>*/
 
-var pna = require('process-nextick-args');
+var pna = require('../../process-nextick-args');
 /*</replacement>*/
 
 module.exports = Writable;
@@ -64,13 +64,13 @@ var Duplex;
 Writable.WritableState = WritableState;
 
 /*<replacement>*/
-var util = require('core-util-is');
-util.inherits = require('inherits');
+var util = require('../../core-util-is');
+util.inherits = require('../../inherits');
 /*</replacement>*/
 
 /*<replacement>*/
 var internalUtil = {
-  deprecate: require('util-deprecate')
+  deprecate: require('../../util-deprecate')
 };
 /*</replacement>*/
 
@@ -80,7 +80,7 @@ var Stream = require('./internal/streams/stream');
 
 /*<replacement>*/
 
-var Buffer = require('safe-buffer').Buffer;
+var Buffer = require('../../safe-buffer').Buffer;
 var OurUint8Array = global.Uint8Array || function () {};
 function _uint8ArrayToBuffer(chunk) {
   return Buffer.from(chunk);

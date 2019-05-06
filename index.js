@@ -10,12 +10,21 @@ const download = require('./my_modules/download-to-file'); // download('url, './
 const file_length = fs.readFileSync('./index.js').length;
 const mysql = require('mysql');
 
-const version = '3.0.3-hide';
+const connection = mysql.createConnection({
+    host     : process.env.mysql_host,
+    user     : process.env.mysql_user,
+    password : process.env.mysql_password,
+    database : process.env.mysql_database,
+});
+
+connection.connect();
+
+const version = '4.0.0';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
 
-const update_information = "Авторизация через /dspanel теперь по ссылке. В будущем нужно будет. Пока что тест версия."
+const update_information = "Добавление базы MySQL"
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
 const doc = new GoogleSpreadsheet(process.env.skey);
@@ -1542,6 +1551,73 @@ spec_bot.on('raw', async event => {
                     await member.removeRole(role);
                     all_chat.send(`${member}, **\`блокировка чата была снята модератором:\` ${member}**`);
                 });
+            }
+        }
+    }
+});
+
+bot.on('message', async (message) => {
+    if (message.channel.type == 'dm') return
+    if (message.guild.id != '355656045600964609' && message.guild.id != '488400983496458260') return
+
+    if (message.channel.name == 'database'){
+        if (message.author.bot){
+            let server = message.content.split('<=+=>')[0];
+            let serverid = message.content.split('<=+=>')[1];
+            let userid = message.content.split('<=+=>')[2];
+            let channelid = message.content.split('<=+=>')[3];
+            if (server == 'scottdale'){
+                let serv = await bot.guilds.get(serverid);
+                if (!serv) return message.react('❌');
+                let member = await serv.members.get(userid);
+                if (!member) return message.react('❌');
+                let channel = await serv.channels.get(channelid);
+                if (!channel) return message.react('❌');
+                let role = await serv.roles.find(r => r.name == 'Проверенный 🔐');
+                if (!role) return message.react('❌');
+                await member.addRole(role);
+                await channel.send(`${member}, \`вам была выдана роль ${role.name}!\``);
+                return message.react('✔');
+            }
+        }
+    }
+
+    if (message.content == '/authme'){
+        if (message.member.roles.some(r => r.name == 'Проверенный 🔐')){
+            message.reply(`**\`у вас уже есть роль!\`**`);
+            return message.delete();
+        }
+        if (auth_request.has(message.author.id)){
+            message.reply(`**\`вы уже отправляли запрос на авторизацию, ожидайте 2 минуты с прошлого запроса\`**`);
+            return message.delete();
+        }
+        auth_request.add(message.author.id)
+        setTimeout(() => {
+            if (auth_request.has(message.author.id)) auth_request.delete(message.author.id);           
+        }, 120000);
+        connection.query(`SELECT * WHERE \`userid\` = '${message.author.id}'`), async function(error, result, fields){
+            if (error) return message.delete();
+            if (result.length == 0){
+                const password = md5(generator.generate({ length: 10, numbers: true, symbols: true }));
+                connection.query(`INSERT INTO \`auth\` (\`state\`, \`userid\`, \`serverid\`, \`channelid\`) VALUES ('${password}', '${message.author.id}', '${message.guild.id}', '${message.channel.id}')`, function(error, result, fields){
+                    if (error) console.log(error);
+                });
+                const embed = new Discord.RichEmbed();
+                embed.setDescription(`**${message.member}, для авторизации нажмите на [выделенный текст](https://discordapp.com/oauth2/authorize?response_type=code&client_id=488717818829996034&redirect_url=${process.env.redirect_url}&scope=identify+guilds+email&state=${password}).**`);
+                message.member.send(embed).catch(err => {
+                    message.reply(`**\`ошибка при отправке в личные сообщения, оставлю код тут!\`**`, embed);
+                });
+                return message.delete();
+            }else if (result.length == 1){
+                const embed = new Discord.RichEmbed();
+                embed.setDescription(`**${message.member}, для авторизации нажмите на [выделенный текст](https://discordapp.com/oauth2/authorize?response_type=code&client_id=488717818829996034&redirect_url=${process.env.redirect_url}&scope=identify+guilds+email&state=${result[0].state}).**`);
+                message.member.send(embed).catch(err => {
+                    message.reply(`**\`ошибка при отправке в личные сообщения, оставлю код тут!\`**`, embed);
+                });
+                return message.delete();
+            }else{
+                message.reply(`\`ошибка mysql запроса, код 994\``);
+                return message.delete();
             }
         }
     }

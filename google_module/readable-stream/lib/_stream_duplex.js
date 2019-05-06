@@ -28,7 +28,7 @@
 
 /*<replacement>*/
 
-var pna = require('process-nextick-args');
+var pna = require('../../process-nextick-args');
 /*</replacement>*/
 
 /*<replacement>*/
@@ -43,8 +43,8 @@ var objectKeys = Object.keys || function (obj) {
 module.exports = Duplex;
 
 /*<replacement>*/
-var util = require('core-util-is');
-util.inherits = require('inherits');
+var util = require('../../core-util-is');
+util.inherits = require('../../inherits');
 /*</replacement>*/
 
 var Readable = require('./_stream_readable');
