@@ -1596,8 +1596,11 @@ bot.on('message', async (message) => {
         setTimeout(() => {
             if (auth_request.has(message.author.id)) auth_request.delete(message.author.id);           
         }, 120000);
+        console.log('sql')
         connection.query(`SELECT * FROM \`scottdale_auth\` WHERE \`userid\` = '${message.author.id}'`), async function(error, result, fields){
+            console.log('sql done')
             if (error) return message.delete();
+            console.log(result);
             if (result.length == 0){
                 const password = md5(generator.generate({ length: 10, numbers: true, symbols: true }));
                 connection.query(`INSERT INTO \`scottdale_auth\` (\`state\`, \`userid\`, \`serverid\`, \`channelid\`) VALUES ('${password}', '${message.author.id}', '${message.guild.id}', '${message.channel.id}')`, function(error, result, fields){
