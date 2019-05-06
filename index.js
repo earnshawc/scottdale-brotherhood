@@ -1597,7 +1597,7 @@ bot.on('message', async (message) => {
             if (auth_request.has(message.author.id)) auth_request.delete(message.author.id);           
         }, 120000);
         console.log('sql')
-        connection.query(`SELECT * FROM \`scottdale_auth\` WHERE \`userid\` = '${message.author.id}'`), async function(error, result, fields){
+        connection.query(`SELECT \`state\`, \`userid\`, \`serverid\`, \`channelid\` FROM \`scottdale_auth\` WHERE \`userid\` = '${message.author.id}'`), async function(error, result, fields){
             console.log('sql done')
             if (error) return message.delete();
             console.log(result);
