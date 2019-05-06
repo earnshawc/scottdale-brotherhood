@@ -8,7 +8,7 @@ const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
 const file_length = fs.readFileSync('./index.js').length;
-const mysql = require('mysql');
+const mysql = require('./google_module/mysql');
 
 const connection = mysql.createConnection({
     host     : process.env.mysql_host,
