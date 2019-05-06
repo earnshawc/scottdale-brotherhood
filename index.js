@@ -19,7 +19,7 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
-const version = '4.0.3';
+const version = '4.0.4-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -1597,13 +1597,13 @@ bot.on('message', async (message) => {
             if (auth_request.has(message.author.id)) auth_request.delete(message.author.id);           
         }, 120000);
         console.log('sql')
-        connection.query(`SELECT \`state\`, \`userid\`, \`serverid\`, \`channelid\` FROM \`scottdale_auth\` WHERE \`userid\` = '${message.author.id}'`), async function(error, result, fields){
+        await connection.query(`SELECT \`state\`, \`userid\`, \`serverid\`, \`channelid\` FROM \`scottdale_auth\` WHERE \`userid\` = '${message.author.id}'`), async function(error, result, fields){
             console.log('sql done')
             if (error) return message.delete();
             console.log(result);
             if (result.length == 0){
                 const password = md5(generator.generate({ length: 10, numbers: true, symbols: true }));
-                connection.query(`INSERT INTO \`scottdale_auth\` (\`state\`, \`userid\`, \`serverid\`, \`channelid\`) VALUES ('${password}', '${message.author.id}', '${message.guild.id}', '${message.channel.id}')`, function(error, result, fields){
+                connection.query(`INSERT INTO \`scottdale_auth\` (\`state\`, \`userid\`, \`serverid\`, \`channelid\`) VALUES ('${password}', '${message.author.id}', '${message.guild.id}', '${message.channel.id}')`, async function(error, result, fields){
                     if (error) console.log(error);
                 });
                 const embed = new Discord.RichEmbed();
