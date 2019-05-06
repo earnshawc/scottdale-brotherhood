@@ -19,12 +19,12 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
-const version = '4.0.2';
+const version = '4.0.3';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
 
-const update_information = "Добавление базы MySQL"
+const update_information = "Фикс базы MySQL"
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
 const doc = new GoogleSpreadsheet(process.env.skey);
