@@ -20,7 +20,7 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
-const version = '4.0.5-hide';
+const version = '4.0.6-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
