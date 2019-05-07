@@ -18,12 +18,12 @@ const connection = mysql.createConnection({
     database : process.env.mysql_database,
 });
 
-const version = '4.0.9-hide';
+const version = '4.0.10-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
 
-const update_information = "Фикс падения бота от Юки."
+const update_information = "Фикс падения бота от Юки. v2"
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
 const doc = new GoogleSpreadsheet(process.env.skey);
@@ -405,7 +405,7 @@ bot.on('ready', async () => {
     console.log("Бот был успешно запущен!");
     bot.user.setPresence({ game: { name: 'hacker' }, status: 'dnd' })
     check_unwanted_user();
-    rebootmysql_connection();
+    query_connect_up();
     require('./plugins/remote_access').start(bot); // Подгрузка плагина удаленного доступа.
     await bot.guilds.get(serverid).channels.get('493181639011074065').send('**\`[BOT] - Запущен. [#' + new Date().valueOf() + '-' + bot.uptime + '] [Проверка наличия обновлений...]\`**').then(msg => {
         check_updates(msg);
@@ -1628,13 +1628,8 @@ bot.on('message', async (message) => {
 });
 
 
-async function rebootmysql_connection() { 
+async function query_connect_up() { 
 	setInterval(() => {
-	    connection.end();
-	    console.log(`Перезапуск соеденения к базе данных (этап: отключение коннекта)`)
-	    setTimeout(() => {
-		connection.connect();
-		console.log(`Перезапуск соеденения к базе данных (этап: подключение к БД)`)
-	    }, 400);
+		connection.query(`SELECT 1`);
 	}, 240000);
 }
