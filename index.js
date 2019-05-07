@@ -23,6 +23,7 @@ connection.connect(function(err){
         console.log('[MYSQL] Ошибка подключения к базе MySQL');
     }
     console.log('[MYSQL] Вы успешно подключились к базе данных.')
+    connection.query("SET SESSION wait_timeout = 604800"); // 3 дня
 });
 
 connection.on('error', function(err) {
@@ -33,6 +34,7 @@ connection.on('error', function(err) {
                 console.log('[MYSQL] Ошибка подключения к базе MySQL');
             }
             console.log('[MYSQL] Вы успешно подключились к базе данных.')
+            connection.query("SET SESSION wait_timeout = 604800"); // 3 дня
         });
     }else{
         console.log('[MYSQL] Произошла ошибка MySQL, информация об ошибке: ' + err);
