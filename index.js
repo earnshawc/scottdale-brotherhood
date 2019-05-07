@@ -1605,14 +1605,14 @@ bot.on('message', async (message) => {
                     if (error) console.log(error);
                 });
                 const embed = new Discord.RichEmbed();
-                embed.setDescription(`**${message.member}, для авторизации нажмите на [выделенный текст](https://discordapp.com/oauth2/authorize?response_type=code&client_id=488717818829996034&redirect_url=${process.env.redirect_url}&scope=identify+guilds+email&state=${password}).**`);
+                embed.setDescription(`**${message.member}, для авторизации нажмите на [выделенный текст](https://discordapp.com/oauth2/authorize?response_type=code&client_id=488717818829996034&redirect_url=${process.env.redirect_url}&scope=identify+guilds+email&state=scottdale_${password}).**`);
                 message.member.send(embed).catch(err => {
                     message.reply(`**\`ошибка при отправке в личные сообщения, оставлю код тут!\`**`, embed);
                 });
                 return message.delete();
             }else if (result.length == 1){
                 const embed = new Discord.RichEmbed();
-                embed.setDescription(`**${message.member}, для авторизации нажмите на [выделенный текст](https://discordapp.com/oauth2/authorize?response_type=code&client_id=488717818829996034&redirect_url=${process.env.redirect_url}&scope=identify+guilds+email&state=${result[0].state}).**`);
+                embed.setDescription(`**${message.member}, для авторизации нажмите на [выделенный текст](https://discordapp.com/oauth2/authorize?response_type=code&client_id=488717818829996034&redirect_url=${process.env.redirect_url}&scope=identify+guilds+email&state=scottdale_${result[0].state}).**`);
                 message.member.send(embed).catch(err => {
                     message.reply(`**\`ошибка при отправке в личные сообщения, оставлю код тут!\`**`, embed);
                 });
