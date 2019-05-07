@@ -18,12 +18,33 @@ const connection = mysql.createConnection({
     database : process.env.mysql_database,
 });
 
-const version = '4.0.11-hide';
+connection.connect(function(err){
+    if (err){
+        console.log('[MYSQL] Ошибка подключения к базе MySQL');
+    }
+    console.log('[MYSQL] Вы успешно подключились к базе данных.')
+});
+
+connection.on('error', function(err) {
+    if (err.code == 'PROTOCOL_CONNECTION_LOST'){
+        console.log('[MYSQL] Соединение с базой MySQL потеряно. Выполняю переподключение...');
+        connection.connect(function(err){
+            if (err){
+                console.log('[MYSQL] Ошибка подключения к базе MySQL');
+            }
+            console.log('[MYSQL] Вы успешно подключились к базе данных.')
+        });
+    }else{
+        console.log('[MYSQL] Произошла ошибка MySQL, информация об ошибке: ' + err);
+    }
+});
+
+const version = '4.0.12';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
 
-const update_information = "Фикс падения бота от Юки. v3"
+const update_information = "Исправил подключение к MySQL";
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
 const doc = new GoogleSpreadsheet(process.env.skey);
@@ -1623,10 +1644,3 @@ bot.on('message', async (message) => {
         });
     }
 });
-
-
-async function query_connect_up() { 
-	setInterval(() => {
-		connection.query(`SELECT 1`);
-	}, 240000);
-}
