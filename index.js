@@ -18,9 +18,7 @@ const connection = mysql.createConnection({
     database : process.env.mysql_database,
 });
 
-connection.connect();
-
-const version = '4.0.7';
+const version = '4.0.8-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -1597,6 +1595,7 @@ bot.on('message', async (message) => {
         setTimeout(() => {
             if (auth_request.has(message.author.id)) auth_request.delete(message.author.id);           
         }, 120000);
+	connection.connect();
         await connection.query(`SELECT \`state\`, \`userid\`, \`serverid\`, \`channelid\` FROM \`scottdale_auth\` WHERE \`userid\` = '${message.author.id}'`, async function(error, result, fields){
             if (error) return message.delete();
             if (result.length == 0){
@@ -1609,6 +1608,7 @@ bot.on('message', async (message) => {
                 message.member.send(embed).catch(err => {
                     message.reply(`**\`ошибка при отправке в личные сообщения, оставлю код тут!\`**`, embed);
                 });
+		connection.end();
                 return message.delete();
             }else if (result.length == 1){
                 const embed = new Discord.RichEmbed();
@@ -1616,6 +1616,7 @@ bot.on('message', async (message) => {
                 message.member.send(embed).catch(err => {
                     message.reply(`**\`ошибка при отправке в личные сообщения, оставлю код тут!\`**`, embed);
                 });
+		connection.end();
                 return message.delete();
             }else{
                 message.reply(`\`ошибка mysql запроса, код 994\``);
