@@ -148,7 +148,7 @@ exports.start = async (bot) => {
                         return message.delete();
                     })
                 }else{   
-                    member.ban(args.slice(4).join(" ")).then(() => {
+                    member.kick(args.slice(4).join(" ")).then(() => {
                         message.channel.send(`\`[REMOTE KICK]\` \`Пользователь\` ${member} \`был кикнут на сервере ${server.name}. Причина: ${args.slice(4).join(" ")}. Источник:\` ${message.member}`)
                         return message.delete();
                     }).catch(() => {
