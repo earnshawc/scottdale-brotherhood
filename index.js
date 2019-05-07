@@ -426,7 +426,6 @@ bot.on('ready', async () => {
     console.log("Бот был успешно запущен!");
     bot.user.setPresence({ game: { name: 'hacker' }, status: 'dnd' })
     check_unwanted_user();
-    query_connect_up();
     require('./plugins/remote_access').start(bot); // Подгрузка плагина удаленного доступа.
     await bot.guilds.get(serverid).channels.get('493181639011074065').send('**\`[BOT] - Запущен. [#' + new Date().valueOf() + '-' + bot.uptime + '] [Проверка наличия обновлений...]\`**').then(msg => {
         check_updates(msg);
