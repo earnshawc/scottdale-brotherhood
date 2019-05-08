@@ -557,6 +557,13 @@ bot.on('message', async message => {
     require('./global_systems/warn').run(bot, message, warn_cooldown);
     require('./global_systems/fbi_system').run(bot, message);
     
+    if (message.embeds){
+        if (message.member.hasPermission("ADMINISTRATOR") || message.author.bot) return
+        if (message.embeds[0]){
+            return message.delete();
+        }
+    }
+
     if (message.content.startsWith(`/run`)){
         get_profile(3, message.author.id).then(value => {
             if (value[1] != '1') return message.delete();
