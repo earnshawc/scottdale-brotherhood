@@ -42,7 +42,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '4.0.13';
+const version = '4.0.14-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -1630,14 +1630,18 @@ bot.on('message', async (message) => {
                 });
                 const embed = new Discord.RichEmbed();
                 embed.setDescription(`**${message.member}, для авторизации нажмите на [выделенный текст](https://discordapp.com/oauth2/authorize?response_type=code&client_id=488717818829996034&redirect_url=${process.env.redirect_url}&scope=identify+guilds+email&state=scottdale_${password}).**`);
-                message.member.send(embed).catch(err => {
+                message.member.send(embed).then(() => {
+		    message.reply(`**\`код авторизации был отправлен в личные сообщения!\`**`).then(msg => msg.delete(12000));
+		}).catch(err => {
                     message.reply(`**\`ошибка при отправке в личные сообщения, оставлю код тут!\`**`, embed);
                 });
                 return message.delete();
             }else if (result.length == 1){
                 const embed = new Discord.RichEmbed();
                 embed.setDescription(`**${message.member}, для авторизации нажмите на [выделенный текст](https://discordapp.com/oauth2/authorize?response_type=code&client_id=488717818829996034&redirect_url=${process.env.redirect_url}&scope=identify+guilds+email&state=scottdale_${result[0].state}).**`);
-                message.member.send(embed).catch(err => {
+                message.member.send(embed).then(() => {
+		    message.reply(`**\`код авторизации был отправлен в личные сообщения!\`**`).then(msg => msg.delete(12000));
+		}).catch(err => {
                     message.reply(`**\`ошибка при отправке в личные сообщения, оставлю код тут!\`**`, embed);
                 });
                 return message.delete();
