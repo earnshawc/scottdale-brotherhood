@@ -42,12 +42,12 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '4.0.15-hide';
+const version = '4.1.0';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
 
-const update_information = "Исправил подключение к MySQL";
+const update_information = "Добавлена новая роль в спец.админском дискорде - Команда проверки.";
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
 const doc = new GoogleSpreadsheet(process.env.skey);
@@ -168,9 +168,11 @@ const events = {
 async function special_discord_update(){
     setInterval(async () => {
         let special_server = spec_bot.guilds.get('543799835652915241');
-        if (!special_server) return console.log('Сервер спец.администрации не найден!');
+        let check_server = user.guilds.get('543354025387491339');
+        if (!special_server || !check_server) return console.log('Сервер спец.администрации не найден!');
         let admin_role = special_server.roles.find(r => r.name == 'Администратор [3-4]');
         let helper_role = special_server.roles.find(r => r.name == 'Хелпер [1-2]');
+        let checker_role = special_server.roles.find(r => r.name == 'Команда проверки');
         if (!admin_role || !helper_role) return console.log('Роли хелпера или админа не найдены на спец админском');
         let all_chat = special_server.channels.find(c => c.name == 'основной');
         if (!all_chat) return console.log('Чат "основной" не был найден!');
@@ -188,7 +190,7 @@ async function special_discord_update(){
         let eastern = user.guilds.get('465086262383083520');
         let north = user.guilds.get('477547500232769536');
         let vostok = user.guilds.get('530848070284607499');
-        if (!phoenix || !tucson || !scottdale || !chandler || !brainburg || !saintrose || !mesa || !redrock || !yuma || !central || !eastern || !north || !vostok) return console.log('Один из серверов не найден!');
+        if (!phoenix || !tucson || !scottdale || !chandler || !brainburg || !saintrose || !mesa || !redrock || !yuma || !central || !eastern || !north || !vostok) console.log('Один из серверов не найден!');
         
         await doc.getRows(11, { offset: 1, limit: 5000000, orderby: 'col2' }, async (err, rows) => {
             special_server.members.forEach(async (member) => {
@@ -206,6 +208,14 @@ async function special_discord_update(){
                 
                 let server_were_admin = [];
                 let server_were_helper = [];
+                let user_checker = false;
+
+                if (check_server.members.get(member.id)){
+                    let g_member = check_server.members.get(member.id);
+                    if (g_member.roles.some(r => ['Checker Team'].includes(r.name))){
+                        user_checker = true;
+                    }
+                }
 
                 if (phoenix.members.get(member.id)){
                     let g_member = phoenix.members.get(member.id);
@@ -322,6 +332,18 @@ async function special_discord_update(){
                         server_were_admin.push('Восточный округ');
                     }else if (g_member.roles.some(r => ['★ Модератор ★', '★ Младший Модератор ★'].includes(r.name))){
                         server_were_helper.push('Восточный округ');
+                    }
+                }
+
+                if (user_checker == true){
+                    if (!member.roles.some(r => checker_role.id == r.id)){
+                        await member.addRole(checker_role);
+                        await all_chat.send(`**${member}, \`вам была выдана роль ${checker_role.name}. Источник: ${check_server.name}`);
+                    }
+                }else{
+                    if (member.roles.some(r => checker_role.id == r.id)){
+                        await member.removeRole(checker_role);
+                        await all_chat.send(`**${member}, \`вам была снята роль ${checker_role.name}.`);
                     }
                 }
 
