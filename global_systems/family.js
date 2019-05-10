@@ -93,6 +93,10 @@ exports.run = async (bot, message) => {
             message.channel.send(`\`[ERROR]\` <@${message.author.id}> \`ошибка! Семья: '${familyname}' не найдена!\``).then(msg => msg.delete(10000));
             return message.delete();
         }
+        if (!message.member.roles.some(r => r.name == family_role.name) && zam == false) {
+            message.reply(`\`вы не состоите в ${family_role.name}\``).then(msg => msg.delete(10000));
+            return message.delete();
+        }
         if(cmdallow == false) {
             message.reply(`\`лидер семьи не может покинуть её\``).then(msg => msg.delete(10000));
             return message.delete();
