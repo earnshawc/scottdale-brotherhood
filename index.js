@@ -42,7 +42,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '4.1.0';
+const version = '4.1.1-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -338,12 +338,12 @@ async function special_discord_update(){
                 if (user_checker == true){
                     if (!member.roles.some(r => checker_role.id == r.id)){
                         await member.addRole(checker_role);
-                        await all_chat.send(`**${member}, \`вам была выдана роль ${checker_role.name}. Источник: ${check_server.name}`);
+                        await all_chat.send(`**${member}, \`вам была выдана роль ${checker_role.name}. Источник: ${check_server.name}\`**`);
                     }
                 }else{
                     if (member.roles.some(r => checker_role.id == r.id)){
                         await member.removeRole(checker_role);
-                        await all_chat.send(`**${member}, \`вам была снята роль ${checker_role.name}.`);
+                        await all_chat.send(`**${member}, \`вам была снята роль ${checker_role.name}.\`**`);
                     }
                 }
 
