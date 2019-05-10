@@ -42,12 +42,12 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '4.0.15-hide';
+const version = '4.1.0';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
 
-const update_information = "Исправил подключение к MySQL";
+const update_information = "Добавил команду для свободного выхода из семьи (/fleave)";
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
 const doc = new GoogleSpreadsheet(process.env.skey);
