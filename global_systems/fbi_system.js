@@ -154,9 +154,8 @@ exports.run = async (bot, message) => {
         let fbi_user = [];
         await federal_channels[args[1]].permissionOverwrites.forEach(async perm => {
             if (perm.type == `member`){
-                console.log(perm.allow);
-                console.log(perm.allowed);
-                if (perm.allowed.includes("PRIORITY_SPEAKER")){
+                let perms = new Discord.Permissions(perm.allow);
+                if (perms.hasPermission("PRIORITY_SPEAKER")){
                     fbi_moderate.push(`<@${perm.id}>`);
                 }else{
                     fbi_user.push(`<@${perm.id}>`);
