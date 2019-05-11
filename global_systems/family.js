@@ -44,7 +44,7 @@ exports.run = async (bot, message) => {
         if (!families){
             message.reply('false');
         }else{
-            message.reply(families.join(', '));
+            message.reply(families);
         }
     }
 
