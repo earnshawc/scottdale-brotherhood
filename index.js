@@ -441,12 +441,12 @@ async function update_sellers(){
                 });
                 const table = new Discord.RichEmbed();
                 table.setTitle(`**Ассортимент Discord-сервера**`);
-                table.setDescription(`**В данном канале вы можете приобрести товары у администрации discord-сервера!\nВ качестве цены указана валюта - Discord Point (₯).**`)
+                table.setDescription(`**В данном канале вы можете приобрести товары у администрации discord-сервера!\nВ качестве цены указана валюта - Discord Point (₯).**`);
                 table.setColor(`#0601ff`);
                 table.addField(`Название товара`, `${names.join('\n')}`, true);
                 table.addField(`Количество`, `${amount.join('\n')}`, true);
                 table.addField(`Цена`, `${cost.join(' ₯\n')} ₯`, true);
-                table.setFooter(`© Сopyright 2019`, message.guild.icon_url);
+                table.setFooter(`© Сopyright 2019`, server.guild.icon_url);
                 let msg = messages.first();
                 if (!msg){
                     channel.send(table);
