@@ -1633,8 +1633,8 @@ bot.on('message', async (message) => {
     }
 
     if (message.content == '/authme'){
-	    //message.reply('**\`данная команда временно не доступна.\`**').then(msg => msg.delete(7000));
-        //return message.delete();
+	    message.reply('**\`данная команда временно не доступна.\`**').then(msg => msg.delete(7000));
+        return message.delete();
         if (message.member.roles.some(r => r.name == 'Проверенный 🔐')){
             message.reply(`**\`у вас уже есть роль!\`**`);
             return message.delete();
