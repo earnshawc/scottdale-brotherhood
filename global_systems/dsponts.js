@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const fs = require("fs");
 
 exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
-    if (!ds_cooldown.has(message.author.id) && message.members.roles.some(r => r.name == 'Проверенный 🔐')){
+    if (!ds_cooldown.has(message.author.id) && message.member.roles.some(r => r.name == 'Проверенный 🔐')){
         ds_cooldown.add(message.author.id);
         setTimeout(() => {
             if (ds_cooldown.has(message.author.id)) ds_cooldown.delete(message.author.id);
