@@ -166,7 +166,7 @@ exports.run = async (bot, message) => {
         embed.setTitle(`Список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}`);
         embed.addField(`Тип: ADD`, `${fbi_user.join('\n')}`);
         embed.addField(`Тип: MODERATE`, `${fbi_moderate.join('\n')}`);
-        if (`${fbi_user.join('\n')}`.length <= 1000 || `${fbi_moderate.join('\n')}`.length <= 1000){
+        if (`${fbi_user.join('\n')}`.length <= 700 || `${fbi_moderate.join('\n')}`.length <= 700){
             message.reply(embed);
         }else{
             await message.channel.send(`Список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}\n` +
