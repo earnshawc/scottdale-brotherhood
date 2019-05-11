@@ -69,7 +69,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                 return
             }
             const embed = new Discord.RichEmbed();
-            embed.setTitle(`Информация о ${result.name} [ID: ${result.id}]`);
+            embed.setTitle(`Информация о ${result[0].name} [ID: ${result[0].id}]`);
             embed.addField(`Основная информация о магазине`, `Владелец: ${message.member}\nПродаваемый товар: ${result[0].name}\nСумма за который продается товар: ${result[0].cost}\nКоличество денег в магазине: ${result[0].money}\nКоличество товара в магазине: ${result[0].amount}`);
             embed.addField(`Основная информация о складе`, `Предметов на складе: ${result[0].storage}`);
             message.reply(embed);
