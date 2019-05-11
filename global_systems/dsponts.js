@@ -1,14 +1,6 @@
 const Discord = require('discord.js');
 const fs = require("fs");
 
-function isFloat(n){
-    if (!isInteger(n)){
-        return false;
-    }else{
-        return Number(n) === n && n % 1 !== 0;
-    }
-}
-
 function isInteger(n) {
     return n === +n && n === (n|0);
 }
@@ -70,7 +62,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
             message.reply(`\`использование: /change_cost [сумма] [название товара]\``);
             return message.delete();
         }
-        if (!isFloat(args[1]) || +args[1] <= 0){
+        if (typeof (+args[1]) != "number" || +args[1] <= 0){
             message.reply(`\`использование: /change_cost [сумма] [название товара]\``);
             return message.delete();
         }
@@ -104,7 +96,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
             message.reply(`\`использование: /get_cost [сумма] [название товара]\``);
             return message.delete();
         }
-        if (!isFloat(+args[1]) || +args[1] <= 0){
+        if (typeof (+args[1]) != "number" || +args[1] <= 0){
             message.reply(`\`использование: /get_cost [сумма] [название товара]\``);
             return message.delete();
         }
@@ -154,7 +146,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
             message.reply(`\`использование: /add_cost [сумма] [название товара]\``);
             return message.delete();
         }
-        if (!isFloat(+args[1]) || +args[1] <= 0){
+        if (typeof (+args[1]) != "number" || +args[1] <= 0){
             message.reply(`\`использование: /add_cost [сумма] [название товара]\``);
             return message.delete();
         }
