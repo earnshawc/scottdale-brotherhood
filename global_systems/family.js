@@ -38,13 +38,14 @@ exports.run = async (bot, message) => {
                     });
                 }
             }
+        }, function(){
+            console.log(families);
+            if (!families.length == 0){
+                message.reply('false');
+            }else{
+                message.reply(families.join(', '));
+            }
         });
-        console.log(families);
-        if (!families.length == 0){
-            message.reply('false');
-        }else{
-            message.reply(families.join(', '));
-        }
     }
 
     if (message.content.startsWith('/fleave')){
