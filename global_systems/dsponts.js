@@ -2,7 +2,11 @@ const Discord = require('discord.js');
 const fs = require("fs");
 
 function isFloat(n){
-    return Number(n) === n && n % 1 !== 0;
+    if (!isInteger(n)){
+        return false;
+    }else{
+        return Number(n) === n && n % 1 !== 0;
+    }
 }
 
 function isInteger(n) {
