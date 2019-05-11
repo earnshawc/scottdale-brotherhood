@@ -42,7 +42,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.12-hide';
+const version = '5.0.13-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -790,7 +790,7 @@ bot.on('message', async message => {
                     if (messages.size == 1){
                         messages.forEach(async sacc => {
                         let str = sacc.content;
-                            level_mod = +str.split('\n')[0].match(re)[0];
+                            level_mod = str.split('\n')[0].match(re)[0];
                         });
                     }
                 });
@@ -847,7 +847,7 @@ bot.on('message', async message => {
                         if (messages.size == 1){
                             messages.forEach(async sacc => {
                             let str = sacc.content;
-                                level_mod = +str.split('\n')[0].match(re)[0];
+                                level_mod = str.split('\n')[0].match(re)[0];
                             });
                         }
                     });
