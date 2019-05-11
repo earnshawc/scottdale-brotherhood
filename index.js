@@ -42,7 +42,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.9-hide';
+const version = '5.0.11-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -422,6 +422,38 @@ async function check_updates(r_msg){
         });
     }, 10000);
 };
+
+async function update_sellers(){
+    setInterval(() => {
+        let server = bot.guilds.get('355656045600964609');
+        if (!server) return
+        let channel = server.channels.find(c => c.name == 'buy-dashboard');
+        if (!channel) return
+        connection.query(`SELECT * FROM \`buy_dashboard\``, async (err, result, fields) => {
+            channel.fetchMessages({limit: 1}).then(async messages => {
+                let names = [];
+                let cost = [];
+                let amount = [];
+                result.forEach(res => {
+                    names.push(res.name);
+                    cost.push(res.cost);
+                    amount.push(res.amount);
+                });
+                const table = new Discord.RichEmbed();
+                table.setTitle(`Магазин вещей Discord`);
+                table.addField(`Название товара`, `${names.join('\n')}`, true);
+                table.addField(`Количество`, `${amount.join('\n')}`, true);
+                table.addField(`Цена`, `${cost.join(' ₯\n')} ₯`, true);
+                let msg = messages.first();
+                if (!msg){
+                    channel.send(table);
+                }else{
+                    msg.edit(table);
+                }
+            });
+        });
+    }, 20000)
+}
 
 const warn_cooldown = new Set();
 const support_loop = new Set();
