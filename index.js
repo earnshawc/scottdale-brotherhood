@@ -1633,8 +1633,8 @@ bot.on('message', async (message) => {
     }
 
     if (message.content == '/authme'){
-	message.reply('**\`данная команда временно не доступна.\`**').then(msg => msg.delete(7000));
-        return message.delete();
+	    //message.reply('**\`данная команда временно не доступна.\`**').then(msg => msg.delete(7000));
+        //return message.delete();
         if (message.member.roles.some(r => r.name == 'Проверенный 🔐')){
             message.reply(`**\`у вас уже есть роль!\`**`);
             return message.delete();
@@ -1666,8 +1666,8 @@ bot.on('message', async (message) => {
                 const embed = new Discord.RichEmbed();
                 embed.setDescription(`**${message.member}, для авторизации нажмите на [выделенный текст](https://discordapp.com/oauth2/authorize?response_type=code&client_id=488717818829996034&redirect_url=${process.env.redirect_url}&scope=identify+guilds+email&state=scottdale_${result[0].state}).**`);
                 message.member.send(embed).then(() => {
-		    message.reply(`**\`код авторизации был отправлен в личные сообщения!\`**`).then(msg => msg.delete(12000));
-		}).catch(err => {
+		            message.reply(`**\`код авторизации был отправлен в личные сообщения!\`**`).then(msg => msg.delete(12000));
+		        }).catch(err => {
                     message.reply(`**\`ошибка при отправке в личные сообщения, оставлю код тут!\`**`, embed);
                 });
                 return message.delete();
