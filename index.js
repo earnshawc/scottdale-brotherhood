@@ -168,7 +168,7 @@ const events = {
 async function special_discord_update(){
     setInterval(async () => {
         let special_server = spec_bot.guilds.get('543799835652915241');
-        let check_server = user.guilds.get('556789312348356619');
+        let check_server = user.guilds.get('543354025387491339');
         if (!special_server || !check_server) return console.log('Сервер спец.администрации не найден!');
         let admin_role = special_server.roles.find(r => r.name == 'Администратор');
         let helper_role = special_server.roles.find(r => r.name == 'Хелпер');
@@ -212,7 +212,7 @@ async function special_discord_update(){
 
                 if (check_server.members.get(member.id)){
                     let g_member = check_server.members.get(member.id);
-                    if (g_member.roles.some(r => ['Checker\'s Team'].includes(r.name))){
+                    if (g_member.roles.some(r => ['Checkers Team'].includes(r.name))){
                         user_checker = true;
                     }
                 }
