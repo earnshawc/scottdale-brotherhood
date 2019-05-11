@@ -160,23 +160,23 @@ exports.run = async (bot, message) => {
                 if (perms.has("PRIORITY_SPEAKER")){
                     fbi_moderate_temp.push(`<@${perm.id}>`);
                     if (fbi_moderate_temp.length >= 3){
-                        fbi_moderate.push(`\`[${+fbi_moderate.length + 1}]\` ${fbi_moderate_temp.join(', ')}`);
+                        fbi_moderate.push(`\`[${`${+fbi_moderate.length + 1}`.padStart(2, '0')}]\` ${fbi_moderate_temp.join(', ')}`);
                         fbi_moderate_temp = [];
                     }
                 }else{
                     fbi_user_temp.push(`<@${perm.id}>`);
                     if (fbi_user_temp.length >= 3){
-                        fbi_user.push(`\`[${+fbi_user.length + 1}]\` ${fbi_user_temp.join(', ')}`);
+                        fbi_user.push(`\`[${`${+fbi_user.length + 1}`.padStart(2, '0')}]\` ${fbi_user_temp.join(', ')}`);
                         fbi_user_temp = [];
                     }
                 }
             }
         });
         if (fbi_moderate_temp.length != 0){
-            fbi_moderate.push(`\`[${+fbi_moderate.length + 1}]\` ${fbi_moderate_temp.join(', ')}`);
+            fbi_moderate.push(`\`[${`${+fbi_moderate.length + 1}`.padStart(2, '0')}]\` ${fbi_moderate_temp.join(', ')}`);
         }
         if (fbi_user_temp.length != 0){
-            fbi_user.push(`\`[${+fbi_user.length + 1}]\` ${fbi_user_temp.join(', ')}`);
+            fbi_user.push(`\`[${`${+fbi_user.length + 1}`.padStart(2, '0')}]\` ${fbi_user_temp.join(', ')}`);
         }
         await message.reply(`**\`список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}\`\n${fbi_user.join('\n')}**`);
         await message.reply(`**\`список модераторов канала: ${federal_channels[args[1]].name}\`\n${fbi_moderate.join('\n')}**`);
