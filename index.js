@@ -444,7 +444,7 @@ async function update_sellers(){
                 table.setDescription(`**В данном канале вы можете приобрести товары у администрации discord-сервера!\nВ качестве цены указана валюта - Discord Point (₯).**`);
                 table.setColor(`#0601ff`);
                 table.addField(`Название товара`, `${names.join('\n')}`, true);
-                table.addField(`Количество`, `${amount.join('\n')}`, true);
+                table.addField(`В наличии`, `${amount.join('\n')}`, true);
                 table.addField(`Цена`, `${cost.join(' ₯\n')} ₯`, true);
                 table.setFooter(`© Сopyright 2019`, server.icon_url);
                 let msg = messages.first();
