@@ -3,6 +3,7 @@ const fs = require("fs");
 
 exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
 
+    if (!message.member.roles) return
     if (!message.member.roles.some(r => r.name == 'Проверенный 🔐')) return
 
     if (!ds_cooldown.has(message.author.id)){

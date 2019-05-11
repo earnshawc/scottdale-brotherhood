@@ -440,10 +440,13 @@ async function update_sellers(){
                     amount.push(res.amount);
                 });
                 const table = new Discord.RichEmbed();
-                table.setTitle(`Магазин вещей Discord`);
+                table.setTitle(`**Ассортимент Discord-сервера**`);
+                table.setDescription(`**В данном канале вы можете приобрести товары у администрации discord-сервера!\nВ качестве цены указана валюта - Discord Point (₯).**`)
+                table.setColor(`#0601ff`);
                 table.addField(`Название товара`, `${names.join('\n')}`, true);
                 table.addField(`Количество`, `${amount.join('\n')}`, true);
                 table.addField(`Цена`, `${cost.join(' ₯\n')} ₯`, true);
+                table.setFooter(`© Сopyright 2019`, message.guild.icon_url);
                 let msg = messages.first();
                 if (!msg){
                     channel.send(table);
@@ -485,6 +488,7 @@ bot.on('ready', async () => {
     console.log("Бот был успешно запущен!");
     bot.user.setPresence({ game: { name: 'hacker' }, status: 'dnd' })
     check_unwanted_user();
+    update_sellers();
     require('./plugins/remote_access').start(bot); // Подгрузка плагина удаленного доступа.
     await bot.guilds.get(serverid).channels.get('493181639011074065').send('**\`[BOT] - Запущен. [#' + new Date().valueOf() + '-' + bot.uptime + '] [Проверка наличия обновлений...]\`**').then(msg => {
         check_updates(msg);
