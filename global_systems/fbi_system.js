@@ -166,15 +166,14 @@ exports.run = async (bot, message) => {
         embed.setTitle(`Список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}`);
         embed.addField(`Тип: ADD`, `${fbi_user.join('\n')}`);
         embed.addField(`Тип: MODERATE`, `${fbi_moderate.join('\n')}`);
-        try {
+        if (`${fbi_user.join('\n')}`.length <= 1000 || `${fbi_moderate.join('\n')}`.length <= 1000){
             message.reply(embed);
-        } catch (err){
-            console.log(err);
+        }else{
             await message.channel.send(`Список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}\n` +
             `Тип: ADD\n${fbi_user.join('\n')}`);
             await message.channel.send(`Список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}\n` +
             `Тип: MODERATE\n${fbi_moderate.join('\n')}`);
-        };
+        }
         return message.delete();
     }
 }
