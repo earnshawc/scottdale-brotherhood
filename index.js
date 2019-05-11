@@ -42,7 +42,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '4.1.1-hide';
+const version = '4.1.2-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -170,8 +170,8 @@ async function special_discord_update(){
         let special_server = spec_bot.guilds.get('543799835652915241');
         let check_server = user.guilds.get('543354025387491339');
         if (!special_server || !check_server) return console.log('Сервер спец.администрации не найден!');
-        let admin_role = special_server.roles.find(r => r.name == 'Администратор [3-4]');
-        let helper_role = special_server.roles.find(r => r.name == 'Хелпер [1-2]');
+        let admin_role = special_server.roles.find(r => r.name == 'Администратор');
+        let helper_role = special_server.roles.find(r => r.name == 'Хелпер');
         let checker_role = special_server.roles.find(r => r.name == 'Команда проверки');
         if (!admin_role || !helper_role) return console.log('Роли хелпера или админа не найдены на спец админском');
         let all_chat = special_server.channels.find(c => c.name == 'основной');
