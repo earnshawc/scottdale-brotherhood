@@ -24,28 +24,25 @@ exports.run = async (bot, message) => {
 
     if (message.content.startsWith('/test_fleave')){
         const args = message.content.slice('/fleave').split(/ +/)
-        let families = await message.guild.channels.filter(async channel => {
+        let families = [];
+        
+        await message.guild.channels.filter(async channel => {
             if (channel.type == "voice"){
                 if (channel.parent.name.toString() == `Family ROOMS`){
-                    let _member = false;
                     await channel.permissionOverwrites.forEach(async perm => {
                         if (perm.type == `member`){
                             if (perm.id == message.author.id){
-                                _member = true;
+                                families.push(channel.name);
                             }
                         }
                     });
-                    if (_member = true){
-                        return channel.name;
-                    }
                 }
             }
         });
-        console.log(families)
-        if (!families){
+        if (!families.length == 0){
             message.reply('false');
         }else{
-            message.reply(families);
+            message.reply(families.join(', '));
         }
     }
 
