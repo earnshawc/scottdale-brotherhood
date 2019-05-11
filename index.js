@@ -42,12 +42,14 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '4.1.2-hide';
+const version = '5.0.0';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
 
-const update_information = "Добавлена новая роль в спец.админском дискорде - Команда проверки.";
+const update_information = "1. /fbi_access @user moderate возможность перекидывать в секретку из канала ФБР\n" +
+"2. /fbi_members [0(чат)/1(фбр)/2(секретка)]" +
+"3. Канал: FBI Recruitment и доступ к нему";
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
 const doc = new GoogleSpreadsheet(process.env.skey);
