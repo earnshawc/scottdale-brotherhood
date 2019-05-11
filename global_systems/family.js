@@ -25,25 +25,29 @@ exports.run = async (bot, message) => {
     if (message.content.startsWith('/test_fleave')){
         const args = message.content.slice('/fleave').split(/ +/)
         let families = [];
-        
-        await message.guild.channels.filter(async channel => {
-            if (channel.type == "voice"){
-                if (channel.parent.name.toString() == `Family ROOMS`){
-                    await channel.permissionOverwrites.forEach(async perm => {
-                        if (perm.type == `member`){
-                            if (perm.id == message.author.id){
-                                families.push(channel.name);
+        let promise = await new Promise(async (resolve, reject) => {
+            await message.guild.channels.filter(async channel => {
+                if (channel.type == "voice"){
+                    if (channel.parent.name.toString() == `Family ROOMS`){
+                        await channel.permissionOverwrites.forEach(async perm => {
+                            if (perm.type == `member`){
+                                if (perm.id == message.author.id){
+                                    console.log(`families.push(${channel.name});`)
+                                    families.push(channel.name);
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
-            }
-        }, function(){
+            });
+            return resolve;
+        });
+        await promise.then(async () => {
             console.log(families);
-            if (!families.length == 0){
+            if (!families){
                 message.reply('false');
             }else{
-                message.reply(families.join(', '));
+                message.reply()
             }
         });
     }
