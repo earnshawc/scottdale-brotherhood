@@ -41,6 +41,7 @@ exports.run = async (bot, message) => {
                 }
             }
         });
+        console.log(families)
         if (!families){
             message.reply('false');
         }else{
