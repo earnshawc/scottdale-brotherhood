@@ -166,7 +166,7 @@ exports.run = async (bot, message) => {
         embed.setTitle(`Список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}`);
         embed.addField(`Тип: ADD`, `${fbi_user.join('\n')}`);
         embed.addField(`Тип: MODERATE`, `${fbi_moderate.join('\n')}`);
-        message.reply(embed).catch(() => {
+        message.reply(embed).catch(async () => {
             const embed_one = new Discord.RichEmbed();
             const embed_two = new Discord.RichEmbed();
             embed_one.setTitle(`Список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}`);
