@@ -42,7 +42,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.11-hide';
+const version = '5.0.12-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -446,7 +446,7 @@ async function update_sellers(){
                 table.addField(`Название товара`, `${names.join('\n')}`, true);
                 table.addField(`Количество`, `${amount.join('\n')}`, true);
                 table.addField(`Цена`, `${cost.join(' ₯\n')} ₯`, true);
-                table.setFooter(`© Сopyright 2019`, server.guild.icon_url);
+                table.setFooter(`© Сopyright 2019`, server.icon_url);
                 let msg = messages.first();
                 if (!msg){
                     channel.send(table);
