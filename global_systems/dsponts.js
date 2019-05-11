@@ -207,12 +207,12 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                 message.reply(`\`товар, который вы указали не найден или не ваш!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            if (args[1] < result[0].storage){
+            if (args[1] > result[0].storage){
                 message.reply(`\`в магазине недостаточно товаров для пополнения!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            connection.query(`UPDATE \`buy_dashboard\` SET storage = storage + ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
-            connection.query(`UPDATE \`buy_dashboard\` SET amount = amount - ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
+            connection.query(`UPDATE \`buy_dashboard\` SET storage = storage - ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
+            connection.query(`UPDATE \`buy_dashboard\` SET amount = amount + ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
             message.reply(`\`вы успешно пополнили количество товара! Изменения вступят в силу после обновления таблицы.\``).then(msg => msg.delete(12000));
             return message.delete();
         });
@@ -246,12 +246,12 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                 message.reply(`\`товар, который вы указали не найден или не ваш!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            if (args[1] > result[0].storage){
-                message.reply(`\`на складе недостаточно товаров для пополнения!\``).then(msg => msg.delete(12000));
+            if (args[1] > result[0].amount){
+                message.reply(`\`в магазине недостаточно товаров для пополнения склада!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            connection.query(`UPDATE \`buy_dashboard\` SET storage = storage - ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
-            connection.query(`UPDATE \`buy_dashboard\` SET amount = amount + ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
+            connection.query(`UPDATE \`buy_dashboard\` SET storage = storage + ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
+            connection.query(`UPDATE \`buy_dashboard\` SET amount = amount - ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
             message.reply(`\`вы успешно пополнили количество товара! Изменения вступят в силу после обновления таблицы.\``).then(msg => msg.delete(12000));
             return message.delete();
         });
