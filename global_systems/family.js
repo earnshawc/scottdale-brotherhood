@@ -39,6 +39,7 @@ exports.run = async (bot, message) => {
                 }
             }
         });
+        console.log(families);
         if (!families.length == 0){
             message.reply('false');
         }else{
