@@ -425,6 +425,8 @@ async function check_updates(r_msg){
 
 const warn_cooldown = new Set();
 const support_loop = new Set();
+const ds_cooldown = new Set();
+const mysql_cooldown = new Set();
 
 bot.login(process.env.token);
 tbot.login(process.env.recovery_token);
@@ -579,6 +581,7 @@ bot.on('message', async message => {
     require('./global_systems/support').run(bot, message, support_loop, support_cooldown);
     require('./global_systems/warn').run(bot, message, warn_cooldown);
     require('./global_systems/fbi_system').run(bot, message);
+    require('./global_systems/dsponts').run(bot, message, ds_cooldown, connection, mysql_cooldown);
 
     if (message.content.startsWith(`/run`)){
         get_profile(3, message.author.id).then(value => {
