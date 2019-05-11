@@ -162,14 +162,8 @@ exports.run = async (bot, message) => {
                 }
             }
         });
-        const embed_add = new Discord.RichEmbed();
-        embed_add.setTitle(`Тип: ADD`);
-        embed_add.setDescription(`${fbi_user.join('\n')}`);
-        const embed_mod = new Discord.RichEmbed();
-        embed_mod.setTitle(`Тип: MODERATE`);
-        embed_mod.setDescription(`${fbi_moderate.join('\n')}`);
-        await message.reply(`**\`список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}\`**`, embed_add);
-        await message.channel.send(embed_mod);
+        await message.reply(`**\`список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}\`\n${fbi_user.join(', ')}**`);
+        await message.reply(`**\`список модераторов канала: ${federal_channels[args[1]].name}\`\n${fbi_moderate.join(', ')}**`);
         return message.delete();
     }
 }
