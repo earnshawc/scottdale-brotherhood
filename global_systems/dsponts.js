@@ -70,7 +70,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
             message.reply(`\`использование: /change_cost [сумма] [название товара]\``);
             return message.delete();
         }
-        if (!isFloat(+args[1]) || +args[1] <= 0){
+        if (!isFloat(args[1]) || +args[1] <= 0){
             message.reply(`\`использование: /change_cost [сумма] [название товара]\``);
             return message.delete();
         }
