@@ -42,14 +42,12 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.6-hide';
+const version = '5.0.7-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
 
-const update_information = "1. /fbi_access @user moderate возможность перекидывать в секретку из канала ФБР\n" +
-"2. /fbi_members [0(чат)/1(фбр)/2(секретка)]\n" +
-"3. Канал: FBI Recruitment и доступ к нему";
+const update_information = "нет информации.";
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
 const doc = new GoogleSpreadsheet(process.env.skey);
@@ -745,13 +743,26 @@ bot.on('message', async message => {
             let registed = `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
             date = user.joinedAt
             let joindate = `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
+            let level_mod = 0;
+            let db_server = bot.guilds.find(g => g.id == "493459379878625320");
+            let acc_creator = db_server.channels.find(c => c.name == user.id);
+            if (acc_creator){
+                await acc_creator.fetchMessages({limit: 1}).then(async messages => {
+                    if (messages.size == 1){
+                        messages.forEach(async sacc => {
+                        let str = sacc.content;
+                            level_mod = +str.split('\n')[0].match(re)[0];
+                        });
+                    }
+                });
+            }
             const embed = new Discord.RichEmbed()
             .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
 	        .setColor("#FF0000")
             .setFooter(`Аккаунт пользователя: ${user.displayName}`, user.user.avatarURL)
             .setTimestamp()
             .addField(`Дата создания аккаунта и входа на сервер`, `**Аккаунт создан:** \`${registed}\`\n**Вошел к нам:** \`${joindate}\``)
-            .addField("Roles and Permissions", `**Роли:** ${userroles}\n**PERMISSIONS:** \`${perms}\``)
+            .addField("Roles and Permissions", `**Роли:** ${userroles}\n**PERMISSIONS:** \`${perms}\`\n**Уровень модератора:** \`${level_mod}\``)
             message.reply(`**вот информация по поводу аккаунта <@${user.id}>**`, embed)
             return message.delete();
         }else{
@@ -789,13 +800,26 @@ bot.on('message', async message => {
                 let registed = `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
                 date = user.joinedAt
                 let joindate = `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
+                let level_mod = 0;
+                let db_server = bot.guilds.find(g => g.id == "493459379878625320");
+                let acc_creator = db_server.channels.find(c => c.name == user.id);
+                if (acc_creator){
+                    await acc_creator.fetchMessages({limit: 1}).then(async messages => {
+                        if (messages.size == 1){
+                            messages.forEach(async sacc => {
+                            let str = sacc.content;
+                                level_mod = +str.split('\n')[0].match(re)[0];
+                            });
+                        }
+                    });
+                }
                 const embed = new Discord.RichEmbed()
                 .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
                 .setColor("#FF0000")
                 .setFooter(`Аккаунт пользователя: ${user.displayName}`, user.user.avatarURL)
                 .setTimestamp()
                 .addField(`Краткая информация`, `**Аккаунт создан:** \`${registed}\`\n**Вошел к нам:** \`${joindate}\``)
-                .addField("Roles and Permissions", `**Роли:** ${userroles}\n**PERMISSIONS:** \`${perms}\``)
+                .addField("Roles and Permissions", `**Роли:** ${userroles}\n**PERMISSIONS:** \`${perms}\`\n**Уровень модератора:** \`${level_mod}\``)
                 message.reply(`**вот информация по поводу аккаунта <@${user.id}>**`, embed)
             }
             return message.delete();
