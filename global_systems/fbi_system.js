@@ -150,20 +150,36 @@ exports.run = async (bot, message) => {
         federal_channels.push(message.guild.channels.find(c => c.name == 'Federal Bureau of Investigation'));
         federal_channels.push(message.guild.channels.find(c => c.name == 'Secret Channel F.B.I'));
         federal_channels.push(message.guild.channels.find(c => c.name == 'FBI Recruitment'));
+        let fbi_moderate_temp = [];
+        let fbi_user_temp = [];
         let fbi_moderate = [];
         let fbi_user = [];
         await federal_channels[args[1]].permissionOverwrites.forEach(async perm => {
             if (perm.type == `member`){
                 let perms = new Discord.Permissions(perm.allow);
                 if (perms.has("PRIORITY_SPEAKER")){
-                    fbi_moderate.push(`<@${perm.id}>`);
+                    fbi_moderate_temp.push(`<@${perm.id}>`);
+                    if (fbi_moderate_temp.length >= 3){
+                        fbi_moderate.push(`\`[${+fbi_moderate.length + 1}]\` ${fbi_moderate_temp.join(', ')}`);
+                        fbi_moderate_temp = [];
+                    }
                 }else{
-                    fbi_user.push(`<@${perm.id}>`);
+                    fbi_user_temp.push(`<@${perm.id}>`);
+                    if (fbi_user_temp.length >= 3){
+                        fbi_user.push(`\`[${+fbi_user.length + 1}]\` ${fbi_user_temp.join(', ')}`);
+                        fbi_user_temp = [];
+                    }
                 }
             }
         });
-        await message.reply(`**\`список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}\`\n${fbi_user.join(', ')}**`);
-        await message.reply(`**\`список модераторов канала: ${federal_channels[args[1]].name}\`\n${fbi_moderate.join(', ')}**`);
+        if (fbi_moderate_temp.length != 0){
+            fbi_moderate.push(`\`[${+fbi_moderate.length + 1}]\` ${fbi_moderate_temp.join(', ')}`);
+        }
+        if (fbi_user_temp.length != 0){
+            fbi_user.push(`\`[${+fbi_user.length + 1}]\` ${fbi_user_temp.join(', ')}`);
+        }
+        await message.reply(`**\`список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}\`\n${fbi_user.join('\n')}**`);
+        await message.reply(`**\`список модераторов канала: ${federal_channels[args[1]].name}\`\n${fbi_moderate.join('\n')}**`);
         return message.delete();
     }
 }
