@@ -21,6 +21,33 @@ exports.run = async (bot, message) => {
         }}).then(msg => msg.delete(35000))
         return message.delete();
     }
+
+    if (message.content.startsWith('/test_fleave')){
+        const args = message.content.slice('/fleave').split(/ +/)
+        let families = await message.guild.channels.filter(async channel => {
+            if (channel.type == "voice"){
+                if (channel.parent.name.toString() == `Family ROOMS`){
+                    let _member = false;
+                    await channel.permissionOverwrites.forEach(async perm => {
+                        if (perm.type == `member`){
+                            if (perm.id == message.author.id){
+                                _member = true;
+                            }
+                        }
+                    });
+                    if (_member = true){
+                        return channel.name;
+                    }
+                }
+            }
+        });
+        if (!families){
+            message.reply('false');
+        }else{
+            message.reply(families.join(', '));
+        }
+    }
+
     if (message.content.startsWith('/fleave')){
         const args = message.content.slice('/fleave').split(/ +/)
         if (!args[1]){
