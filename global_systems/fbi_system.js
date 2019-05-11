@@ -167,16 +167,10 @@ exports.run = async (bot, message) => {
         embed.addField(`Тип: ADD`, `${fbi_user.join('\n')}`);
         embed.addField(`Тип: MODERATE`, `${fbi_moderate.join('\n')}`);
         message.reply(embed).catch(async () => {
-            const embed_one = new Discord.RichEmbed();
-            const embed_two = new Discord.RichEmbed();
-            embed_one.setTitle(`Список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}`);
-            embed_two.setTitle(`Список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}`);
-            embed_one.setDescription('Тип: ADD\n' + fbi_user.join('\n'));
-            embed_two.setDescription('Тип: MODeRATE\n' + fbi_moderate.join('\n'));
-            embed_one.setFooter(`По запросу: ${message.member.displayName}`);
-            embed_two.setFooter(`По запросу: ${message.member.displayName}`);
-            await message.channel.send(embed_one);
-            await message.channel.send(embed_two);
+            await message.channel.send(`Список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}\n` +
+            `Тип: ADD\n${fbi_user.join('\n')}`);
+            await message.channel.send(`Список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}\n` +
+            `Тип: MODERATE\n${fbi_moderate.join('\n')}`);
         });
         return message.delete();
     }
