@@ -48,6 +48,35 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         });
     }
 
+    if (message.content.startsWith('/bizness')){
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 8000);
+        const args = message.content.slice(`/bizness`).split(/ +/);
+        if (!args[1]){
+            message.reply(`\`использование: /bizness [название товара]\``);
+            return message.delete();
+        }
+        const name = args.slice(1).join(' ');
+        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`, async (err, result, fields) => {
+            if (result.length < 1 || result.length > 1){
+                message.reply(`\`товар, который вы указали не найден или не ваш!\``).then(msg => msg.delete(12000));
+                return
+            }
+            const embed = new Discord.RichEmbed();
+            embed.setTitle(`Информация о ${result.name} [ID: ${result.id}]`);
+            embed.addField(`Основная информация о магазине`, `Владелец: ${message.member}\nПродаваемый товар: ${result[0].name}\nСумма за который продается товар: ${result[0].cost}\nКоличество денег в магазине: ${result[0].money}\nКоличество товара в магазине: ${result[0].amount}`);
+            embed.addField(`Основная информация о складе`, `Предметов на складе: ${result[0].storage}`);
+            message.reply(embed);
+            return message.delete();
+        });
+    }
+
     if (message.content.startsWith("/change_cost")){
         if (mysql_cooldown.has(message.author.id)){
             message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
@@ -110,7 +139,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                 message.reply(`\`товар, который вы указали не найден или не ваш!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            if (args[1] > result[0].cost_storage){
+            if (args[1] > result[0].money){
                 message.reply(`\`вы не сможете снять сумму более, чем есть в магазине!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
@@ -119,12 +148,12 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                 if (result.length > 1) return console.error(`Ошибка при выполнении, результатов много, error code: [#351]`);
                 if (result.length == 0){
                     connection.query(`INSERT INTO \`accounts\` (\`userid\`, \`points\`) VALUES ('${message.author.id}', '${args[1]}')`);
-                    connection.query(`UPDATE \`buy_dashboard\` SET cost_storage = cost_storage - ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
+                    connection.query(`UPDATE \`buy_dashboard\` SET money = money - ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
                     message.reply(`**\`вы успешно забрали с магазина ${args[1]}\` ₯**`);
                     return message.delete();
                 }else{
                     connection.query(`UPDATE \`accounts\` SET points = points + ${+args[1]} WHERE \`userid\` = '${message.author.id}'`);
-                    connection.query(`UPDATE \`buy_dashboard\` SET cost_storage = cost_storage - ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
+                    connection.query(`UPDATE \`buy_dashboard\` SET money = money - ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
                     message.reply(`**\`вы успешно забрали с магазина ${args[1]}\` ₯**`);
                     return message.delete();
                 }
@@ -160,7 +189,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                 message.reply(`\`товар, который вы указали не найден или не ваш!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            if (args[1] < result[0].cost_storage){
+            if (args[1] < result[0].money){
                 message.reply(`\`вы не можете добавить сумму, более чем у вас на аккаунте!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
@@ -172,7 +201,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                     return message.delete();
                 }
                 connection.query(`UPDATE \`accounts\` SET points = points - ${+args[1]} WHERE \`userid\` = '${message.author.id}'`);
-                connection.query(`UPDATE \`buy_dashboard\` SET cost_storage = cost_storage + ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
+                connection.query(`UPDATE \`buy_dashboard\` SET money = money + ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
                 message.reply(`**\`вы успешно положили в магазин ${args[1]}\` ₯**`);
                 return message.delete();
             });
@@ -293,10 +322,10 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                     return message.delete();
                 }
                 connection.query(`UPDATE \`accounts\` SET points = points - ${+result_mag[0].cost} WHERE \`userid\` = '${message.author.id}'`);
-                connection.query(`UPDATE \`buy_dashboard\` SET cost_storage = cost_storage + ${+result_mag[0].cost} WHERE \`name\` = '${name}'`);
+                connection.query(`UPDATE \`buy_dashboard\` SET money = money + ${+result_mag[0].cost} WHERE \`name\` = '${name}'`);
                 connection.query(`UPDATE \`buy_dashboard\` SET amount = amount - 1 WHERE \`name\` = '${name}'`);
                 eval(result_mag[0].code);
-                message.reply(`**\`вы успешно пробрели товар!\`**`).then(msg => msg.delete(12000));
+                message.reply(`**\`вы успешно получили товар!\`**`).then(msg => msg.delete(12000));
                 return message.delete();
             });
         });
