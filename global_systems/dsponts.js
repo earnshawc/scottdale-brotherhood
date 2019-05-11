@@ -208,7 +208,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                 return message.delete();
             }
             if (args[1] > result[0].storage){
-                message.reply(`\`в магазине недостаточно товаров для пополнения!\``).then(msg => msg.delete(12000));
+                message.reply(`\`на складе недостаточно товаров для пополнения!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
             connection.query(`UPDATE \`buy_dashboard\` SET storage = storage - ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
