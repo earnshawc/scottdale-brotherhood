@@ -166,7 +166,7 @@ exports.run = async (bot, message) => {
         embed.setTitle(`Список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}`);
         embed.addField(`Тип: ADD`, `${fbi_user.join('\n')}`);
         embed.addField(`Тип: MODERATE`, `${fbi_moderate.join('\n')}`);
-        message.reply(embed).then(msg => {
+        message.reply(embed).then(async msg => {
             if (!msg){
                 await message.channel.send(`Список пользователей имеющих доступ к каналу: ${federal_channels[args[1]].name}\n` +
                 `Тип: ADD\n${fbi_user.join('\n')}`);
