@@ -42,7 +42,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.2';
+const version = '5.0.3';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -747,7 +747,7 @@ bot.on('message', async message => {
             let joindate = `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
             const embed = new Discord.RichEmbed()
             .setAuthor(`© 2018 Risbot Company™`, `https://pp.userapi.com/c849132/v849132806/b35ca/2RD_7K2ysns.jpg?ava=1`, "https://vk.com/risbot")
-	    .setColor("#FF0000")
+	        .setColor("#FF0000")
             .setFooter(`Аккаунт пользователя: ${user.displayName}`, user.user.avatarURL)
             .setTimestamp()
             .addField(`Дата создания аккаунта и входа на сервер`, `**Аккаунт создан:** \`${registed}\`\n**Вошел к нам:** \`${joindate}\``)

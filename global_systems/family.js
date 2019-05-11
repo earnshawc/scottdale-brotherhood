@@ -22,36 +22,6 @@ exports.run = async (bot, message) => {
         return message.delete();
     }
 
-    if (message.content.startsWith('/test_fleave')){
-        const args = message.content.slice('/fleave').split(/ +/)
-        let families = [];
-        let promise = await new Promise(async (resolve, reject) => {
-            await message.guild.channels.filter(async channel => {
-                if (channel.type == "voice"){
-                    if (channel.parent.name.toString() == `Family ROOMS`){
-                        await channel.permissionOverwrites.forEach(async perm => {
-                            if (perm.type == `member`){
-                                if (perm.id == message.author.id){
-                                    console.log(`families.push(${channel.name});`)
-                                    families.push(channel.name);
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-            return resolve;
-        });
-        await promise.then(async () => {
-            console.log(families);
-            if (!families){
-                message.reply('false');
-            }else{
-                message.reply()
-            }
-        });
-    }
-
     if (message.content.startsWith('/fleave')){
         const args = message.content.slice('/fleave').split(/ +/)
         if (!args[1]){
