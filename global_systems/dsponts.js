@@ -123,7 +123,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                 message.reply(`\`магазин и так имеет статус: ${args[2]}!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            connection.query(`UPDATE \`buy_dashboard\` SET status = ${args[2]} WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`);
+            connection.query(`UPDATE \`buy_dashboard\` SET status = '${args[2]}' WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`);
             message.reply(`\`вы успешно сменили магазину статус!\``).then(msg => msg.delete(12000));
             return message.delete();
         });
