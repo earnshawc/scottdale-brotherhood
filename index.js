@@ -42,7 +42,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.17-hide';
+const version = '5.0.18-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -330,7 +330,7 @@ async function special_discord_update(){
                     let g_member = vostok.members.get(member.id);
                     if (g_member.roles.some(r => ['★ Администратор ★', '★ Старший Модератор ★'].includes(r.name))){
                         server_were_admin.push('Восточный округ');
-                    }else if (g_member.roles.some(r => ['★ Модератор ★', '★ Младший Модератор ★'].includes(r.name))){
+                    }else if (g_member.roles.some(r => ['★ Модератор ★', '★ Хелпер ★'].includes(r.name))){
                         server_were_helper.push('Восточный округ');
                     }
                 }
