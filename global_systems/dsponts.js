@@ -147,7 +147,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
             message.reply(`\`использование: /change_cost [номер заведения] [сумма]\``);
             return message.delete();
         }
-        if (typeof (args[2]) != "number" || +args[2] <= 0){
+        if (typeof (+args[2]) != "number" || +args[2] <= 0){
             message.reply(`\`использование: /change_cost [номер заведения] [сумма]\``);
             return message.delete();
         }
@@ -180,7 +180,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
             message.reply(`\`использование: /get_money [номер заведения] [сумма]\``);
             return message.delete();
         }
-        if (typeof (args[2]) != "number" || +args[2] <= 0){
+        if (typeof (+args[2]) != "number" || +args[2] <= 0){
             message.reply(`\`использование: /get_money [номер заведения] [сумма]\``);
             return message.delete();
         }
@@ -233,7 +233,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
             message.reply(`\`использование: /add_money [номер заведения] [сумма]\``);
             return message.delete();
         }
-        if (typeof (args[2]) != "number" || +args[2] <= 0){
+        if (typeof (+args[2]) != "number" || +args[2] <= 0){
             message.reply(`\`использование: /add_money [номер заведения] [сумма]\``);
             return message.delete();
         }
