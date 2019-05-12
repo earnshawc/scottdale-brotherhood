@@ -347,7 +347,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                     message.reply(`**\`у вас недостаточно средств.\`**`).then(msg => msg.delete(12000));
                     return message.delete();
                 }
-                var answer = eval('(function() {' + result_mag[0].code + '}())');
+                var answer = eval('(function() {\n' + result_mag[0].code + '\n}())');
                 if (answer == '1'){
                     connection.query(`UPDATE \`accounts\` SET points = points - ${+result_mag[0].cost} WHERE \`userid\` = '${message.author.id}'`);
                     connection.query(`UPDATE \`buy_dashboard\` SET money = money + ${+result_mag[0].cost} WHERE \`name\` = '${name}'`);
