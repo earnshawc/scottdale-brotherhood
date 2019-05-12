@@ -292,7 +292,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                 message.reply(`\`заведение, которое вы указали не найдено или не ваше!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            if (args[1] > result[0].storage){
+            if (args[2] > result[0].storage){
                 message.reply(`\`на складе недостаточно товаров для пополнения! [storage: ${result[0].storage}]\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
