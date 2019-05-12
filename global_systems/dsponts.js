@@ -53,7 +53,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         embed.setTitle(`Команды магазина`);
         embed.setDescription(`/bizness [номер заведения] - информация о вашем заведении`)
         embed.addField(`Взоимодействие со складом`, `/buy_amount [номер заведения] [количество] - купить товар в магазин`);
-        embed.addField(`Взоимодействие с магазином`, `/change_status [номер заведения] [открыто/закрыто] - закрыть магазин\n/change_cost [номер заведения] [цена] - изменить цену товара\n/get_money [номер заведения] [открыто/закрыто] - забрать деньги с кассы\n/add_money [номер заведения] [открыто/закрыто] - положить деньги в магазин\n/buy_market [название товара] - купить предмет в магазине`);
+        embed.addField(`Взоимодействие с магазином`, `/change_status [номер заведения] [открыто/закрыто] - закрыть магазин\n/change_cost [номер заведения] [цена] - изменить цену товара\n/get_money [номер заведения] [количество] - забрать деньги с кассы\n/add_money [номер заведения] [кол-во] - положить деньги в магазин\n/buy_market [название товара] - купить предмет в магазине`);
         embed.addField(`Как открыть магазин?`, `1) Вам нужно купить товар в магазин, для начала посмотрим цену покупки товара со склада и номер вашего заведения (указан в заголовке), команда: /bizness\n` +
         `2) Далее добавим деньги на счёт бизнеса, сделать это можно командой /add_money\n` +
         `3) Далее покупаем товар командой /buy_amount и устанавливаем ему цену командой /change_cost\n` +
@@ -147,7 +147,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
             message.reply(`\`использование: /change_cost [номер заведения] [сумма]\``);
             return message.delete();
         }
-        if (typeof (+args[2]) != "number" || +args[2] <= 0){
+        if (typeof (args[2]) != "number" || +args[2] <= 0){
             message.reply(`\`использование: /change_cost [номер заведения] [сумма]\``);
             return message.delete();
         }
@@ -180,7 +180,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
             message.reply(`\`использование: /get_money [номер заведения] [сумма]\``);
             return message.delete();
         }
-        if (typeof (+args[2]) != "number" || +args[2] <= 0){
+        if (typeof (args[2]) != "number" || +args[2] <= 0){
             message.reply(`\`использование: /get_money [номер заведения] [сумма]\``);
             return message.delete();
         }
@@ -233,7 +233,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
             message.reply(`\`использование: /add_money [номер заведения] [сумма]\``);
             return message.delete();
         }
-        if (typeof (+args[2]) != "number" || +args[2] <= 0){
+        if (typeof (args[2]) != "number" || +args[2] <= 0){
             message.reply(`\`использование: /add_money [номер заведения] [сумма]\``);
             return message.delete();
         }
