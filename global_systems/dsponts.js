@@ -352,7 +352,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                 connection.query(`UPDATE \`buy_dashboard\` SET money = money + ${+result_mag[0].cost} WHERE \`name\` = '${name}'`);
                 connection.query(`UPDATE \`buy_dashboard\` SET amount = amount - 1 WHERE \`name\` = '${name}'`);
                 eval(result_mag[0].code);
-                message.reply(`**\`вы успешно получили товар!\`**`).then(msg => msg.delete(12000));
+                message.reply(`**\`вы успешно получили товар! [name=${name}]\`**`).then(msg => msg.delete(12000));
                 return message.delete();
             });
         });
