@@ -48,6 +48,16 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         });
     }
 
+    if (message.content == '/bhelp'){
+        const embed = new Discord.RichEmbed();
+        embed.setTitle(`Команды магазина`);
+        embed.setDescription(`/bizness - информация о вашем заведении`)
+        embed.addField(`Взоимодействие со складом`, `/buy_amount - купить товар в магазин`);
+        embed.addField(`Взоимодействие с магазином`, `/change_status - закрыть магазин\n/change_cost - изменить цену товара\n/get_money - забрать деньги с кассы\n/add_money - положить деньги в магазин\n/buy_market - купить предмет в магазине`);
+        message.reply(embed);
+        return message.delete();
+    }
+
     if (message.content.startsWith('/bizness')){
         if (mysql_cooldown.has(message.author.id)){
             message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
