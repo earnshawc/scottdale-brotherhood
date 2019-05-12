@@ -51,9 +51,15 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
     if (message.content == '/bhelp'){
         const embed = new Discord.RichEmbed();
         embed.setTitle(`Команды магазина`);
-        embed.setDescription(`/bizness - информация о вашем заведении`)
-        embed.addField(`Взоимодействие со складом`, `/buy_amount - купить товар в магазин`);
-        embed.addField(`Взоимодействие с магазином`, `/change_status - закрыть магазин\n/change_cost - изменить цену товара\n/get_money - забрать деньги с кассы\n/add_money - положить деньги в магазин\n/buy_market - купить предмет в магазине`);
+        embed.setDescription(`/bizness [номер заведения] - информация о вашем заведении`)
+        embed.addField(`Взоимодействие со складом`, `/buy_amount [номер заведения] [количество] - купить товар в магазин`);
+        embed.addField(`Взоимодействие с магазином`, `/change_status [номер заведения] [открыто/закрыто] - закрыть магазин\n/change_cost [номер заведения] [цена] - изменить цену товара\n/get_money [номер заведения] [открыто/закрыто] - забрать деньги с кассы\n/add_money [номер заведения] [открыто/закрыто] - положить деньги в магазин\n/buy_market [название товара] - купить предмет в магазине`);
+        embed.addField(`Как открыть магазин?`, `1) Вам нужно купить товар в магазин, для начала посмотрим цену покупки товара со склада и номер вашего заведения (указан в заголовке), команда: /bizness\n` +
+        `2) Далее добавим деньги на счёт бизнеса, сделать это можно командой /add_money\n` +
+        `3) Далее покупаем товар командой /buy_amount и устанавливаем ему цену командой /change_cost\n` +
+        `4) Открываем магазин. Команда: /change_status\n` +
+        `5) Покупатель прописывает команду /buy_market [название товара] и вы получаете прибыль на счёт заведения\n` + 
+        `6) Снять прибыль можно командой /get_money`);
         message.reply(embed);
         return message.delete();
     }
@@ -69,12 +75,13 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         }, 8000);
         const args = message.content.slice(`/bizness`).split(/ +/);
         if (!args[1]){
-            message.reply(`\`использование: /bizness [номер заведения]\``);
+            message.reply(`\`использование: /bizness [название товара]\``);
             return message.delete();
         }
-        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`, async (err, result, fields) => {
+        let name = args.slice(1).join(' ');
+        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`owner\` = '${message.author.id}' AND \`name\` = '${name}'`, async (err, result, fields) => {
             if (result.length < 1 || result.length > 1){
-                message.reply(`\`товар, который вы указали не найден или не ваш!\``).then(msg => msg.delete(12000));
+                message.reply(`\`заведение, которое вы пытаетесь найти не найдено или не ваше!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
             const embed = new Discord.RichEmbed();
@@ -116,7 +123,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                 message.reply(`\`магазин и так имеет статус: ${args[2]}!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            connection.query(`UPDATE \`buy_dashboard\` SET status = ${args[1]} WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`);
+            connection.query(`UPDATE \`buy_dashboard\` SET status = ${args[2]} WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`);
             message.reply(`\`вы успешно сменили магазину статус!\``).then(msg => msg.delete(12000));
             return message.delete();
         });
@@ -147,10 +154,6 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`, async (err, result, fields) => {
             if (result.length < 1 || result.length > 1){
                 message.reply(`\`заведение, которое вы указали не найдено или не ваше!\``).then(msg => msg.delete(12000));
-                return message.delete();
-            }
-            if (result[0].status == 'закрыто'){
-                message.reply(`\`магазин временно закрыт владельцем!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
             connection.query(`UPDATE \`buy_dashboard\` SET cost = ${args[2]} WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`);
@@ -186,8 +189,8 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                 message.reply(`\`заведение, которое вы указали не найдено или не ваше!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            if (result[0].status == 'закрыто'){
-                message.reply(`\`магазин временно закрыт владельцем!\``).then(msg => msg.delete(12000));
+            if (result[0].status != 'закрыто'){
+                message.reply(`\`магазин должен быть закрыт!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
             if (args[2] > result[0].money){
@@ -239,8 +242,8 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                 message.reply(`\`заведение, которое вы указали не найдено или не ваше!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            if (result[0].status == 'закрыто'){
-                message.reply(`\`магазин временно закрыт владельцем!\``).then(msg => msg.delete(12000));
+            if (result[0].status != 'закрыто'){
+                message.reply(`\`магазин должен быть закрыт!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
             connection.query(`SELECT * FROM \`accounts\` WHERE \`userid\` = '${message.author.id}'`, async (error, result, packets) => {
@@ -287,10 +290,6 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`, async (err, result, fields) => {
             if (result.length < 1 || result.length > 1){
                 message.reply(`\`заведение, которое вы указали не найдено или не ваше!\``).then(msg => msg.delete(12000));
-                return message.delete();
-            }
-            if (result[0].status == 'закрыто'){
-                message.reply(`\`магазин временно закрыт владельцем!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
             if (args[1] > result[0].storage){
