@@ -286,7 +286,6 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
             message.reply(`\`использование: /buy_amount [номер заведения] [кол-во]\``);
             return message.delete();
         }
-        const name = args.slice(2).join(' ');
         connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`, async (err, result, fields) => {
             if (result.length < 1 || result.length > 1){
                 message.reply(`\`заведение, которое вы указали не найдено или не ваше!\``).then(msg => msg.delete(12000));
@@ -348,12 +347,17 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                     message.reply(`**\`у вас недостаточно средств.\`**`).then(msg => msg.delete(12000));
                     return message.delete();
                 }
-                eval(result_mag[0].code);
-                connection.query(`UPDATE \`accounts\` SET points = points - ${+result_mag[0].cost} WHERE \`userid\` = '${message.author.id}'`);
-                connection.query(`UPDATE \`buy_dashboard\` SET money = money + ${+result_mag[0].cost} WHERE \`name\` = '${name}'`);
-                connection.query(`UPDATE \`buy_dashboard\` SET amount = amount - 1 WHERE \`name\` = '${name}'`);
-                message.reply(`**\`вы успешно получили товар! [name=${name}]\`**`).then(msg => msg.delete(12000));
-                return message.delete();
+                var answer = eval('(function() {' + result_mag[0].code + '}())');
+                if (answer == '1'){
+                    connection.query(`UPDATE \`accounts\` SET points = points - ${+result_mag[0].cost} WHERE \`userid\` = '${message.author.id}'`);
+                    connection.query(`UPDATE \`buy_dashboard\` SET money = money + ${+result_mag[0].cost} WHERE \`name\` = '${name}'`);
+                    connection.query(`UPDATE \`buy_dashboard\` SET amount = amount - 1 WHERE \`name\` = '${name}'`);
+                    message.reply(`**\`вы успешно получили товар! [name=${name}]\`**`).then(msg => msg.delete(12000));
+                    return message.delete();
+                }else{
+                    message.reply(`**\`ошибка при получении, сообщите техническому администратору! [name=${name}]\`**`).then(msg => msg.delete(12000));
+                    return message.delete();
+                }
             });
         });
     }

@@ -42,7 +42,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.15-hide';
+const version = '5.0.16-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -441,7 +441,7 @@ async function update_sellers(){
                 });
                 const table = new Discord.RichEmbed();
                 table.setTitle(`**Ассортимент Discord-сервера**`);
-                table.setDescription(`**В данном канале вы можете приобрести товары у администрации discord-сервера!\nВ качестве цены указана валюта - Discord Point (₯).**`);
+                table.setDescription(`**В данном канале вы можете приобрести товары у администрации discord-сервера! В качестве цены указана валюта - Discord Point (₯).**`);
                 table.setColor(`#0601ff`);
                 if (names.length > 0) table.addField(`Название товара`, `${names.join('\n')}`, true);
                 if (amount.length > 0) table.addField(`В наличии`, `${amount.join('\n')}`, true);
