@@ -355,7 +355,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                     message.reply(`**\`вы успешно получили товар! [name=${name}]\`**`).then(msg => msg.delete(12000));
                     return message.delete();
                 }else{
-                    message.reply(`**\`ошибка при получении, сообщите техническому администратору! [name=${name}]\`**`).then(msg => msg.delete(12000));
+                    message.reply(`**\`ошибка при получении! [name=${name}]\`**`).then(msg => msg.delete(12000));
                     return message.delete();
                 }
             });
