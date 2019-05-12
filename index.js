@@ -443,9 +443,9 @@ async function update_sellers(){
                 table.setTitle(`**Ассортимент Discord-сервера**`);
                 table.setDescription(`**В данном канале вы можете приобрести товары у администрации discord-сервера!\nВ качестве цены указана валюта - Discord Point (₯).**`);
                 table.setColor(`#0601ff`);
-                table.addField(`Название товара`, `${names.join('\n')}`, true);
-                table.addField(`В наличии`, `${amount.join('\n')}`, true);
-                table.addField(`Цена`, `${cost.join(' ₯\n')} ₯`, true);
+                if (names.length > 0) table.addField(`Название товара`, `${names.join('\n')}`, true);
+                if (amount.length > 0) table.addField(`В наличии`, `${amount.join('\n')}`, true);
+                if (cost.length > 0) table.addField(`Цена`, `${cost.join(' ₯\n')} ₯`, true);
                 table.setFooter(`© Сopyright 2019`, server.icon_url);
                 let msg = messages.first();
                 if (!msg){
