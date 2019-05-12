@@ -59,20 +59,55 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         }, 8000);
         const args = message.content.slice(`/bizness`).split(/ +/);
         if (!args[1]){
-            message.reply(`\`использование: /bizness [название товара]\``);
+            message.reply(`\`использование: /bizness [номер заведения]\``);
             return message.delete();
         }
-        const name = args.slice(1).join(' ');
-        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`, async (err, result, fields) => {
+        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`, async (err, result, fields) => {
             if (result.length < 1 || result.length > 1){
                 message.reply(`\`товар, который вы указали не найден или не ваш!\``).then(msg => msg.delete(12000));
-                return
+                return message.delete();
             }
             const embed = new Discord.RichEmbed();
             embed.setTitle(`Информация о ${result[0].name} [ID: ${result[0].id}]`);
-            embed.addField(`Основная информация о магазине`, `Владелец: ${message.member}\nПродаваемый товар: ${result[0].name}\nСумма за который продается товар: ${result[0].cost}\nКоличество денег в магазине: ${result[0].money}\nКоличество товара в магазине: ${result[0].amount}`);
-            embed.addField(`Основная информация о складе`, `Предметов на складе: ${result[0].storage}`);
+            embed.setColor('#FF0000');
+            embed.addField(`Информация о владельце заведения`, `**Владелец: <@${result[0].owner}>\nОписание: ${result[0].description}**`);
+            embed.addField(`Основная информация о магазине`, `**Статус заведения: ${result[0].status}\nПродаваемый товар: ${result[0].name}\nЦена за 1 штуку: ${result[0].cost} ₯\nКоличество товара: ${result[0].amount}\nДенег в магазине: ${result[0].money} ₯**`);
+            embed.addField(`Основная информация о складе`, `**Предметов на складе: ${result[0].storage}\nЦена за 1 штуку: ${result[0].storage_cost} ₯**`);
+            embed.setFooter(`© Сopyright 2019`);
             message.reply(embed);
+            return message.delete();
+        });
+    }
+
+    if (message.content.startsWith("/change_status")){
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 8000);
+        const args = message.content.slice(`/change_status`).split(/ +/);
+        if (!args[1] || !args[2]){
+            message.reply(`\`использование: /change_status [номер заведения] [открыто/закрыто]\``);
+            return message.delete();
+        }
+        if (!['открыто', 'закрыто'].includes(args[2])){
+            message.reply(`\`использование: /change_status [номер заведения] [открыто/закрыто]\``);
+            return message.delete();
+        }
+        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`, async (err, result, fields) => {
+            if (result.length < 1 || result.length > 1){
+                message.reply(`\`товар, который вы указали не найден или не ваш!\``).then(msg => msg.delete(12000));
+                return message.delete();
+            }
+            if (result[0].status == args[2]){
+                message.reply(`\`магазин и так имеет статус: ${args[2]}!\``).then(msg => msg.delete(12000));
+                return message.delete();
+            }
+            connection.query(`UPDATE \`buy_dashboard\` SET status = ${args[1]} WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`);
+            message.reply(`\`вы успешно сменили магазину статус!\``).then(msg => msg.delete(12000));
             return message.delete();
         });
     }
@@ -88,30 +123,33 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         }, 8000);
         const args = message.content.slice(`/change_cost`).split(/ +/);
         if (!args[1]){
-            message.reply(`\`использование: /change_cost [сумма] [название товара]\``);
-            return message.delete();
-        }
-        if (typeof (+args[1]) != "number" || +args[1] <= 0){
-            message.reply(`\`использование: /change_cost [сумма] [название товара]\``);
+            message.reply(`\`использование: /change_cost [номер заведения] [сумма]\``);
             return message.delete();
         }
         if (!args[2]){
-            message.reply(`\`использование: /change_cost [сумма] [название товара]\``);
+            message.reply(`\`использование: /change_cost [номер заведения] [сумма]\``);
             return message.delete();
         }
-        const name = args.slice(2).join(' ');
-        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`, async (err, result, fields) => {
+        if (typeof (+args[2]) != "number" || +args[2] <= 0){
+            message.reply(`\`использование: /change_cost [номер заведения] [сумма]\``);
+            return message.delete();
+        }
+        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`, async (err, result, fields) => {
             if (result.length < 1 || result.length > 1){
-                message.reply(`\`товар, который вы указали не найден или не ваш!\``).then(msg => msg.delete(12000));
+                message.reply(`\`заведение, которое вы указали не найдено или не ваше!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            connection.query(`UPDATE \`buy_dashboard\` SET cost = ${args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
-            message.reply(`**\`обновлено! Изменения вступят в силу после обновления таблицы.\`**`);
+            if (result[0].status == 'закрыто'){
+                message.reply(`\`магазин временно закрыт владельцем!\``).then(msg => msg.delete(12000));
+                return message.delete();
+            }
+            connection.query(`UPDATE \`buy_dashboard\` SET cost = ${args[2]} WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`);
+            message.reply(`**изменения сохранены. Теперь товар стоит ${args[2]} ₯**`);
             return message.delete();
         });
     }
 
-    if (message.content.startsWith("/get_cost")){
+    if (message.content.startsWith("/get_money")){
         if (mysql_cooldown.has(message.author.id)){
             message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
             return message.delete();
@@ -120,48 +158,51 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         setTimeout(() => {
             if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
         }, 8000);
-        const args = message.content.slice(`/get_cost`).split(/ +/);
+        const args = message.content.slice(`/get_money`).split(/ +/);
         if (!args[1]){
-            message.reply(`\`использование: /get_cost [сумма] [название товара]\``);
-            return message.delete();
-        }
-        if (typeof (+args[1]) != "number" || +args[1] <= 0){
-            message.reply(`\`использование: /get_cost [сумма] [название товара]\``);
+            message.reply(`\`использование: /get_money [номер заведения] [сумма]\``);
             return message.delete();
         }
         if (!args[2]){
-            message.reply(`\`использование: /get_cost [сумма] [название товара]\``);
+            message.reply(`\`использование: /get_money [номер заведения] [сумма]\``);
             return message.delete();
         }
-        const name = args.slice(2).join(' ');
-        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`, async (err, result, fields) => {
+        if (typeof (+args[2]) != "number" || +args[2] <= 0){
+            message.reply(`\`использование: /get_money [номер заведения] [сумма]\``);
+            return message.delete();
+        }
+        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`, async (err, result, fields) => {
             if (result.length < 1 || result.length > 1){
-                message.reply(`\`товар, который вы указали не найден или не ваш!\``).then(msg => msg.delete(12000));
+                message.reply(`\`заведение, которое вы указали не найдено или не ваше!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            if (args[1] > result[0].money){
-                message.reply(`\`вы не сможете снять сумму более, чем есть в магазине!\``).then(msg => msg.delete(12000));
+            if (result[0].status == 'закрыто'){
+                message.reply(`\`магазин временно закрыт владельцем!\``).then(msg => msg.delete(12000));
+                return message.delete();
+            }
+            if (args[2] > result[0].money){
+                message.reply(`\`в магазине нет такого количества средств для снятия!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
             connection.query(`SELECT \`id\`, \`userid\`, \`points\` FROM \`accounts\` WHERE \`userid\` = '${message.author.id}'`, async (error, result, packets) => {
                 if (error) return console.error(error);
                 if (result.length > 1) return console.error(`Ошибка при выполнении, результатов много, error code: [#351]`);
                 if (result.length == 0){
-                    connection.query(`INSERT INTO \`accounts\` (\`userid\`, \`points\`) VALUES ('${message.author.id}', '${args[1]}')`);
-                    connection.query(`UPDATE \`buy_dashboard\` SET money = money - ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
-                    message.reply(`**\`вы успешно забрали с магазина ${args[1]}\` ₯**`);
+                    connection.query(`INSERT INTO \`accounts\` (\`userid\`, \`points\`) VALUES ('${message.author.id}', '${args[2]}')`);
+                    connection.query(`UPDATE \`buy_dashboard\` SET money = money - ${+args[2]} WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`);
+                    message.reply(`**вы успешно сняли с магазина ${args[2]} ₯**`);
                     return message.delete();
                 }else{
-                    connection.query(`UPDATE \`accounts\` SET points = points + ${+args[1]} WHERE \`userid\` = '${message.author.id}'`);
-                    connection.query(`UPDATE \`buy_dashboard\` SET money = money - ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
-                    message.reply(`**\`вы успешно забрали с магазина ${args[1]}\` ₯**`);
+                    connection.query(`UPDATE \`accounts\` SET points = points + ${+args[2]} WHERE \`userid\` = '${message.author.id}'`);
+                    connection.query(`UPDATE \`buy_dashboard\` SET money = money - ${+args[2]} WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`);
+                    message.reply(`**вы успешно забрали с магазина ${args[2]} ₯**`);
                     return message.delete();
                 }
             });
         });
     }
 
-    if (message.content.startsWith("/add_cost")){
+    if (message.content.startsWith("/add_money")){
         if (mysql_cooldown.has(message.author.id)){
             message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
             return message.delete();
@@ -170,45 +211,47 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         setTimeout(() => {
             if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
         }, 8000);
-        const args = message.content.slice(`/get_cost`).split(/ +/);
+        const args = message.content.slice(`/add_money`).split(/ +/);
         if (!args[1]){
-            message.reply(`\`использование: /add_cost [сумма] [название товара]\``);
-            return message.delete();
-        }
-        if (typeof (+args[1]) != "number" || +args[1] <= 0){
-            message.reply(`\`использование: /add_cost [сумма] [название товара]\``);
+            message.reply(`\`использование: /add_money [номер заведения] [сумма]\``);
             return message.delete();
         }
         if (!args[2]){
-            message.reply(`\`использование: /add_cost [сумма] [название товара]\``);
+            message.reply(`\`использование: /add_money [номер заведения] [сумма]\``);
             return message.delete();
         }
-        const name = args.slice(2).join(' ');
-        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`, async (err, result, fields) => {
+        if (typeof (+args[2]) != "number" || +args[2] <= 0){
+            message.reply(`\`использование: /add_money [номер заведения] [сумма]\``);
+            return message.delete();
+        }
+        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`, async (err, result, fields) => {
             if (result.length < 1 || result.length > 1){
-                message.reply(`\`товар, который вы указали не найден или не ваш!\``).then(msg => msg.delete(12000));
+                message.reply(`\`заведение, которое вы указали не найдено или не ваше!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            if (args[1] < result[0].money){
-                message.reply(`\`вы не можете добавить сумму, более чем у вас на аккаунте!\``).then(msg => msg.delete(12000));
+            if (result[0].status == 'закрыто'){
+                message.reply(`\`магазин временно закрыт владельцем!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            connection.query(`SELECT \`id\`, \`userid\`, \`points\` FROM \`accounts\` WHERE \`userid\` = '${message.author.id}'`, async (error, result, packets) => {
+            connection.query(`SELECT * FROM \`accounts\` WHERE \`userid\` = '${message.author.id}'`, async (error, result, packets) => {
                 if (error) return console.error(error);
                 if (result.length > 1) return console.error(`Ошибка при выполнении, результатов много, error code: [#351]`);
                 if (result.length == 0){
                     message.reply(`\`вы не можете добавить сумму, более чем у вас на аккаунте!\``).then(msg => msg.delete(12000));
                     return message.delete();
+                }else if (result[0].points < args[2]){
+                    message.reply(`\`вы не можете добавить сумму, более чем у вас на аккаунте!\``).then(msg => msg.delete(12000));
+                    return message.delete();
                 }
-                connection.query(`UPDATE \`accounts\` SET points = points - ${+args[1]} WHERE \`userid\` = '${message.author.id}'`);
-                connection.query(`UPDATE \`buy_dashboard\` SET money = money + ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
-                message.reply(`**\`вы успешно положили в магазин ${args[1]}\` ₯**`);
+                connection.query(`UPDATE \`accounts\` SET points = points - ${+args[2]} WHERE \`userid\` = '${message.author.id}'`);
+                connection.query(`UPDATE \`buy_dashboard\` SET money = money + ${+args[2]} WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`);
+                message.reply(`**вы успешно положили в магазин ${args[2]} ₯**`);
                 return message.delete();
             });
         });
     }
 
-    if (message.content.startsWith("/add_amount")){
+    if (message.content.startsWith("/buy_amount")){
         if (mysql_cooldown.has(message.author.id)){
             message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
             return message.delete();
@@ -217,74 +260,45 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         setTimeout(() => {
             if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
         }, 8000);
-        const args = message.content.slice(`/add_amount`).split(/ +/);
+        const args = message.content.slice(`/buy_amount`).split(/ +/);
         if (!args[1]){
-            message.reply(`\`использование: /add_amount [кол-во] [название товара]\``);
-            return message.delete();
-        }
-        if (!isInteger(+args[1]) || +args[1] <= 0){
-            message.reply(`\`использование: /add_amount [кол-во] [название товара]\``);
+            message.reply(`\`использование: /buy_amount [номер заведения] [кол-во]\``);
             return message.delete();
         }
         if (!args[2]){
-            message.reply(`\`использование: /add_amount [кол-во] [название товара]\``);
+            message.reply(`\`использование: /buy_amount [номер заведения] [кол-во]\``);
+            return message.delete();
+        }
+        if (!isInteger(+args[2]) || +args[2] <= 0){
+            message.reply(`\`использование: /buy_amount [номер заведения] [кол-во]\``);
             return message.delete();
         }
         const name = args.slice(2).join(' ');
-        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`, async (err, result, fields) => {
+        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`, async (err, result, fields) => {
             if (result.length < 1 || result.length > 1){
-                message.reply(`\`товар, который вы указали не найден или не ваш!\``).then(msg => msg.delete(12000));
+                message.reply(`\`заведение, которое вы указали не найдено или не ваше!\``).then(msg => msg.delete(12000));
+                return message.delete();
+            }
+            if (result[0].status == 'закрыто'){
+                message.reply(`\`магазин временно закрыт владельцем!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
             if (args[1] > result[0].storage){
                 message.reply(`\`на складе недостаточно товаров для пополнения! [storage: ${result[0].storage}]\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            connection.query(`UPDATE \`buy_dashboard\` SET storage = storage - ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
-            connection.query(`UPDATE \`buy_dashboard\` SET amount = amount + ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
-            message.reply(`\`вы успешно пополнили количество товара! Изменения вступят в силу после обновления таблицы.\``).then(msg => msg.delete(12000));
-            return message.delete();
-        });
-    };
-
-    if (message.content.startsWith("/get_amount")){
-        if (mysql_cooldown.has(message.author.id)){
-            message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
-            return message.delete();
-        }
-        mysql_cooldown.add(message.author.id);
-        setTimeout(() => {
-            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
-        }, 8000);
-        const args = message.content.slice(`/get_amount`).split(/ +/);
-        if (!args[1]){
-            message.reply(`\`использование: /get_amount [кол-во] [название товара]\``);
-            return message.delete();
-        }
-        if (!isInteger(+args[1]) || +args[1] <= 0){
-            message.reply(`\`использование: /get_amount [кол-во] [название товара]\``);
-            return message.delete();
-        }
-        if (!args[2]){
-            message.reply(`\`использование: /get_amount [кол-во] [название товара]\``);
-            return message.delete();
-        }
-        const name = args.slice(2).join(' ');
-        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`, async (err, result, fields) => {
-            if (result.length < 1 || result.length > 1){
-                message.reply(`\`товар, который вы указали не найден или не ваш!\``).then(msg => msg.delete(12000));
+            let cost = args[2] * result[0].storage_cost;
+            if (cost > result[0].money){
+                message.reply(`\`у вас недостаточно средств для покупки товаров! [money: ${result[0].money}]\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
-            if (args[1] > result[0].amount){
-                message.reply(`\`в магазине недостаточно товаров для пополнения склада!\``).then(msg => msg.delete(12000));
-                return message.delete();
-            }
-            connection.query(`UPDATE \`buy_dashboard\` SET storage = storage + ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
-            connection.query(`UPDATE \`buy_dashboard\` SET amount = amount - ${+args[1]} WHERE \`created\` = '${message.author.id}' AND \`name\` = '${name}'`);
-            message.reply(`\`вы успешно пополнили количество товара! Изменения вступят в силу после обновления таблицы.\``).then(msg => msg.delete(12000));
+            connection.query(`UPDATE \`buy_dashboard\` SET money = money - ${+cost} WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`);
+            connection.query(`UPDATE \`buy_dashboard\` SET storage = storage - ${+args[2]} WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`);
+            connection.query(`UPDATE \`buy_dashboard\` SET amount = amount + ${+args[2]} WHERE \`owner\` = '${message.author.id}' AND \`id\` = '${args[1]}'`);
+            message.reply(`\`вы успешно пополнили количество товара!\``).then(msg => msg.delete(12000));
             return message.delete();
         });
-    };
+    }
 
     if (message.content.startsWith("/buy_market")){
         if (mysql_cooldown.has(message.author.id)){
@@ -304,6 +318,10 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`name\` = '${name}'`, async (err_mag, result_mag, fields_mag) => {
             if (result_mag.length < 1 || result_mag.length > 1){
                 message.reply(`\`товар не найден!\``).then(msg => msg.delete(12000));
+                return message.delete();
+            }
+            if (result_mag[0].status == 'закрыто'){
+                message.reply(`\`магазин временно закрыт владельцем!\``).then(msg => msg.delete(12000));
                 return message.delete();
             }
             if (result_mag[0].amount <= 0){

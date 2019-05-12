@@ -42,7 +42,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.14-hide';
+const version = '5.0.15-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -429,7 +429,7 @@ async function update_sellers(){
         if (!server) return
         let channel = server.channels.find(c => c.name == 'buy-dashboard');
         if (!channel) return
-        connection.query(`SELECT * FROM \`buy_dashboard\``, async (err, result, fields) => {
+        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`status\` = 'открыто'`, async (err, result, fields) => {
             channel.fetchMessages({limit: 1}).then(async messages => {
                 let names = [];
                 let cost = [];
