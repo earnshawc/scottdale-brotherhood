@@ -1588,7 +1588,7 @@ spec_bot.on('raw', async event => {
                 global_cd.add(server.id);
                 setTimeout(() => {
                     if (global_cd.has(server.id)) global_cd.delete(server.id);
-                }, 7000);
+                }, 3000);
 
                 await doc.getRows(11, { offset: 1, limit: 5000000, orderby: 'col2' }, async (err, rows) => {
                     let db_account = rows.find(row => row.idпользователя == message.author.id);
@@ -1630,7 +1630,7 @@ spec_bot.on('raw', async event => {
                 global_cd.add(server.id);
                 setTimeout(() => {
                     if (global_cd.has(server.id)) global_cd.delete(server.id);
-                }, 7000);
+                }, 3000);
 
                 await doc.getRows(11, { offset: 1, limit: 5000000, orderby: 'col2' }, async (err, rows) => {
                     let db_account = rows.find(row => row.idпользователя == message.author.id);
@@ -1666,13 +1666,13 @@ spec_bot.on('raw', async event => {
                 global_cd.add(server.id);
                 setTimeout(() => {
                     if (global_cd.has(server.id)) global_cd.delete(server.id);
-                }, 7000);
+                }, 3000);
 
                 await doc.getRows(11, { offset: 1, limit: 5000000, orderby: 'col2' }, async (err, rows) => {
                     let db_account = rows.find(row => row.idпользователя == message.author.id);
                     if (db_account) db_account.del();
-                    await member.removeRole(role);
-                    all_chat.send(`${member}, **\`блокировка чата была снята модератором:\` ${member}**`);
+                    await message.member.removeRole(role);
+                    all_chat.send(`${message.member}, **\`блокировка чата была снята модератором:\` ${member}**`);
                 });
             }
         }
