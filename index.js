@@ -42,7 +42,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.19-hide';
+const version = '5.0.20-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -200,7 +200,7 @@ async function special_discord_update(){
         let central = user.guilds.get('325607843547840522');
         let eastern = user.guilds.get('465086262383083520');
         let north = user.guilds.get('477547500232769536');
-        let vostok = user.guilds.get('530848070284607499');
+        let vostok = user.guilds.get('577511138032484360');
         if (!phoenix || !tucson || !scottdale || !chandler || !brainburg || !saintrose || !mesa || !redrock || !yuma || !central || !eastern || !north || !vostok) console.log('Один из серверов не найден!');
         
         await doc.getRows(11, { offset: 1, limit: 5000000, orderby: 'col2' }, async (err, rows) => {
