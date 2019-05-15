@@ -42,7 +42,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.25-hide';
+const version = '5.0.26-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -1799,7 +1799,7 @@ spec_bot.on('message', async (message) => {
                 let db_account = rows.find(row => row.idпользователя == user.id);
                 if (db_account) db_account.del();
                 await user.removeRole(role);
-                all_chat.send(`${user}, **\`блокировка чата была снята модератором:\` ${member}**`);
+                all_chat.send(`${user}, **\`блокировка чата была снята модератором:\` ${message.member}**`);
                 return message.react(`✔`);
             });
         }
