@@ -42,7 +42,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.24-hide';
+const version = '5.0.25-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -1685,7 +1685,7 @@ spec_bot.on('message', async (message) => {
     if (message.content == "/ping") return message.reply("`я онлайн, последняя загрузка была: " + started_at + "`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`);
 
     if (message.content.startsWith("/mute")){
-        if (!message.member.roles.some(r => ['Модератор ☠', 'Главная Администрация', 'Зам.Гл.Администратора'].includes(r.name)) && !member.hasPermission("ADMINISTRATOR")) return
+        if (!message.member.roles.some(r => ['Модератор ☠', 'Главная Администрация', 'Зам.Гл.Администратора'].includes(r.name)) && !message.member.hasPermission("ADMINISTRATOR")) return
         let user = message.guild.member(message.mentions.members.first());
         if (!user){
             message.reply(`**\`пользователь не указан!\`**`).then(msg => msg.delete(7000));
@@ -1775,7 +1775,7 @@ spec_bot.on('message', async (message) => {
     }
 
     if (message.content.startsWith("/unmute")){
-        if (!message.member.roles.some(r => ['Модератор ☠', 'Главная Администрация', 'Зам.Гл.Администратора'].includes(r.name)) && !member.hasPermission("ADMINISTRATOR")) return
+        if (!message.member.roles.some(r => ['Модератор ☠', 'Главная Администрация', 'Зам.Гл.Администратора'].includes(r.name)) && !message.member.hasPermission("ADMINISTRATOR")) return
         let user = message.guild.member(message.mentions.members.first());
         if (!user){
             message.reply(`**\`пользователь не указан!\`**`).then(msg => msg.delete(7000));
