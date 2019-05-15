@@ -42,7 +42,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.21-hide';
+const version = '5.0.22-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -615,7 +615,7 @@ bot.on('message', async message => {
     if (message.channel.type == "dm") return
     if (message.guild.id != serverid && message.guild.id != "493459379878625320") return
     if (message.type === "PINS_ADD") if (message.channel.name == "requests-for-roles") message.delete();
-    if (message.content == "/ping") return message.reply("`я онлайн, последняя загрузка была: " + started_at + "`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`)
+    if (message.content == "/ping") return message.reply("`я онлайн, последняя загрузка была: " + started_at + "`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`);
     if (message.author.id == bot.user.id) return
     if (message.content.startsWith("-+ban")) lasttestid = message.author.id;
     let re = /(\d+(\.\d)*)/i;
@@ -1679,9 +1679,10 @@ spec_bot.on('raw', async event => {
     }
 });
 
-bot.on('message', async (message) => {
+spec_bot.on('message', async (message) => {
     if (message.channel.type == 'dm') return
     if (message.guild.id != '543799835652915241') return
+    if (message.content == "/ping") return message.reply("`я онлайн, последняя загрузка была: " + started_at + "`") && console.log(`Бот ответил ${message.member.displayName}, что я онлайн.`);
 
     if (message.content.startsWith("/mute")){
         if (!message.member.roles.some(r => ['Модератор ☠', 'Главная Администрация', 'Зам.Гл.Администратора'].includes(r.name)) && !member.hasPermission("ADMINISTRATOR")) return
