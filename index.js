@@ -1715,7 +1715,7 @@ spec_bot.on('message', async (message) => {
                         мутдо: `${+date + 1800000}`, // 3 600 000 (hour)
                     }, async function(err){
                         if (err) return console.error(`[DB] Ошибка добавления профиля на лист!`);
-                        await message.member.addRole(role);
+                        await user.addRole(role);
                         const embed = new Discord.RichEmbed().setDescription(`**Нажмите на [выделенный текст](${message.url}) для перехода.**`);
                         all_chat.send(`${user}, **\`модератор\` ${message.member} \`выдал вам блокировку чата на 30 минут.\`**`, embed);
                         return message.react(`✔`);
@@ -1729,7 +1729,7 @@ spec_bot.on('message', async (message) => {
                         мутдо: `${+date + 1800000}`, // 3 600 000 (hour)
                     }, async function(err){
                         if (err) return console.error(`[DB] Ошибка добавления профиля на лист!`);
-                        await message.member.addRole(role);
+                        await user.addRole(role);
                         const embed = new Discord.RichEmbed().setDescription(`**Нажмите на [выделенный текст](${message.url}) для перехода.**`);
                         all_chat.send(`${user}, **\`модератор\` ${message.member} \`выдал вам блокировку чата на 30 минут.\`**`, embed);
                         return message.react(`✔`);
