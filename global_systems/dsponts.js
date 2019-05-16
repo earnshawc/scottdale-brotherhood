@@ -48,22 +48,6 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         });
     }
 
-    if (message.content == '/bhelp'){
-        const embed = new Discord.RichEmbed();
-        embed.setTitle(`Команды магазина`);
-        embed.setDescription(`/bizness [номер заведения] - информация о вашем заведении`)
-        embed.addField(`Взоимодействие со складом`, `/buy_amount [номер заведения] [количество] - купить товар в магазин`);
-        embed.addField(`Взоимодействие с магазином`, `/change_status [номер заведения] [открыто/закрыто] - закрыть магазин\n/change_cost [номер заведения] [цена] - изменить цену товара\n/get_money [номер заведения] [количество] - забрать деньги с кассы\n/add_money [номер заведения] [кол-во] - положить деньги в магазин\n/buy_market [название товара] - купить предмет в магазине`);
-        embed.addField(`Как открыть магазин?`, `1) Вам нужно купить товар в магазин, для начала посмотрим цену покупки товара со склада и номер вашего заведения (указан в заголовке), команда: /bizness\n` +
-        `2) Далее добавим деньги на счёт бизнеса, сделать это можно командой /add_money\n` +
-        `3) Далее покупаем товар командой /buy_amount и устанавливаем ему цену командой /change_cost\n` +
-        `4) Открываем магазин. Команда: /change_status\n` +
-        `5) Покупатель прописывает команду /buy_market [название товара] и вы получаете прибыль на счёт заведения\n` + 
-        `6) Снять прибыль можно командой /get_money`);
-        message.reply(embed);
-        return message.delete();
-    }
-
     if (message.content.startsWith('/bizness')){
         if (mysql_cooldown.has(message.author.id)){
             message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
@@ -308,6 +292,35 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         });
     }
 
+    if (message.content.startsWith("/get_market")){
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 8000);
+        const args = message.content.slice(`/get_market`).split(/ +/);
+        if (!args[1]){
+            message.reply(`**\`использование: /get_market [название товара]\`**`);
+            return message.delete();
+        }
+        const name = args.slice(1).join(' ');
+        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`name\` = '${name}'`, async (err_mag, result_mag, fields_mag) => {
+            if (result_mag.length < 1 || result_mag.length > 1){
+                message.reply(`\`товар не найден!\``).then(msg => msg.delete(12000));
+                return message.delete();
+            }
+            if (result_mag[0].status == 'закрыто'){
+                message.reply(`\`магазин временно закрыт владельцем!\``).then(msg => msg.delete(12000));
+                return message.delete();
+            }
+            message.reply(`**\`название товара: ${result_mag[0].name}, описание: ${result_mag[0].description}, стоимость 1 штуки: ${result_mag[0].cost}, в наличии: ${result_mag[0].amount}\`**`);
+            return message.delete();
+        });
+    }
+
     if (message.content.startsWith("/buy_market")){
         if (mysql_cooldown.has(message.author.id)){
             message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
@@ -352,10 +365,10 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
                     connection.query(`UPDATE \`accounts\` SET points = points - ${+result_mag[0].cost} WHERE \`userid\` = '${message.author.id}'`);
                     connection.query(`UPDATE \`buy_dashboard\` SET money = money + ${+result_mag[0].cost} WHERE \`name\` = '${name}'`);
                     connection.query(`UPDATE \`buy_dashboard\` SET amount = amount - 1 WHERE \`name\` = '${name}'`);
-                    message.reply(`**\`вы успешно получили товар! [name=${name}]\`**`).then(msg => msg.delete(12000));
+                    message.reply(`**\`вы успешно получили товар! [${name}]\`**`).then(msg => msg.delete(12000));
                     return message.delete();
                 }else{
-                    message.reply(`**\`ошибка при получении! [name=${name}]\`**`).then(msg => msg.delete(12000));
+                    message.reply(`**\`ошибка при получении! [${name}]\`**`).then(msg => msg.delete(12000));
                     return message.delete();
                 }
             });
