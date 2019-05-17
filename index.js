@@ -42,7 +42,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.30-hide';
+const version = '5.0.31-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -154,6 +154,7 @@ const support_cooldown = new Set(); // Запросы от игроков.
 const snyatie = new Set(); // Уже отправленные запросы на снятие роли быдут записаны в snyatie
 const has_removed = new Set();
 const auth_request = new Set();
+const st_cd = new Set();
 
 let antislivsp1 = new Set();
 let antislivsp2 = new Set();
@@ -626,7 +627,7 @@ bot.on('message', async message => {
     require('./global_systems/embeds').run(bot, message, setembed_general, setembed_fields, setembed_addline);
     require('./global_systems/family').run(bot, message);
     require('./global_systems/role').run(bot, message, tags, rolesgg, canremoverole, manytags, nrpnames, sened, snyatie, has_removed);
-    require('./global_systems/support').run(bot, message, support_loop, support_cooldown, connection);
+    require('./global_systems/support').run(bot, message, support_loop, support_cooldown, connection, st_cd);
     require('./global_systems/warn').run(bot, message, warn_cooldown);
     require('./global_systems/fbi_system').run(bot, message);
     require('./global_systems/dsponts').run(bot, message, ds_cooldown, connection, mysql_cooldown);

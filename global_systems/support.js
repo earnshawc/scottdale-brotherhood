@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const fs = require("fs");
 
-exports.run = async (bot, message, support_loop, support_cooldown, connection) => {
+exports.run = async (bot, message, support_loop, support_cooldown, connection, st_cd) => {
     let re = /(\d+(\.\d)*)/i;
 
     if (message.channel.name == "support"){
@@ -109,6 +109,14 @@ exports.run = async (bot, message, support_loop, support_cooldown, connection) =
     if (message.content == '/hold'){
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
         if (!message.channel.name.startsWith('ticket-')) return message.delete();
+        if (st_cd.has(message.guild.id)){
+            message.reply(`**\`подождите, запрос обрабатывается..\`**`).then(msg => msg.delete(6000));
+            return message.delete();
+        }
+        st_cd.add(message.guild.id);
+        setTimeout(() => {
+            if (set_cd.has(message.guild.id)) st_cd.delete(message.guild.id);
+        }, 7000);
         if (message.channel.topic == 'Жалоба закрыта.' || message.channel.topic == 'Жалоба на рассмотрении.') return message.delete();
         let memberid = 'не найден';
         await message.channel.permissionOverwrites.forEach(async perm => {
@@ -162,6 +170,14 @@ exports.run = async (bot, message, support_loop, support_cooldown, connection) =
     if (message.content == '/toadmin'){
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
         if (!message.channel.name.startsWith('ticket-')) return message.delete();
+        if (st_cd.has(message.guild.id)){
+            message.reply(`**\`подождите, запрос обрабатывается..\`**`).then(msg => msg.delete(6000));
+            return message.delete();
+        }
+        st_cd.add(message.guild.id);
+        setTimeout(() => {
+            if (set_cd.has(message.guild.id)) st_cd.delete(message.guild.id);
+        }, 7000);
         if (message.channel.topic == 'Жалоба закрыта.') return message.delete();
         let memberid = 'не найден';
         await message.channel.permissionOverwrites.forEach(async perm => {
@@ -238,6 +254,14 @@ exports.run = async (bot, message, support_loop, support_cooldown, connection) =
     if (message.content == '/close'){
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
         if (!message.channel.name.startsWith('ticket-')) return message.delete();
+        if (st_cd.has(message.guild.id)){
+            message.reply(`**\`подождите, запрос обрабатывается..\`**`).then(msg => msg.delete(6000));
+            return message.delete();
+        }
+        st_cd.add(message.guild.id);
+        setTimeout(() => {
+            if (set_cd.has(message.guild.id)) st_cd.delete(message.guild.id);
+        }, 7000);
         if (message.channel.topic == 'Жалоба закрыта.') return message.delete();
         let full_support = false;
         let s_category = message.guild.channels.find(c => c.name == "Корзина");
@@ -336,6 +360,14 @@ exports.run = async (bot, message, support_loop, support_cooldown, connection) =
     if (message.content == '/active'){
         if (!message.member.hasPermission("MANAGE_ROLES")) return message.delete();
         if (!message.channel.name.startsWith('ticket-')) return message.delete();
+        if (st_cd.has(message.guild.id)){
+            message.reply(`**\`подождите, запрос обрабатывается..\`**`).then(msg => msg.delete(6000));
+            return message.delete();
+        }
+        st_cd.add(message.guild.id);
+        setTimeout(() => {
+            if (set_cd.has(message.guild.id)) st_cd.delete(message.guild.id);
+        }, 7000);
         if (message.channel.topic == 'Жалоба закрыта.' || message.channel.topic != 'Жалоба на рассмотрении.') return message.delete();
         let memberid = 'не найден';
         await message.channel.permissionOverwrites.forEach(async perm => {
