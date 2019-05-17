@@ -47,7 +47,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.32-hide';
+const version = '5.0.33-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -140,6 +140,12 @@ function now_date(){
         `${date.getHours().toString().padStart(2, '0')}:` +
         `${date.getMinutes().toString().padStart(2, '0')}:` +
         `${date.getSeconds().toString().padStart(2, '0')}`;
+}
+function date_now(){
+    let date = new Date(+new Date().valueOf() + 10800000);
+    return `${date.getDate().toString().padStart(2, '0')}.` +
+        `${(date.getMonth() + 1).toString().padStart(2, '0')}.` +
+        `${date.getFullYear()} `;
 }
 let started_at;
 
@@ -524,7 +530,7 @@ vkint.startPolling(() => {
   })
 
 
-vkint.command('/ping_scottadle', (ctx) => {
+vkint.command('/ping_scottdale', (ctx) => {
 
     ctx.reply(`Скоттдейл на связи!`)
     });
@@ -1892,5 +1898,82 @@ bot.on('message', async (message) => {
                 return message.delete();
             }
         });
+    }
+});
+
+
+bot.on('guildMemberUpdate', async (oldMember, newMember) => {
+    if (newMember.guild.id != "355656045600964609") return // Сервер не 03!
+    if (oldMember.roles.size == newMember.roles.size) return // Сменил ник или еще чет!
+    if (newMember.user.bot) return // Бот не принимается!
+    if(oldMember.roles.size < newMember.roles.size){
+        let oldRolesID = [];
+        let newRoleID;
+        oldMember.roles.forEach(role => oldRolesID.push(role.id));
+        newMember.roles.forEach(role => {
+            if (!oldRolesID.some(elemet => elemet == role.id)) newRoleID = role.id;
+        })
+        let role = newMember.guild.roles.get(newRoleID);
+        const entry = await newMember.guild.fetchAuditLogs({type: 'MEMBER_ROLE_UPDATE', before: new Date()}).then(audit => audit.entries.first());
+        let member = await newMember.guild.members.get(entry.executor.id);
+        if(role.name == "✔ Helper ✔") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Назначен на 1 лвл адм | <@${newMember.id}>`)
+        }
+        else if(role.name == "✔Jr.Administrator✔") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | повышен на 3 лвл адм | <@${newMember.id}>`)
+        }
+        else if(role.name == "✔ Administrator ✔") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | повышен на 4 лвл адм | <@${newMember.id}>`)
+        }
+        else if(role.name == "Следящие за хелперами") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Назначен на след.за.хелп | <@${newMember.id}>`)
+        }
+        else if(role.name == "Тех.поддержка сервера") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Назначен на тех.администратора | <@${newMember.id}>`)
+        }
+        else if(role.name == "✯Управляющие сервером.✯") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Повышен в управляющий состав сервера | <@${newMember.id}>`)
+        }
+        else if(role.name == "✮Ministers✮") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Назначен на пост министра | <@${newMember.id}>`)
+        }
+        else if(role.name == "✵Leader✵") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Назначен на пост лидера | <@${newMember.id}>`)
+        }
+    }
+    else{
+        let newRolesID = [];
+        let oldRoleID;
+        newMember.roles.forEach(role => newRolesID.push(role.id));
+        oldMember.roles.forEach(role => {
+            if (!newRolesID.some(elemet => elemet == role.id)) oldRoleID = role.id;
+        })
+        let role = newMember.guild.roles.get(oldRoleID);
+        const entry = await newMember.guild.fetchAuditLogs({type: 'MEMBER_ROLE_UPDATE', before: new Date()}).then(audit => audit.entries.first());
+        let member = await newMember.guild.members.get(entry.executor.id);
+        if(role.name == "✔ Helper ✔") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Возможно снят с 1 лвла админки [Проверять!] | <@${newMember.id}>`)
+        }
+        else if(role.name == "✔Jr.Administrator✔") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Снят с 3 лвла админики | <@${newMember.id}>`)
+        }
+        else if(role.name == "✔ Administrator ✔") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Снят с 4 лвла админки | <@${newMember.id}>`)
+        }
+        else if(role.name == "Следящие за хелперами") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Снят с должности след.за.хелп | <@${newMember.id}>`)
+        }
+        else if(role.name == "Тех.поддержка сервера") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Снят с должности технического администратора | <@${newMember.id}>`)
+        }
+        else if(role.name == "✯Управляющие сервером.✯") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Исключен из управляющего состава сервера | <@${newMember.id}>`)
+        }
+        else if(role.name == "✮Ministers✮") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Снят с поста министра | <@${newMember.id}>`)
+        }
+        else if(role.name == "✵Leader✵") {
+            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Снят с поста лидера | <@${newMember.id}>`)
+        }
     }
 });
