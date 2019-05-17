@@ -18,6 +18,11 @@ const connection = mysql.createConnection({
     database : process.env.mysql_database,
 });
 
+const VkBot = require(`./modules/node-vk-bot-api`);
+const vkint = new VkBot({
+    token: process.env.tokenvk
+  })
+
 connection.connect(function(err){
     if (err){
         console.log(err);
@@ -42,7 +47,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.31-hide';
+const version = '5.0.32-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -513,6 +518,18 @@ spec_bot.on('ready', () => {
     spec_bot.user.setPresence({ game: { name: `${version}` }, status: 'online' })
     special_discord_update();
 });
+
+vkint.startPolling(() => {
+    console.log('ВК интеграция успешно запущена!')
+  })
+
+
+vkint.command('/ping_scottadle', (ctx) => {
+
+    ctx.reply(`Скоттдейл на связи!`)
+    });
+
+
 
 user.on('message', async (message) => {
     if (message.author.id != user.user.id) return
