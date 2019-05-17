@@ -97,6 +97,7 @@ exports.run = async (bot, message, support_loop, support_cooldown, connection) =
                         value: `${message.content}`,
                     }]
                     }});
+                    connection.query(`INSERT INTO \`support_log\` (\`ticket\`, \`author\`, \`text\`) VALUES ('${channel.name}', '${message.author.id}', '${message.content}')`);
                     let sp_chat_get = message.guild.channels.find(c => c.name == "reports-log");
                     await sp_chat_get.send(`\`[CREATE]\` <@${message.author.id}> \`создал обращение к поддержке:\` <#${channel.id}>`);
                     message.channel.send(`<@${message.author.id}>, \`обращение составлено. Нажмите на\` <#${channel.id}>`).then(msg => msg.delete(15000));
