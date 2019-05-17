@@ -47,7 +47,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.33-hide';
+const version = '5.0.34-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -1914,31 +1914,30 @@ bot.on('guildMemberUpdate', async (oldMember, newMember) => {
             if (!oldRolesID.some(elemet => elemet == role.id)) newRoleID = role.id;
         })
         let role = newMember.guild.roles.get(newRoleID);
-        const entry = await newMember.guild.fetchAuditLogs({type: 'MEMBER_ROLE_UPDATE', before: new Date()}).then(audit => audit.entries.first());
-        let member = await newMember.guild.members.get(entry.executor.id);
+        let date = date_now();
         if(role.name == "✔ Helper ✔") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Назначен на 1 лвл адм | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | Назначен на 1 лвл адм | <@${newMember.id}>`)
         }
         else if(role.name == "✔Jr.Administrator✔") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | повышен на 3 лвл адм | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | повышен на 3 лвл адм | <@${newMember.id}>`)
         }
         else if(role.name == "✔ Administrator ✔") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | повышен на 4 лвл адм | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | повышен на 4 лвл адм | <@${newMember.id}>`)
         }
         else if(role.name == "Следящие за хелперами") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Назначен на след.за.хелп | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | Назначен на след.за.хелп | <@${newMember.id}>`)
         }
         else if(role.name == "Тех.поддержка сервера") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Назначен на тех.администратора | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | Назначен на тех.администратора | <@${newMember.id}>`)
         }
         else if(role.name == "✯Управляющие сервером.✯") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Повышен в управляющий состав сервера | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | Повышен в управляющий состав сервера | <@${newMember.id}>`)
         }
         else if(role.name == "✮Ministers✮") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Назначен на пост министра | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | Назначен на пост министра | <@${newMember.id}>`)
         }
         else if(role.name == "✵Leader✵") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Назначен на пост лидера | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | Назначен на пост лидера | <@${newMember.id}>`)
         }
     }
     else{
@@ -1949,31 +1948,30 @@ bot.on('guildMemberUpdate', async (oldMember, newMember) => {
             if (!newRolesID.some(elemet => elemet == role.id)) oldRoleID = role.id;
         })
         let role = newMember.guild.roles.get(oldRoleID);
-        const entry = await newMember.guild.fetchAuditLogs({type: 'MEMBER_ROLE_UPDATE', before: new Date()}).then(audit => audit.entries.first());
-        let member = await newMember.guild.members.get(entry.executor.id);
+        let date = date_now();
         if(role.name == "✔ Helper ✔") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Возможно снят с 1 лвла админки [Проверять!] | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | Возможно снят с 1 лвла админки [Проверять!] | <@${newMember.id}>`)
         }
         else if(role.name == "✔Jr.Administrator✔") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Снят с 3 лвла админики | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | Снят с 3 лвла админики | <@${newMember.id}>`)
         }
         else if(role.name == "✔ Administrator ✔") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Снят с 4 лвла админки | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | Снят с 4 лвла админки | <@${newMember.id}>`)
         }
         else if(role.name == "Следящие за хелперами") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Снят с должности след.за.хелп | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | Снят с должности след.за.хелп | <@${newMember.id}>`)
         }
         else if(role.name == "Тех.поддержка сервера") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Снят с должности технического администратора | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | Снят с должности технического администратора | <@${newMember.id}>`)
         }
         else if(role.name == "✯Управляющие сервером.✯") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Исключен из управляющего состава сервера | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | Исключен из управляющего состава сервера | <@${newMember.id}>`)
         }
         else if(role.name == "✮Ministers✮") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Снят с поста министра | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | Снят с поста министра | <@${newMember.id}>`)
         }
         else if(role.name == "✵Leader✵") {
-            vkint.sendMessage(2000000013, `${date_now} | ${newMember.displayName} | Снят с поста лидера | <@${newMember.id}>`)
+            vkint.sendMessage(2000000013, `${date} | ${newMember.displayName} | Снят с поста лидера | <@${newMember.id}>`)
         }
     }
 });
