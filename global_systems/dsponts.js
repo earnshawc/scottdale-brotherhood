@@ -26,6 +26,17 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         });
     }
 
+    if (message.content.startsWith('/pay')){
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`попробуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 8000);
+    }
+
     if (message.content == '/balance'){
         if (mysql_cooldown.has(message.author.id)){
             message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
