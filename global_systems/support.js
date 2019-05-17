@@ -115,7 +115,7 @@ exports.run = async (bot, message, support_loop, support_cooldown, connection, s
         }
         st_cd.add(message.guild.id);
         setTimeout(() => {
-            if (set_cd.has(message.guild.id)) st_cd.delete(message.guild.id);
+            if (st_cd.has(message.guild.id)) st_cd.delete(message.guild.id);
         }, 7000);
         if (message.channel.topic == 'Жалоба закрыта.' || message.channel.topic == 'Жалоба на рассмотрении.') return message.delete();
         let memberid = 'не найден';
@@ -176,7 +176,7 @@ exports.run = async (bot, message, support_loop, support_cooldown, connection, s
         }
         st_cd.add(message.guild.id);
         setTimeout(() => {
-            if (set_cd.has(message.guild.id)) st_cd.delete(message.guild.id);
+            if (st_cd.has(message.guild.id)) st_cd.delete(message.guild.id);
         }, 7000);
         if (message.channel.topic == 'Жалоба закрыта.') return message.delete();
         let memberid = 'не найден';
@@ -260,7 +260,7 @@ exports.run = async (bot, message, support_loop, support_cooldown, connection, s
         }
         st_cd.add(message.guild.id);
         setTimeout(() => {
-            if (set_cd.has(message.guild.id)) st_cd.delete(message.guild.id);
+            if (st_cd.has(message.guild.id)) st_cd.delete(message.guild.id);
         }, 7000);
         if (message.channel.topic == 'Жалоба закрыта.') return message.delete();
         let full_support = false;
@@ -366,7 +366,7 @@ exports.run = async (bot, message, support_loop, support_cooldown, connection, s
         }
         st_cd.add(message.guild.id);
         setTimeout(() => {
-            if (set_cd.has(message.guild.id)) st_cd.delete(message.guild.id);
+            if (st_cd.has(message.guild.id)) st_cd.delete(message.guild.id);
         }, 7000);
         if (message.channel.topic == 'Жалоба закрыта.' || message.channel.topic != 'Жалоба на рассмотрении.') return message.delete();
         let memberid = 'не найден';
