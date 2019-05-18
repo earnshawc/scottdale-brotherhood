@@ -5,8 +5,19 @@ function isInteger(n) {
     return n === +n && n === (n|0);
 }
 
-exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
+// Структура
+// STORAGE: [id, name, description, owner, cost, amount, money, code]
+// ITEMS: [id, storage_id, date_end]
+// BUY_DASHBOARD: [id, name, description, status, cost, money, amount, owner, code]
 
+// Пример
+// STORAGE: [1, Роли, Тут вы сможете запустить создание роли, 336207279412215809, 12.7, 0, 25.4, return 1]
+// ITEMS: [1, 1, 1558155451169]
+//        [2, 1, 1558155451297]
+// BUY_DASHBOARD: [1, Покупка роли, Тут вы сможете купить роль, открыто, 13, 0, 0, 336207279412215809, return 1]
+
+exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
+    return
     if (!message.member.roles) return
     if (!message.member.roles.some(r => r.name == 'Проверенный 🔐')) return
 
@@ -59,7 +70,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         });
     }
 
-    if (message.content.startsWith('/bizness')){
+    if (message.content.startsWith('/bizinfo')){
         if (mysql_cooldown.has(message.author.id)){
             message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
             return message.delete();
@@ -68,9 +79,9 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         setTimeout(() => {
             if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
         }, 8000);
-        const args = message.content.slice(`/bizness`).split(/ +/);
+        const args = message.content.slice(`/bizinfo`).split(/ +/);
         if (!args[1]){
-            message.reply(`\`использование: /bizness [название товара]\``);
+            message.reply(`\`использование: /bizinfo [название товара]\``);
             return message.delete();
         }
         let name = args.slice(1).join(' ');
