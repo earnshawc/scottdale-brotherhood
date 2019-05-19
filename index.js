@@ -626,7 +626,7 @@ user.on('message', async (message) => {
         if (message.author.id != user.user.id) return
         const embed = new Discord.RichEmbed()
         .setTitle("**Arizona Role Play » Все discord-сервера Arizona Role Play.**")
-        .setDescription('**Phoenix: [нажми](https://discord.gg/5Kq9pjB)\nTucson: [нажми](https://discord.gg/23fwg3s)\nScottdale: [нажми](https://discord.gg/m3TbZyZ)\nChandler: [нажми](https://discordapp.com/invite/29sC6AC)\nBrainburg: [нажми](https://discord.gg/vvXaw9V)\nSaint Rose: [нажми](https://discord.gg/cb2rQTB)\nMesa: [нажми](https://discord.gg/HaWKZVe)\nRed-Rock: [нажми](https://discord.gg/gsAWX5y)\nYuma: [нажми](https://discord.gg/qrsWEPQ)**')
+        .setDescription('**Phoenix: [нажми](https://discord.gg/5Kq9pjB)\nTucson: [нажми](https://discord.gg/23fwg3s)\nScottdale: [нажми](https://discord.gg/m3TbZyZ)\nChandler: [нажми](https://discordapp.com/invite/29sC6AC)\nBrainburg: [нажми](https://discord.gg/vvXaw9V)\nSaint Rose: [нажми](https://discord.gg/cb2rQTB)\nMesa: [нажми](https://discord.gg/HaWKZVe)\nRed-Rock: [нажми](https://discord.gg/rCPMB6)\nYuma: [нажми](https://discord.gg/qrsWEPQ)**')
         .setColor("#FF8E01")
         .setTimestamp()
         .setFooter("Техническая поддержка » Arizona Role Play", "https://i.imgur.com/5qSrUJW.png")
