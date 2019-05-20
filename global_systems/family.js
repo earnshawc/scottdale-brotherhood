@@ -735,7 +735,7 @@ exports.run = async (bot, message) => {
                 if (channel.name == families[args[2]]){
                     if (channel.type == "voice"){
                         if (channel.parent.name.toString() == `Family ROOMS`){
-                            let fam_channel = channel;
+                            fam_channel = channel;
                             await channel.permissionOverwrites.forEach(async perm => {
                                 if (perm.type == `role`){
                                     let role_fam = message.guild.roles.find(r => r.id == perm.id);
