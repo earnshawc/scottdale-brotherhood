@@ -17,7 +17,6 @@ function isInteger(n) {
 // BUY_DASHBOARD: [1, Покупка роли, Тут вы сможете купить роль, открыто, 13, 0, 0, 336207279412215809, return 1]
 
 exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
-    return
     if (!message.member.roles) return
     if (!message.member.roles.some(r => r.name == 'Проверенный 🔐')) return
 
