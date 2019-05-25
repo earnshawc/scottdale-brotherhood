@@ -51,6 +51,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
             message.reply(`\`использование: /pay [user] [сумма]\``);
             return message.delete();
         }
+        if(args[2] < 0 && !message.member.hasPermission("ADMINISTRATOR")) return message.reply(`данное использование команды вам недоступно!`);
         connection.query(`SELECT \`id\`, \`userid\`, \`points\` FROM \`accounts\` WHERE \`userid\` = '${message.author.id}'`, async (error, result, packets) => {
             if (error) return console.error(error);
             if (result.length > 1) return console.error(`Ошибка при выполнении, результатов много, error code: [#352]`);
