@@ -201,7 +201,7 @@ exports.run = async (bot, message) => {
     }
 
     if (message.content.startsWith('/createfam')){
-        if (!message.member.hasPermission("ADMINISTRATOR") && message.member.id != "408740341135704065") return message.reply(`\`эй! Эта функция только для модераторов!\``) && message.delete()
+        if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply(`\`эй! Эта функция только для модераторов!\``) && message.delete()
         let idmember = message.author.id;
         let family_name;
         let family_leader;
@@ -585,7 +585,7 @@ exports.run = async (bot, message) => {
     }
 
     if (message.content.startsWith(`/deletefam`)){
-        if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply(`\`эй! Эта функция только для модераторов!\``) && message.delete()
+        if (!message.member.hasPermission("ADMINISTRATOR") && message.member.id != "408740341135704065") return message.reply(`\`эй! Эта функция только для модераторов!\``) && message.delete()
         const args = message.content.slice('/deletefam').split(/ +/)
         if (!args[1]){
             message.channel.send(`\`[ERROR]\` <@${message.author.id}> \`укажите название семьи! /deletefam [name]\``).then(msg => msg.delete(7000));
