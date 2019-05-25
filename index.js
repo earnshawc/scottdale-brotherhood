@@ -48,7 +48,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.37-hide';
+const version = '5.0.39-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -506,14 +506,18 @@ adm_user.on('ready', async () => {
     let channel = await server.channels.get('509368301730791436');
     await channel.fetchMessages({limit: 1}).then(async messages => {
 	let msg = messages.first();
-	adm_user.user.setActivity(msg.content, { type: "WATCHING" });
+	const type = msg.split('<=+=>')[0];
+	const content = msg.split('<=+=>')[1];
+	adm_user.user.setActivity(content, { type: `${type}` });
     });
 });
 
 adm_user.on('message', async (message) => {
     if (message.channel.type == 'dm') return
     if (message.channel.id != '509368301730791436') return
-    adm_user.user.setActivity(message.content, { type: "WATCHING" });
+	const type = message.split('<=+=>')[0];
+	const content = message.split('<=+=>')[1];
+	adm_user.user.setActivity(content, { type: `${type}` });
 });
 
 user.on('ready', async () => {
