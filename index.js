@@ -48,7 +48,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.36-hide';
+const version = '5.0.37-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -502,7 +502,12 @@ bbc_user.on('ready', async () => {
 
 adm_user.on('ready', async () => {
     console.log(`Авторизован как ${adm_user.user.tag} [${adm_user.user.id}]`);
-    adm_user.user.setActivity('за гос.организациями', { type: "WATCHING" });
+    let server = await adm_user.guilds.get('493459379878625320');
+    let channel = await server.channels.get('509368301730791436');
+    await channel.fetchMessages({limit: 1}).then(async messages => {
+	let msg = messages.first();
+	adm_user.user.setActivity(msg.content, { type: "WATCHING" });
+    });
 });
 
 user.on('ready', async () => {
