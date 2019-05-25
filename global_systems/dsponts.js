@@ -36,7 +36,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         });
     }
 
-    /*if (message.content.startsWith('/pay')){
+    if (message.content.startsWith('/pay')){
         if (mysql_cooldown.has(message.author.id)){
             message.reply(`**\`попробуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
             return message.delete();
@@ -45,7 +45,31 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         setTimeout(() => {
             if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
         }, 8000);
-    }*/
+        const args = message.content.slice(`/pay`).split(/ +/);
+        let user = message.guild.member(message.mentions.users.first());
+        if (!user){
+            message.reply(`\`использование: /pay [user] [сумма]\``);
+            return message.delete();
+        }
+        connection.query(`SELECT \`id\`, \`userid\`, \`points\` FROM \`accounts\` WHERE \`userid\` = '${message.author.id}'`, async (error, result, packets) => {
+            if (error) return console.error(error);
+            if (result.length > 1) return console.error(`Ошибка при выполнении, результатов много, error code: [#352]`);
+            if (result[0].points - args[2] < 0) return message.reply(`\`у вас недостаточно поинтов для перевода\``);
+            connection.query(`UPDATE \`accounts\` SET points = points - ${+args[2]} WHERE \`userid\` = '${message.author.id}'`);
+            connection.query(`SELECT \`id\`, \`userid\`, \`points\` FROM \`accounts\` WHERE \`userid\` = '${user.id}'`, async (error, result2, packets) => {
+            if (error) return console.error(error);
+            if (result2.length > 1) return console.error(`Ошибка при выполнении, результатов много, error code: [#352]`);
+            if (result2.length == 0) {
+                connection.query(`INSERT INTO \`accounts\` (\`userid\`, \`points\`) VALUES ('${user.id}', '${args[2]}')`);
+                message.reply(`\`перевод выполнен\``)
+            }
+            else {
+                connection.query(`UPDATE \`accounts\` SET points = points + ${+args[2]} WHERE \`userid\` = '${user.id}'`);
+                message.reply(`\`перевод выполнен\``)
+            }
+        });
+        });
+    }
 
     if (message.content == '/balance'){
         if (mysql_cooldown.has(message.author.id)){
