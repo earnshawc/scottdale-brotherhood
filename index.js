@@ -510,6 +510,12 @@ adm_user.on('ready', async () => {
     });
 });
 
+adm_user.on('message', async (message) => {
+    if (message.channel.type == 'dm') return
+    if (message.channel.id != '509368301730791436') return
+    adm_user.user.setActivity(message.content, { type: "WATCHING" });
+});
+
 user.on('ready', async () => {
     console.log(`Авторизован как ${user.user.tag} [${user.user.id}]`);
     user.user.setActivity('за серверами', { type: "WATCHING" });
