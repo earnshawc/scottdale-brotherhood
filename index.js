@@ -4,6 +4,7 @@ const tbot = new Discord.Client();
 const user = new Discord.Client();
 const spec_bot = new Discord.Client();
 const bbc_user = new Discord.Client();
+const adm_user = new Discord.Client();
 const fs = require("fs");
 const md5 = require('./my_modules/md5');
 const download = require('./my_modules/download-to-file'); // download('url, './dir/file.txt', function (err, filepath) {})
@@ -47,7 +48,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.35-hide';
+const version = '5.0.36-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -489,6 +490,7 @@ const mysql_cooldown = new Set();
 bot.login(process.env.token);
 tbot.login(process.env.recovery_token);
 bbc_user.login(process.env.bbc_token);
+adm_user.login(process.env.adm_user_token);
 user.login(process.env.user_token);
 spec_bot.login(process.env.spec_token);
 
@@ -496,6 +498,11 @@ spec_bot.login(process.env.spec_token);
 bbc_user.on('ready', async () => {
     console.log(`Авторизован как ${bbc_user.user.tag} [${bbc_user.user.id}]`);
     bbc_user.user.setActivity('в монитор', { type: "WATCHING" });
+});
+
+adm_user.on('ready', async () => {
+    console.log(`Авторизован как ${adm_user.user.tag} [${adm_user.user.id}]`);
+    adm_user.user.setActivity('за гос.организациями', { type: "WATCHING" });
 });
 
 user.on('ready', async () => {
