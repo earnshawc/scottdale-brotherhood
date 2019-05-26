@@ -1338,9 +1338,9 @@ bot.on('voiceStateUpdate', async (oldMember, newMember) => {
 		let role_one = newMember.guild.roles.find(r => r.name == 'Кандидаты(бывшие)');
 		let role_two = newMember.guild.roles.find(r => r.name == 'Кандидаты(хелперы)');
 		let role_three = newMember.guild.roles.find(r => r.name == 'Обзвон');
-		if (newMember.roles.some(r => r.id == role_one.id) newMember.removeRole(role_one);
-		if (newMember.roles.some(r => r.id == role_two.id) newMember.removeRole(role_two);
-		if (newMember.roles.some(r => r.id == role_three.id) newMember.removeRole(role_three);
+		if (newMember.roles.some(r => r.id == role_one.id)) newMember.removeRole(role_one);
+		if (newMember.roles.some(r => r.id == role_two.id)) newMember.removeRole(role_two);
+		if (newMember.roles.some(r => r.id == role_three.id)) newMember.removeRole(role_three);
         }else if (member_oldchannel.name == 'Проводится обзвон [SP]'){
             let edit_channel = newMember.guild.channels.find(c => c.name == "проверка");
             if (!edit_channel) return console.log('[ERROR] Не возможно найти текстовой канал конференции.');
