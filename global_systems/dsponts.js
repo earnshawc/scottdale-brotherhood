@@ -31,10 +31,10 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
             if (result.length > 1) return console.error(`Ошибка при выполнении, результатов много, error code: [#351]`);
             if (result.length == 0){
                 connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${message.guild.id}', '${message.author.id}', '0.5')`);
-                send_action(message.guild.id, `<@${message.author.id}> получил 0.5 discord points. Источник: сообщение`);
+                send_action(message.guild.id, `<@${message.author.id}> получил 0.5 discord points. (MONEY: 0.5)`);
             }else{
                 connection.query(`UPDATE \`profiles\` SET money = money + 0.5 WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.author.id}'`);
-                send_action(message.guild.id, `<@${message.author.id}> получил 0.5 discord points. Источник: сообщение`);
+                send_action(message.guild.id, `<@${message.author.id}> получил 0.5 discord points. (MONEY: ${+result[0].money + 0.5})`);
             }
         });
     }
@@ -98,14 +98,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 if (answer.length == 1){
                     connection.query(`UPDATE \`profiles\` SET money = money - ${+args[2]} WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`);
                     connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${message.guild.id}', '${user.id}', '${+args[2]}')`);
-                    send_action(message.guild.id, `<@${message.author.id}> перевел ${+args[2]} dp пользователю <@${user.id}>`);
-                    message.reply(`**\`вы успешно передали ${args[2]}\` ₯ \`пользователю\` ${user}**`);
+                    send_action(message.guild.id, `<@${message.author.id}> перевел ${+args[2]} dp пользователю <@${user.id}> (${+result[0].money - +args[2]}-${+args[2]})`);
+                    message.reply(`**\`вы успешно передали ${args[2]} dp пользователю\` ${user}**`);
                     return message.delete();
                 }else{
                     connection.query(`UPDATE \`profiles\` SET money = money - ${+args[2]} WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`);
                     connection.query(`UPDATE \`profiles\` SET money = money + ${+args[2]} WHERE \`user\` = '${user.id}' AND \`server\` = '${message.guild.id}'`);
-                    send_action(message.guild.id, `<@${message.author.id}> перевел ${+args[2]} dp пользователю <@${user.id}>`);
-                    message.reply(`**\`вы успешно передали ${args[2]}\` ₯ \`пользователю\` ${user}**`);
+                    send_action(message.guild.id, `<@${message.author.id}> перевел ${+args[2]} dp пользователю <@${user.id}> (${+result[0].money - +args[2]}-${+answer[0].money + +args[2]})`);
+                    message.reply(`**\`вы успешно передали ${args[2]} dp пользователю\` ${user}**`);
                     return message.delete();
                 }
             });
@@ -121,17 +121,48 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         setTimeout(() => {
             if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
         }, 8000);
-        connection.query(`SELECT \`id\`, \`userid\`, \`points\` FROM \`accounts\` WHERE \`userid\` = '${message.author.id}'`, async (error, result, packets) => {
-            if (error) return console.error(error);
-            if (result.length > 1) return console.error(`Ошибка при выполнении, результатов много, error code: [#352]`);
-            if (result.length == 0){
-                message.reply(`**ваш баланс составляет 0 ₯**`);
-                return message.delete();
-            }else{
-                message.reply(`**ваш баланс составляет ${result[0].points} ₯**`);
+        let user = message.guild.member(message.mentions.users.first());
+        if (!user){
+            connection.query(`SELECT * FROM \`profiles\` WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`, async (error, result, packets) => {
+                if (error) return console.error(error);
+                if (result.length > 1){
+                    message.reply(`**\`произошла ошибка при использовании команды. Информация была отправлена в личные сообщения.\`**`);
+                    const embed = new Discord.RichEmbed();
+                    embed.setDescription(`**${message.member}, для устранения ошибки пожалуйста составьте жалобу в нашем [техническом разделе](https://robo-hamster.ru/index.php?forums/%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB.5/). Код ошибки: #3**`);
+                    message.member.send(embed);
+                    return message.delete();
+                }
+                if (result.length == 0){
+                    message.reply(`**ваш баланс составляет 0 ₯**`);
+                    return message.delete();
+                }else{
+                    message.reply(`**ваш баланс составляет ${result[0].points} ₯**`);
+                    return message.delete();
+                }
+            });
+        }else{
+            if (!message.member.hasPermission("MANAGE_ROLES")){
+                message.reply(`**\`недостаточно прав доступа для выполнения данного действия.\`**`).then(msg => msg.delete(12000));
                 return message.delete();
             }
-        });
+            connection.query(`SELECT * FROM \`profiles\` WHERE \`user\` = '${user.id}' AND \`server\` = '${message.guild.id}'`, async (error, result, packets) => {
+                if (error) return console.error(error);
+                if (result.length > 1){
+                    message.reply(`**\`произошла ошибка при использовании команды. Информация была отправлена в личные сообщения.\`**`);
+                    const embed = new Discord.RichEmbed();
+                    embed.setDescription(`**${message.member}, для устранения ошибки пожалуйста составьте жалобу в нашем [техническом разделе](https://robo-hamster.ru/index.php?forums/%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB.5/). Код ошибки: #4**`);
+                    message.member.send(embed);
+                    return message.delete();
+                }
+                if (result.length == 0){
+                    message.reply(`**баланс пользователя ${user} составляет 0 ₯**`);
+                    return message.delete();
+                }else{
+                    message.reply(`**баланс пользователя ${user} составляет ${result[0].points} ₯**`);
+                    return message.delete();
+                }
+            });
+        }
     }
 
     if (message.content.startsWith('/bizinfo')){
