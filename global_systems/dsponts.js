@@ -73,7 +73,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
             message.reply(`\`сумма не указана! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
             return message.delete();
         }
-        if (typeof args[2] != 'number'){
+        if (typeof (+args[2]) != 'number'){
             message.reply(`\`сумма не является числом! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
             return message.delete();
         }
