@@ -136,7 +136,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     message.reply(`**ваш баланс составляет 0 ₯**`);
                     return message.delete();
                 }else{
-                    message.reply(`**ваш баланс составляет ${result[0].points} ₯**`);
+                    message.reply(`**ваш баланс составляет ${result[0].money} ₯**`);
                     return message.delete();
                 }
             });
@@ -158,7 +158,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     message.reply(`**баланс пользователя ${user} составляет 0 ₯**`);
                     return message.delete();
                 }else{
-                    message.reply(`**баланс пользователя ${user} составляет ${result[0].points} ₯**`);
+                    message.reply(`**баланс пользователя ${user} составляет ${result[0].money} ₯**`);
                     return message.delete();
                 }
             });
