@@ -112,7 +112,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         });
     }
 
-    if (message.content == '/balance'){
+    if (message.content.startsWith('/balance')){
         if (mysql_cooldown.has(message.author.id)){
             message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
             return message.delete();
