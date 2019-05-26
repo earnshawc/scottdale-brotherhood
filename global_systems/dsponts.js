@@ -64,7 +64,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 connection.query(`UPDATE \`profiles\` SET money = money + ${args[3]} WHERE \`user\` = '${args[2]}' AND \`server\` = '${args[1]}'`);
                 send_action(message.guild.id, `<@${message.author.id}> добавил пользователю ${args[2]} ${args[3]} dp. (MONEY: ${+result[0].money + +args[3]})`);
             }
-            message.reply(`**добавил пользователю <@${args[2]}> ${args[3]} ₯**`);
+            await message.reply(`**добавил пользователю <@${args[2]}> ${args[3]} ₯**`);
             return message.delete();
         });
     }
@@ -81,49 +81,49 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         const args = message.content.slice(`/pay`).split(/ +/);
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
-            message.reply(`\`пользователь не указан! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
+            await message.reply(`\`пользователь не указан! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
             return message.delete();
         }
         if (message.author.id == user.id){
-            message.reply(`\`самому себе нельзя! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
+            await message.reply(`\`самому себе нельзя! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
             return message.delete();
         }
         if (!args[2]){
-            message.reply(`\`сумма не указана! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
+            await message.reply(`\`сумма не указана! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
             return message.delete();
         }
         if (!isNumeric(args[2])){
-            message.reply(`\`сумма не является числом! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
+            await message.reply(`\`сумма не является числом! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
             return message.delete();
         }
         if (args[2] < 0){
-            message.reply(`\`сумма не может быть отрицательной! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
+            await message.reply(`\`сумма не может быть отрицательной! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
             return message.delete();
         }
         if (args[2] < 0.01){
-            message.reply(`\`нельзя переводить менее 0.01 dp! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
+            await message.reply(`\`нельзя переводить менее 0.01 dp! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
             return message.delete();
         }
         connection.query(`SELECT * FROM \`profiles\` WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`, async (error, result, packets) => {
             if (error) return console.error(error);
             if (result.length > 1){
-                message.reply(`**\`произошла ошибка при использовании команды. Информация была отправлена в личные сообщения.\`**`);
+                await message.reply(`**\`произошла ошибка при использовании команды. Информация была отправлена в личные сообщения.\`**`);
                 const embed = new Discord.RichEmbed();
                 embed.setDescription(`**${message.member}, для устранения ошибки пожалуйста составьте жалобу в нашем [техническом разделе](https://robo-hamster.ru/index.php?forums/%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB.5/). Код ошибки: #1**`);
                 message.member.send(embed);
                 return message.delete();
             }else if (result.length < 1){
-                message.reply(`**\`у вас недостаточно средств для соверешения передачи.\`**`);
+                await message.reply(`**\`у вас недостаточно средств для соверешения передачи.\`**`);
                 return message.delete();
             }
             if (result[0].money - args[2] < 0){
-                message.reply(`**\`у вас недостаточно средств для соверешения передачи.\`**`);
+                await message.reply(`**\`у вас недостаточно средств для соверешения передачи.\`**`);
                 return message.delete();
             }
             connection.query(`SELECT * FROM \`profiles\` WHERE \`user\` = '${user.id}' AND \`server\` = '${message.guild.id}'`, async (error, answer, packets) => {
                 if (error) return console.error(error);
                 if (answer.length > 1){
-                    message.reply(`**\`произошла ошибка при использовании команды. Информация была отправлена в личные сообщения.\`**`);
+                    await message.reply(`**\`произошла ошибка при использовании команды. Информация была отправлена в личные сообщения.\`**`);
                     const embed = new Discord.RichEmbed();
                     embed.setDescription(`**${message.member}, для устранения ошибки пожалуйста составьте жалобу в нашем [техническом разделе](https://robo-hamster.ru/index.php?forums/%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB.5/). Код ошибки: #2**`);
                     message.member.send(embed);
@@ -133,13 +133,13 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     connection.query(`UPDATE \`profiles\` SET money = money - ${+args[2]} WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`);
                     connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${message.guild.id}', '${user.id}', '${+args[2]}')`);
                     send_action(message.guild.id, `<@${message.author.id}> перевел ${+args[2]} dp пользователю <@${user.id}> (${+result[0].money - +args[2]}-${+args[2]})`);
-                    message.reply(`**\`вы успешно передали ${args[2]} dp пользователю\` ${user}**`);
+                    await message.reply(`**\`вы успешно передали ${args[2]} dp пользователю\` ${user}**`);
                     return message.delete();
                 }else{
                     connection.query(`UPDATE \`profiles\` SET money = money - ${+args[2]} WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`);
                     connection.query(`UPDATE \`profiles\` SET money = money + ${+args[2]} WHERE \`user\` = '${user.id}' AND \`server\` = '${message.guild.id}'`);
                     send_action(message.guild.id, `<@${message.author.id}> перевел ${+args[2]} dp пользователю <@${user.id}> (${+result[0].money - +args[2]}-${+answer[0].money + +args[2]})`);
-                    message.reply(`**\`вы успешно передали ${args[2]} dp пользователю\` ${user}**`);
+                    await message.reply(`**\`вы успешно передали ${args[2]} dp пользователю\` ${user}**`);
                     return message.delete();
                 }
             });
@@ -160,39 +160,39 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
             connection.query(`SELECT * FROM \`profiles\` WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`, async (error, result, packets) => {
                 if (error) return console.error(error);
                 if (result.length > 1){
-                    message.reply(`**\`произошла ошибка при использовании команды. Информация была отправлена в личные сообщения.\`**`);
+                    await message.reply(`**\`произошла ошибка при использовании команды. Информация была отправлена в личные сообщения.\`**`);
                     const embed = new Discord.RichEmbed();
                     embed.setDescription(`**${message.member}, для устранения ошибки пожалуйста составьте жалобу в нашем [техническом разделе](https://robo-hamster.ru/index.php?forums/%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB.5/). Код ошибки: #3**`);
-                    message.member.send(embed);
+                    await message.member.send(embed);
                     return message.delete();
                 }
                 if (result.length == 0){
-                    message.reply(`**ваш баланс составляет 0 ₯**`);
+                    await message.reply(`**ваш баланс составляет 0 ₯**`);
                     return message.delete();
                 }else{
-                    message.reply(`**ваш баланс составляет ${result[0].money} ₯**`);
+                    await message.reply(`**ваш баланс составляет ${result[0].money} ₯**`);
                     return message.delete();
                 }
             });
         }else{
             if (!message.member.hasPermission("MANAGE_ROLES")){
-                message.reply(`**\`недостаточно прав доступа для выполнения данного действия.\`**`).then(msg => msg.delete(12000));
+                await message.reply(`**\`недостаточно прав доступа для выполнения данного действия.\`**`).then(msg => msg.delete(12000));
                 return message.delete();
             }
             connection.query(`SELECT * FROM \`profiles\` WHERE \`user\` = '${user.id}' AND \`server\` = '${message.guild.id}'`, async (error, result, packets) => {
                 if (error) return console.error(error);
                 if (result.length > 1){
-                    message.reply(`**\`произошла ошибка при использовании команды. Информация была отправлена в личные сообщения.\`**`);
+                    await message.reply(`**\`произошла ошибка при использовании команды. Информация была отправлена в личные сообщения.\`**`);
                     const embed = new Discord.RichEmbed();
                     embed.setDescription(`**${message.member}, для устранения ошибки пожалуйста составьте жалобу в нашем [техническом разделе](https://robo-hamster.ru/index.php?forums/%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB.5/). Код ошибки: #4**`);
-                    message.member.send(embed);
+                    await message.member.send(embed);
                     return message.delete();
                 }
                 if (result.length == 0){
-                    message.reply(`**баланс пользователя ${user} составляет 0 ₯**`);
+                    await message.reply(`**баланс пользователя ${user} составляет 0 ₯**`);
                     return message.delete();
                 }else{
-                    message.reply(`**баланс пользователя ${user} составляет ${result[0].money} ₯**`);
+                    await message.reply(`**баланс пользователя ${user} составляет ${result[0].money} ₯**`);
                     return message.delete();
                 }
             });
