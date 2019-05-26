@@ -37,7 +37,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${message.guild.id}', '${message.author.id}', '0.5')`);
                 send_action(message.guild.id, `<@${message.author.id}> получил 0.5 discord points. (MONEY: 0.5)`);
             }else{
-                connection.query(`UPDATE \`profiles\` SET money = money + 0.5 WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.author.id}'`);
+                connection.query(`UPDATE \`profiles\` SET money = money + 0.5 WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`);
                 send_action(message.guild.id, `<@${message.author.id}> получил 0.5 discord points. (MONEY: ${+result[0].money + 0.5})`);
             }
         });
