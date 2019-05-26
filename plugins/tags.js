@@ -21,6 +21,7 @@ exports.get = (name) => {
             "СВАТ": "⋆ Department of Justice ⋆",
             "RCPD": "⋆ Department of Justice ⋆",
             "РКПД": "⋆ Department of Justice ⋆",
+            "RCSD": "⋆ Department of Justice ⋆",
         
             "LSA": "⋆ Department of Defence ⋆",
             "ЛСА": "⋆ Department of Defence ⋆",
@@ -95,6 +96,7 @@ exports.get = (name) => {
             "СВАТ",
             "RCPD",
             "РКПД",
+            "RCSD",
             
             "LSA",
             "ЛСА",
