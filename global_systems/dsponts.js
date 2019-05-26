@@ -95,7 +95,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     message.member.send(embed);
                     return message.delete();
                 }
-                if (answer.length == 1){
+                if (answer.length != 1){
                     connection.query(`UPDATE \`profiles\` SET money = money - ${+args[2]} WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`);
                     connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${message.guild.id}', '${user.id}', '${+args[2]}')`);
                     send_action(message.guild.id, `<@${message.author.id}> перевел ${+args[2]} dp пользователю <@${user.id}> (${+result[0].money - +args[2]}-${+args[2]})`);
