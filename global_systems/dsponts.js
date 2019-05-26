@@ -5,6 +5,10 @@ function isInteger(n) {
     return n === +n && n === (n|0);
 }
 
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 // Структура
 // STORAGE: [id, name, description, owner, cost, amount, money, code]
 // ITEMS: [id, storage_id, date_end]
@@ -62,12 +66,12 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
             message.reply(`\`сумма не указана! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
             return message.delete();
         }
-        if (typeof (+args[2]) != 'number'){
-            message.reply(`\`сумма не является числом! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
-            return message.delete();
-        }
         if (args[2] < 0){
             message.reply(`\`сумма не может быть отрицательной! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
+            return message.delete();
+        }
+        if (!isNumeric(args[2])){
+            message.reply(`\`сумма не является числом! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
             return message.delete();
         }
         connection.query(`SELECT * FROM \`profiles\` WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`, async (error, result, packets) => {
