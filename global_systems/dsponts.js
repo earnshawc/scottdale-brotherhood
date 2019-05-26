@@ -9,12 +9,24 @@ function isInteger(n) {
 // STORAGE: [id, name, description, owner, cost, amount, money, code]
 // ITEMS: [id, storage_id, date_end]
 // BUY_DASHBOARD: [id, name, description, status, cost, money, amount, owner, code]
+// ACTION: [id, date_valueOf(), '[user="id"] купил транспорт у [user="id_two"]']
 
 // Пример
 // STORAGE: [1, Роли, Тут вы сможете запустить создание роли, 336207279412215809, 12.7, 0, 25.4, return 1]
 // ITEMS: [1, 1, 1558155451169]
 //        [2, 1, 1558155451297]
 // BUY_DASHBOARD: [1, Покупка роли, Тут вы сможете купить роль, открыто, 13, 0, 0, 336207279412215809, return 1]
+
+function send_action(server, action){
+    let date = new Date(new Date().valueOf() + +10800000);
+    let year = `${date.getFullYear()}`;
+    let month = `${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+    let day = `${date.getDate().toString().padStart(2, '0')}`;
+    let hour = `${date.getHours().toString().padStart(2, '0')}`;
+    let min = `${date.getMinutes().toString().padStart(2, '0')}`;
+    let sec = `${date.getSeconds().toString().padStart(2, '0')}`;
+    connection.query(`INSERT INTO \`action_log\` (\`server\`, \`year\`, \`month\`, \`day\`, \`hour\`, \`min\`, \`sec\`, \`action\`) VALUES ('${server}', '${year}', '${month}', '${day}', '${hour}', '${min}', '${sec}', '${action}')`);
+}
 
 exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
     if (!message.member.roles) return
@@ -25,13 +37,15 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         setTimeout(() => {
             if (ds_cooldown.has(message.author.id)) ds_cooldown.delete(message.author.id);
         }, 180000);
-        connection.query(`SELECT \`id\`, \`userid\`, \`points\` FROM \`accounts\` WHERE \`userid\` = '${message.author.id}'`, async (error, result, packets) => {
+        connection.query(`SELECT \`id\`, \`server\` \`user\`, \`money\` FROM \`profiles\` WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`, async (error, result, packets) => {
             if (error) return console.error(error);
             if (result.length > 1) return console.error(`Ошибка при выполнении, результатов много, error code: [#351]`);
             if (result.length == 0){
-                connection.query(`INSERT INTO \`accounts\` (\`userid\`, \`points\`) VALUES ('${message.author.id}', '0.5')`);
+                connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${message.guild.id}', '${message.author.id}', '0.5')`);
+                send_action(message.guild.id, `<@${message.author.id}> получил 0.5 discord points. Источник: сообщение`);
             }else{
-                connection.query(`UPDATE \`accounts\` SET points = points + 0.5 WHERE \`userid\` = '${message.author.id}'`);
+                connection.query(`UPDATE \`profiles\` SET money = money + 0.5 WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.author.id}'`);
+                send_action(message.guild.id, `<@${message.author.id}> получил 0.5 discord points. Источник: сообщение`);
             }
         });
     }
@@ -48,27 +62,64 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
         const args = message.content.slice(`/pay`).split(/ +/);
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
-            message.reply(`\`использование: /pay [user] [сумма]\``);
+            message.reply(`\`пользователь не указан! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
             return message.delete();
         }
-        if(args[2] < 0 && !message.member.hasPermission("ADMINISTRATOR")) return message.reply(`данное использование команды вам недоступно!`);
-        connection.query(`SELECT \`id\`, \`userid\`, \`points\` FROM \`accounts\` WHERE \`userid\` = '${message.author.id}'`, async (error, result, packets) => {
+        if (message.author.id == user.id){
+            message.reply(`\`самому себе нельзя! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
+            return message.delete();
+        }
+        if (!args[2]){
+            message.reply(`\`сумма не указана! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
+            return message.delete();
+        }
+        if (typeof args[2] != 'number'){
+            message.reply(`\`сумма не является числом! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
+            return message.delete();
+        }
+        if (args[2] < 0){
+            message.reply(`\`сумма не может быть отрицательной! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
+            return message.delete();
+        }
+        connection.query(`SELECT * FROM \`profiles\` WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`, async (error, result, packets) => {
             if (error) return console.error(error);
-            if (result.length > 1) return console.error(`Ошибка при выполнении, результатов много, error code: [#352]`);
-            if (result[0].points - args[2] < 0) return message.reply(`\`у вас недостаточно поинтов для перевода\``);
-            connection.query(`UPDATE \`accounts\` SET points = points - ${+args[2]} WHERE \`userid\` = '${message.author.id}'`);
-            connection.query(`SELECT \`id\`, \`userid\`, \`points\` FROM \`accounts\` WHERE \`userid\` = '${user.id}'`, async (error, result2, packets) => {
-            if (error) return console.error(error);
-            if (result2.length > 1) return console.error(`Ошибка при выполнении, результатов много, error code: [#352]`);
-            if (result2.length == 0) {
-                connection.query(`INSERT INTO \`accounts\` (\`userid\`, \`points\`) VALUES ('${user.id}', '${args[2]}')`);
-                message.reply(`\`перевод выполнен\``)
+            if (result.length > 1){
+                message.reply(`**\`произошла ошибка при использовании команды. Информация была отправлена в личные сообщения.\`**`);
+                const embed = new Discord.RichEmbed();
+                embed.setDescription(`**${message.member}, для устранения ошибки пожалуйста составьте жалобу в нашем [техническом разделе](https://robo-hamster.ru/index.php?forums/%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB.5/). Код ошибки: #1**`);
+                message.member.send(embed);
+                return message.delete();
+            }else if (result.length < 1){
+                message.reply(`**\`у вас недостаточно средств для соверешения передачи.\`**`);
+                return message.delete();
             }
-            else {
-                connection.query(`UPDATE \`accounts\` SET points = points + ${+args[2]} WHERE \`userid\` = '${user.id}'`);
-                message.reply(`\`перевод выполнен\``)
+            if (result[0].money - args[2] < 0){
+                message.reply(`**\`у вас недостаточно средств для соверешения передачи.\`**`);
+                return message.delete();
             }
-        });
+            connection.query(`SELECT * FROM \`profiles\` WHERE \`user\` = '${user.id}' AND \`server\` = '${message.guild.id}'`, async (error, answer, packets) => {
+                if (error) return console.error(error);
+                if (answer.length > 1){
+                    message.reply(`**\`произошла ошибка при использовании команды. Информация была отправлена в личные сообщения.\`**`);
+                    const embed = new Discord.RichEmbed();
+                    embed.setDescription(`**${message.member}, для устранения ошибки пожалуйста составьте жалобу в нашем [техническом разделе](https://robo-hamster.ru/index.php?forums/%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB.5/). Код ошибки: #2**`);
+                    message.member.send(embed);
+                    return message.delete();
+                }
+                if (answer.length == 1){
+                    connection.query(`UPDATE \`profiles\` SET money = money - ${+args[2]} WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`);
+                    connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${message.guild.id}', '${user.id}', '${+args[2]}')`);
+                    send_action(message.guild.id, `<@${message.author.id}> перевел ${+args[2]} dp пользователю <@${user.id}>`);
+                    message.reply(`**\`вы успешно передали ${args[2]}\` ₯ \`пользователю\` ${user}**`);
+                    return message.delete();
+                }else{
+                    connection.query(`UPDATE \`profiles\` SET money = money - ${+args[2]} WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`);
+                    connection.query(`UPDATE \`profiles\` SET money = money + ${+args[2]} WHERE \`user\` = '${user.id}' AND \`server\` = '${message.guild.id}'`);
+                    send_action(message.guild.id, `<@${message.author.id}> перевел ${+args[2]} dp пользователю <@${user.id}>`);
+                    message.reply(`**\`вы успешно передали ${args[2]}\` ₯ \`пользователю\` ${user}**`);
+                    return message.delete();
+                }
+            });
         });
     }
 
