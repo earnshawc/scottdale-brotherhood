@@ -48,7 +48,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.42-hide';
+const version = '5.0.43-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -1314,6 +1314,28 @@ bot.on('voiceStateUpdate', async (oldMember, newMember) => {
                 ADD_REACTIONS: false,
             }, 'подключение (конференция)');
             edit_channel.send(`**<@${newMember.id}> \`успешно подключился.\`**`).then(msg => msg.delete(30000));
+        }else if (member_newchannel.name == '→ Обзвон Бывшие ←'){
+            let edit_channel = newMember.guild.channels.find(c => c.name == "closed-accept-two");
+            if (!edit_channel) return console.log('[ERROR] Не возможно найти текстовой канал конференции.');
+            await edit_channel.overwritePermissions(newMember, {
+                // GENERAL PERMISSIONS
+                CREATE_INSTANT_INVITE: false,
+                MANAGE_CHANNELS: false,
+                MANAGE_ROLES: false,
+                MANAGE_WEBHOOKS: false,
+                // TEXT PERMISSIONS
+                VIEW_CHANNEL: true,
+                SEND_MESSAGES: true,
+                SEND_TTS_MESSAGES: false,
+                MANAGE_MESSAGES: false,
+                EMBED_LINKS: true,
+                ATTACH_FILES: true,
+                READ_MESSAGE_HISTORY: false,
+                MENTION_EVERYONE: false,
+                USE_EXTERNAL_EMOJIS: false,
+                ADD_REACTIONS: false,
+            }, 'подключение (конференция)');
+            edit_channel.send(`**<@${newMember.id}> \`успешно подключился.\`**`).then(msg => msg.delete(30000));
         }
     }
     if (member_oldchannel){
@@ -1335,12 +1357,12 @@ bot.on('voiceStateUpdate', async (oldMember, newMember) => {
                 await perm.delete('отключение (конференция)');
             });
             edit_channel.send(`**<@${newMember.id}> \`отключился.\`**`).then(msg => msg.delete(15000));
-		let role_one = newMember.guild.roles.find(r => r.name == 'Кандидаты(бывшие)');
-		let role_two = newMember.guild.roles.find(r => r.name == 'Кандидаты(хелперы)');
-		let role_three = newMember.guild.roles.find(r => r.name == 'Обзвон');
-		if (newMember.roles.some(r => r.id == role_one.id)) newMember.removeRole(role_one);
-		if (newMember.roles.some(r => r.id == role_two.id)) newMember.removeRole(role_two);
-		if (newMember.roles.some(r => r.id == role_three.id)) newMember.removeRole(role_three);
+            let role_one = newMember.guild.roles.find(r => r.name == 'Кандидаты(бывшие)');
+            let role_two = newMember.guild.roles.find(r => r.name == 'Кандидаты(хелперы)');
+            let role_three = newMember.guild.roles.find(r => r.name == 'Обзвон');
+            if (newMember.roles.some(r => r.id == role_one.id)) newMember.removeRole(role_one);
+            if (newMember.roles.some(r => r.id == role_two.id)) newMember.removeRole(role_two);
+            if (newMember.roles.some(r => r.id == role_three.id)) newMember.removeRole(role_three);
         }else if (member_oldchannel.name == 'Проводится обзвон [SP]'){
             let edit_channel = newMember.guild.channels.find(c => c.name == "проверка");
             if (!edit_channel) return console.log('[ERROR] Не возможно найти текстовой канал конференции.');
@@ -1350,6 +1372,21 @@ bot.on('voiceStateUpdate', async (oldMember, newMember) => {
                 await perm.delete('отключение (конференция)');
             });
             edit_channel.send(`**<@${newMember.id}> \`отключился.\`**`).then(msg => msg.delete(15000));
+        }else if (member_oldchannel.name == '→ Обзвон Бывшие ←'){
+            let edit_channel = newMember.guild.channels.find(c => c.name == "closed-accept-two");
+            if (!edit_channel) return console.log('[ERROR] Не возможно найти текстовой канал конференции.');
+            edit_channel.permissionOverwrites.forEach(async (perm) => {
+                if (perm.type != 'member') return
+                if (perm.id != newMember.id) return
+                await perm.delete('отключение (конференция)');
+            });
+            edit_channel.send(`**<@${newMember.id}> \`отключился.\`**`).then(msg => msg.delete(15000));
+            let role_one = newMember.guild.roles.find(r => r.name == 'Кандидаты(бывшие)');
+            let role_two = newMember.guild.roles.find(r => r.name == 'Кандидаты(хелперы)');
+            let role_three = newMember.guild.roles.find(r => r.name == 'Обзвон');
+            if (newMember.roles.some(r => r.id == role_one.id)) newMember.removeRole(role_one);
+            if (newMember.roles.some(r => r.id == role_two.id)) newMember.removeRole(role_two);
+            if (newMember.roles.some(r => r.id == role_three.id)) newMember.removeRole(role_three);
         }
     }
 });
