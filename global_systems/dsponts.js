@@ -210,25 +210,43 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         }, 8000);
         const args = message.content.slice(`/bizinfo`).split(/ +/);
         if (!args[1]){
-            message.reply(`\`использование: /bizinfo [название товара]\``);
-            return message.delete();
-        }
-        let name = args.slice(1).join(' ');
-        connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`owner\` = '${message.author.id}' AND \`name\` = '${name}'`, async (err, result, fields) => {
-            if (result.length < 1 || result.length > 1){
-                message.reply(`\`заведение, которое вы пытаетесь найти не найдено или не ваше!\``).then(msg => msg.delete(12000));
+            connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`owner\` = '${message.author.id}'`, async (err, result, fields) => {
+                if (result.length > 1){
+                    message.reply(`\`использование: /bizinfo [название товара]\``);
+                    return message.delete();
+                }
+                if (result.length < 1){
+                    message.reply(`\`заведение, которое вы пытаетесь найти не найдено или не ваше!\``).then(msg => msg.delete(12000));
+                    return message.delete();
+                }
+                const embed = new Discord.RichEmbed();
+                embed.setTitle(`Информация о ${result[0].name} [ID: ${result[0].id}]`);
+                embed.setColor('#FF0000');
+                embed.addField(`Информация о владельце заведения`, `**Владелец: <@${result[0].owner}>\nОписание: ${result[0].description}**`);
+                embed.addField(`Основная информация о магазине`, `**Статус заведения: ${result[0].status}\nПродаваемый товар: ${result[0].name}\nЦена за 1 штуку: ${result[0].cost} ₯\nКоличество товара: ${result[0].amount}\nДенег в магазине: ${result[0].money} ₯**`);
+                embed.addField(`Основная информация о складе`, `**Предметов на складе: ${result[0].storage}\nЦена за 1 штуку: ${result[0].storage_cost} ₯**`);
+                embed.setFooter(`© Сopyright 2019`);
+                message.reply(embed);
                 return message.delete();
-            }
-            const embed = new Discord.RichEmbed();
-            embed.setTitle(`Информация о ${result[0].name} [ID: ${result[0].id}]`);
-            embed.setColor('#FF0000');
-            embed.addField(`Информация о владельце заведения`, `**Владелец: <@${result[0].owner}>\nОписание: ${result[0].description}**`);
-            embed.addField(`Основная информация о магазине`, `**Статус заведения: ${result[0].status}\nПродаваемый товар: ${result[0].name}\nЦена за 1 штуку: ${result[0].cost} ₯\nКоличество товара: ${result[0].amount}\nДенег в магазине: ${result[0].money} ₯**`);
-            embed.addField(`Основная информация о складе`, `**Предметов на складе: ${result[0].storage}\nЦена за 1 штуку: ${result[0].storage_cost} ₯**`);
-            embed.setFooter(`© Сopyright 2019`);
-            message.reply(embed);
-            return message.delete();
-        });
+            });
+        }else{
+            let name = args.slice(1).join(' ');
+            connection.query(`SELECT * FROM \`buy_dashboard\` WHERE \`owner\` = '${message.author.id}' AND \`name\` = '${name}'`, async (err, result, fields) => {
+                if (result.length < 1 || result.length > 1){
+                    message.reply(`\`заведение, которое вы пытаетесь найти не найдено или не ваше!\``).then(msg => msg.delete(12000));
+                    return message.delete();
+                }
+                const embed = new Discord.RichEmbed();
+                embed.setTitle(`Информация о ${result[0].name} [ID: ${result[0].id}]`);
+                embed.setColor('#FF0000');
+                embed.addField(`Информация о владельце заведения`, `**Владелец: <@${result[0].owner}>\nОписание: ${result[0].description}**`);
+                embed.addField(`Основная информация о магазине`, `**Статус заведения: ${result[0].status}\nПродаваемый товар: ${result[0].name}\nЦена за 1 штуку: ${result[0].cost} ₯\nКоличество товара: ${result[0].amount}\nДенег в магазине: ${result[0].money} ₯**`);
+                embed.addField(`Основная информация о складе`, `**Предметов на складе: ${result[0].storage}\nЦена за 1 штуку: ${result[0].storage_cost} ₯**`);
+                embed.setFooter(`© Сopyright 2019`);
+                message.reply(embed);
+                return message.delete();
+            });
+        }
     }
 
     if (message.content.startsWith("/change_status")){
