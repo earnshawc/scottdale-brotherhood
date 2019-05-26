@@ -44,7 +44,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     }
 
     if (message.content.startsWith('/setstat')){
-        if (message.member.hasPermission("ADMINISTRATOR")) return
+        if (!message.member.hasPermission("ADMINISTRATOR")) return
         if (mysql_cooldown.has(message.author.id)){
             message.reply(`**\`попробуйте через 1 секунду!\`**`).then(msg => msg.delete(3000));
             return message.delete();
