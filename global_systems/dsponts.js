@@ -118,7 +118,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
 
     if (message.content.startsWith('/balance')){
         if (mysql_cooldown.has(message.author.id)){
-            message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
+            message.reply(`**\`попробуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
             return message.delete();
         }
         mysql_cooldown.add(message.author.id);
@@ -171,7 +171,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
 
     if (message.content.startsWith('/bizinfo')){
         if (mysql_cooldown.has(message.author.id)){
-            message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
+            message.reply(`**\`попробуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
             return message.delete();
         }
         mysql_cooldown.add(message.author.id);
@@ -203,7 +203,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
 
     if (message.content.startsWith("/change_status")){
         if (mysql_cooldown.has(message.author.id)){
-            message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
+            message.reply(`**\`попробуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
             return message.delete();
         }
         mysql_cooldown.add(message.author.id);
@@ -236,7 +236,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
 
     if (message.content.startsWith("/change_cost")){
         if (mysql_cooldown.has(message.author.id)){
-            message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
+            message.reply(`**\`попробуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
             return message.delete();
         }
         mysql_cooldown.add(message.author.id);
@@ -269,7 +269,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
 
     if (message.content.startsWith("/get_money")){
         if (mysql_cooldown.has(message.author.id)){
-            message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
+            message.reply(`**\`попробуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
             return message.delete();
         }
         mysql_cooldown.add(message.author.id);
@@ -322,7 +322,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
 
     if (message.content.startsWith("/add_money")){
         if (mysql_cooldown.has(message.author.id)){
-            message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
+            message.reply(`**\`попробуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
             return message.delete();
         }
         mysql_cooldown.add(message.author.id);
@@ -371,7 +371,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
 
     if (message.content.startsWith("/buy_amount")){
         if (mysql_cooldown.has(message.author.id)){
-            message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
+            message.reply(`**\`попробуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
             return message.delete();
         }
         mysql_cooldown.add(message.author.id);
@@ -415,7 +415,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
 
     if (message.content.startsWith("/get_market")){
         if (mysql_cooldown.has(message.author.id)){
-            message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
+            message.reply(`**\`попробуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
             return message.delete();
         }
         mysql_cooldown.add(message.author.id);
@@ -444,7 +444,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
 
     if (message.content.startsWith("/buy_market")){
         if (mysql_cooldown.has(message.author.id)){
-            message.reply(`**\`попорбуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
+            message.reply(`**\`попробуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
             return message.delete();
         }
         mysql_cooldown.add(message.author.id);
