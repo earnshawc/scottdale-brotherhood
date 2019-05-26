@@ -48,7 +48,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.44-hide';
+const version = '5.0.45-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -657,6 +657,17 @@ user.on('message', async (message) => {
     }
 });
 
+function send_action(server, action){
+    let date = new Date(new Date().valueOf() + +10800000);
+    let year = `${date.getFullYear()}`;
+    let month = `${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+    let day = `${date.getDate().toString().padStart(2, '0')}`;
+    let hour = `${date.getHours().toString().padStart(2, '0')}`;
+    let min = `${date.getMinutes().toString().padStart(2, '0')}`;
+    let sec = `${date.getSeconds().toString().padStart(2, '0')}`;
+    connection.query(`INSERT INTO \`action_log\` (\`server\`, \`year\`, \`month\`, \`day\`, \`hour\`, \`min\`, \`sec\`, \`action\`) VALUES ('${server}', '${year}', '${month}', '${day}', '${hour}', '${min}', '${sec}', '${action}')`);
+}
+
 bot.on('message', async message => {
     if (message.channel.type == "dm") return
     if (message.guild.id != serverid && message.guild.id != "493459379878625320") return
@@ -675,7 +686,7 @@ bot.on('message', async message => {
     require('./global_systems/support').run(bot, message, support_loop, support_cooldown, connection, st_cd);
     require('./global_systems/warn').run(bot, message, warn_cooldown);
     require('./global_systems/fbi_system').run(bot, message);
-    require('./global_systems/dsponts').run(bot, message, ds_cooldown, connection, mysql_cooldown);
+    require('./global_systems/dsponts').run(bot, message, ds_cooldown, connection, mysql_cooldown, send_action);
 
     if (message.content.startsWith(`/run`)){
         get_profile(3, message.author.id).then(value => {

@@ -17,18 +17,7 @@ function isInteger(n) {
 //        [2, 1, 1558155451297]
 // BUY_DASHBOARD: [1, Покупка роли, Тут вы сможете купить роль, открыто, 13, 0, 0, 336207279412215809, return 1]
 
-function send_action(server, action){
-    let date = new Date(new Date().valueOf() + +10800000);
-    let year = `${date.getFullYear()}`;
-    let month = `${(date.getMonth() + 1).toString().padStart(2, '0')}`;
-    let day = `${date.getDate().toString().padStart(2, '0')}`;
-    let hour = `${date.getHours().toString().padStart(2, '0')}`;
-    let min = `${date.getMinutes().toString().padStart(2, '0')}`;
-    let sec = `${date.getSeconds().toString().padStart(2, '0')}`;
-    connection.query(`INSERT INTO \`action_log\` (\`server\`, \`year\`, \`month\`, \`day\`, \`hour\`, \`min\`, \`sec\`, \`action\`) VALUES ('${server}', '${year}', '${month}', '${day}', '${hour}', '${min}', '${sec}', '${action}')`);
-}
-
-exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown) => {
+exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send_action) => {
     if (!message.member.roles) return
     if (!message.member.roles.some(r => r.name == 'Проверенный 🔐')) return
 
