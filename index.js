@@ -48,7 +48,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.40-hide';
+const version = '5.0.41-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -1335,6 +1335,12 @@ bot.on('voiceStateUpdate', async (oldMember, newMember) => {
                 await perm.delete('отключение (конференция)');
             });
             edit_channel.send(`**<@${newMember.id}> \`отключился.\`**`).then(msg => msg.delete(15000));
+		let role_one = newMember.guild.roles.find(r => r.name == 'Кандидаты(бывшие)');
+		let role_two = newMember.guild.roles.find(r => r.name == 'Кандидаты(хелперы)');
+		let role_three = newMember.guild.roles.find(r => r.name == 'Обзвон');
+		if (newMember.roles.some(r => r.id == role_one.id) newMember.removeRole(role_one);
+		if (newMember.roles.some(r => r.id == role_two.id) newMember.removeRole(role_two);
+		if (newMember.roles.some(r => r.id == role_three.id) newMember.removeRole(role_three);
         }else if (member_oldchannel.name == 'Проводится обзвон [SP]'){
             let edit_channel = newMember.guild.channels.find(c => c.name == "проверка");
             if (!edit_channel) return console.log('[ERROR] Не возможно найти текстовой канал конференции.');
