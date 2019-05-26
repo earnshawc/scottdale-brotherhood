@@ -92,12 +92,16 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
             message.reply(`\`сумма не указана! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
             return message.delete();
         }
+        if (!isNumeric(args[2])){
+            message.reply(`\`сумма не является числом! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
+            return message.delete();
+        }
         if (args[2] < 0){
             message.reply(`\`сумма не может быть отрицательной! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
             return message.delete();
         }
-        if (!isNumeric(args[2])){
-            message.reply(`\`сумма не является числом! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
+        if (args[2] < 0.01){
+            message.reply(`\`нельзя переводить менее 0.01 dp! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
             return message.delete();
         }
         connection.query(`SELECT * FROM \`profiles\` WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`, async (error, result, packets) => {
