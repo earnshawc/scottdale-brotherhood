@@ -43,6 +43,32 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         });
     }
 
+    if (message.content.startsWith('/setstat')){
+        if (message.member.hasPermission("ADMINISTRATOR")) return
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`попробуйте через 1 секунду!\`**`).then(msg => msg.delete(3000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 1000);
+        const args = message.content.slice(`/setstat`).split(/ +/);
+        connection.query(`SELECT \`id\`, \`server\` \`user\`, \`money\` FROM \`profiles\` WHERE \`user\` = '${args[2]}' AND \`server\` = '${args[1]}'`, async (error, result, packets) => {
+            if (error) return console.error(error);
+            if (result.length > 1) return console.error(`Ошибка при выполнении, результатов много, error code: [#351]`);
+            if (result.length == 0){
+                connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${args[1]}', '${args[2]}', '${args[3]}')`);
+                send_action(message.guild.id, `<@${message.author.id}> добавил пользователю ${args[2]} ${args[3]} dp. (MONEY: ${args[3]})`);
+            }else{
+                connection.query(`UPDATE \`profiles\` SET money = money + ${args[3]} WHERE \`user\` = '${args[2]}' AND \`server\` = '${args[1]}'`);
+                send_action(message.guild.id, `<@${message.author.id}> добавил пользователю ${args[2]} ${args[3]} dp. (MONEY: ${+result[0].money + +args[3]})`);
+            }
+            message.reply(`**добавил пользователю <@${args[2]}> ${args[3]} ₯**`);
+            return message.delete();
+        });
+    }
+
     if (message.content.startsWith('/pay')){
         if (mysql_cooldown.has(message.author.id)){
             message.reply(`**\`попробуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
