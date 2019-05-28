@@ -22,6 +22,36 @@ function mysql_load(message, mysql_cooldown){
     return false;
 }
 
+function uses(message, command, uses_args, settings_args){
+    const args = message.content.slice(`${command}`).split(/ +/);
+    if (args.size != +uses_args.size + 1){
+        message.reply(`использование: ${command} [${uses_args.join('] [')}]`).then(msg => msg.delete(12000));
+        message.delete();
+        return true;
+    }
+    for (let i = 0; i <= settings_args.size; i++){
+        if (settings_args[i] == 'number'){
+            if (!isNumeric(args[+i + 1])){
+                message.reply(`использование: ${command} [${uses_args.join('] [')}]`).then(msg => msg.delete(12000));
+                message.delete();
+                return true;
+            }
+        }else if (settings_args[i] == 'integer'){
+            if (!isNumeric(args[+i + 1])){
+                message.reply(`использование: ${command} [${uses_args.join('] [')}]`).then(msg => msg.delete(12000));
+                message.delete();
+                return true;
+            }
+            if (!isInteger(args[+i + 1])){
+                message.reply(`использование: ${command} [${uses_args.join('] [')}]`).then(msg => msg.delete(12000));
+                message.delete();
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 // Структура
 // STORAGE: [id, name, description, owner, cost, amount, money, code]
 // ITEMS: [id, storage_id, date_end]
@@ -59,7 +89,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     if (message.content.startsWith('/setstat')){
         if (!message.member.hasPermission("ADMINISTRATOR")) return
         if (mysql_load(message, mysql_cooldown)) return
-        const args = message.content.slice(`/setstat`).split(/ +/);
+        if (uses(message, '/setstat', ['server', 'user', 'money'], 'integer', 'integer', 'number')) return
         connection.query(`SELECT \`id\`, \`server\` \`user\`, \`money\` FROM \`profiles\` WHERE \`user\` = '${args[2]}' AND \`server\` = '${args[1]}'`, async (error, result, packets) => {
             if (error) return console.error(error);
             if (result.length > 1) return console.error(`Ошибка при выполнении, результатов много, error code: [#351]`);
