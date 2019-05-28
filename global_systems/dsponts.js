@@ -12,12 +12,14 @@ function isNumeric(n) {
 function mysql_load(message, mysql_cooldown){
     if (mysql_cooldown.has(message.author.id)){
         message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
-        return message.delete();
+        message.delete();
+        return true;
     }
     mysql_cooldown.add(message.author.id);
     setTimeout(() => {
         if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
     }, 4000);
+    return false;
 }
 
 // Структура
@@ -56,7 +58,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
 
     if (message.content.startsWith('/setstat')){
         if (!message.member.hasPermission("ADMINISTRATOR")) return
-        mysql_load(message, mysql_cooldown);
+        if (mysql_load(message, mysql_cooldown)) return
         const args = message.content.slice(`/setstat`).split(/ +/);
         connection.query(`SELECT \`id\`, \`server\` \`user\`, \`money\` FROM \`profiles\` WHERE \`user\` = '${args[2]}' AND \`server\` = '${args[1]}'`, async (error, result, packets) => {
             if (error) return console.error(error);
