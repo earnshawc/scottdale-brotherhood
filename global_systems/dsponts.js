@@ -9,6 +9,17 @@ function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+function mysql_load(message, mysql_cooldown){
+    if (mysql_cooldown.has(message.author.id)){
+        message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
+        return message.delete();
+    }
+    mysql_cooldown.add(message.author.id);
+    setTimeout(() => {
+        if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+    }, 4000);
+}
+
 // Структура
 // STORAGE: [id, name, description, owner, cost, amount, money, code]
 // ITEMS: [id, storage_id, date_end]
@@ -45,14 +56,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
 
     if (message.content.startsWith('/setstat')){
         if (!message.member.hasPermission("ADMINISTRATOR")) return
-        if (mysql_cooldown.has(message.author.id)){
-            message.reply(`**\`попробуйте через 1 секунду!\`**`).then(msg => msg.delete(3000));
-            return message.delete();
-        }
-        mysql_cooldown.add(message.author.id);
-        setTimeout(() => {
-            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
-        }, 1000);
+        mysql_load(message, mysql_cooldown);
         const args = message.content.slice(`/setstat`).split(/ +/);
         connection.query(`SELECT \`id\`, \`server\` \`user\`, \`money\` FROM \`profiles\` WHERE \`user\` = '${args[2]}' AND \`server\` = '${args[1]}'`, async (error, result, packets) => {
             if (error) return console.error(error);
