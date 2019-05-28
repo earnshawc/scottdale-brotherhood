@@ -30,6 +30,8 @@ function uses(message, command, uses_args, settings_args){
         return true;
     }
     for (let i = 0; i <= settings_args.size; i++){
+        console.log(settings_args[i]);
+        console.log(settings_args[i] == 'number');
         if (settings_args[i] == 'number'){
             if (!isNumeric(args[+i + 1])){
                 console.log('no numeretic')
@@ -52,6 +54,7 @@ function uses(message, command, uses_args, settings_args){
             }
         }
     }
+    console.log('end')
     return false;
 }
 
