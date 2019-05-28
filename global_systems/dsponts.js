@@ -25,25 +25,25 @@ function mysql_load(message, mysql_cooldown){
 function uses(message, command, uses_args, settings_args){
     const args = message.content.slice(`${command}`).split(/ +/);
     if (args.size != +uses_args.size + 1){
-        message.reply(`использование: ${command} [${uses_args.join('] [')}]`).then(msg => msg.delete(12000));
+        message.reply(`**\`использование: ${command} [${uses_args.join('] [')}]\`**`).then(msg => msg.delete(12000));
         message.delete();
         return true;
     }
     for (let i = 0; i <= settings_args.size; i++){
         if (settings_args[i] == 'number'){
             if (!isNumeric(args[+i + 1])){
-                message.reply(`использование: ${command} [${uses_args.join('] [')}]`).then(msg => msg.delete(12000));
+                message.reply(`**\`использование: ${command} [${uses_args.join('] [')}]\nError: значение '${uses_args[i]}' не является числом.\`**`).then(msg => msg.delete(12000));
                 message.delete();
                 return true;
             }
         }else if (settings_args[i] == 'integer'){
             if (!isNumeric(args[+i + 1])){
-                message.reply(`использование: ${command} [${uses_args.join('] [')}]`).then(msg => msg.delete(12000));
+                message.reply(`**\`использование: ${command} [${uses_args.join('] [')}]\nError: значение '${uses_args[i]}' не является числом.\`**`).then(msg => msg.delete(12000));
                 message.delete();
                 return true;
             }
             if (!isInteger(args[+i + 1])){
-                message.reply(`использование: ${command} [${uses_args.join('] [')}]`).then(msg => msg.delete(12000));
+                message.reply(`**\`использование: ${command} [${uses_args.join('] [')}]\nError: значение '${uses_args[i]}' не целое.\`**`).then(msg => msg.delete(12000));
                 message.delete();
                 return true;
             }
