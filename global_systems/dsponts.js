@@ -29,7 +29,7 @@ function uses(message, command, uses_args, settings_args){
         message.delete();
         return true;
     }
-    for (let i = 0; i <= settings_args.size; i++){
+    for (let i = 0; i <= settings_args.length; i++){
         console.log(settings_args[i]);
         console.log(settings_args[i] == 'number');
         if (settings_args[i] == 'number'){
