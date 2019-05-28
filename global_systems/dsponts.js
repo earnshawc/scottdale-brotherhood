@@ -89,6 +89,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     if (message.content.startsWith('/setstat')){
         if (!message.member.hasPermission("ADMINISTRATOR")) return
         if (mysql_load(message, mysql_cooldown)) return
+        const args = message.content.slice(`/setstat`).split(/ +/);
         if (uses(message, '/setstat', ['server', 'user', 'money'], 'integer', 'integer', 'number')) return
         connection.query(`SELECT \`id\`, \`server\` \`user\`, \`money\` FROM \`profiles\` WHERE \`user\` = '${args[2]}' AND \`server\` = '${args[1]}'`, async (error, result, packets) => {
             if (error) return console.error(error);
