@@ -24,9 +24,8 @@ function mysql_load(message, mysql_cooldown){
 
 function uses(message, command, uses_args, settings_args){
     const args = message.content.slice(`${command}`).split(/ +/);
-    const args_size = +args.length + 1;
-    if (uses_args.length != args_size){
-        message.reply(`**\`использование: ${command} [${uses_args.join('] [')}]\`** [${uses_args.size}-${args_size}]`).then(msg => msg.delete(12000));
+    if (uses_args.length != args.length){
+        message.reply(`**\`использование: ${command} [${uses_args.join('] [')}]\`** [${uses_args.size}-${args.length}]`).then(msg => msg.delete(12000));
         message.delete();
         return true;
     }
