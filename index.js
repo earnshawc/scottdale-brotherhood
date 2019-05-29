@@ -492,7 +492,7 @@ async function nalog_biz(){
                         if (storage.status == true) {
                             connection.query(`UPDATE \`storage\` SET status = '0' WHERE \`id\` = '${storage.id}'`);
                             let member = bot.guilds.get(storage.server).members.get(storage.owner);
-                            send_action(storage.server, `${member.displayName || member.user.tag} (${storage.owner}) предприятие было закрыто за неуплату налога (MONEY: ${storage.money} - NEED: ${storage.nalog}). Предприятие - ${storage.name}`);
+                            send_action(storage.server, `${member.displayName || member.user.tag} (${storage.owner}) предприятие было закрыто за неуплату налога (NEED: ${storage.nalog} - NOW: ${storage.money}). Предприятие - ${storage.name}`);
                         }
                     }else{
                         connection.query(`UPDATE \`storage\` SET money = money - ${storage.nalog} WHERE \`id\` = '${storage.id}'`);
