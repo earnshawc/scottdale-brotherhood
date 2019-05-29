@@ -9,6 +9,14 @@ function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+function error_mysql(message){
+    message.reply(`**\`произошла критическая ошибка. Подробности отправлены в личные сообщения.\`**`).then(msg => msg.delete(20000));
+    const embed = new Discord.RichEmbed();
+    embed.setDescription(`**${message.member}, для устранения ошибки пожалуйста составьте жалобу в нашем [техническом разделе](https://robo-hamster.ru/index.php?forums/%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB.5/). Код ошибки: #752**`);
+    message.member.send(embed);
+    return message.delete();
+}
+
 function mysql_load(message, mysql_cooldown){
     if (mysql_cooldown.has(message.author.id)){
         message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
@@ -222,6 +230,44 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 }
             });
         }
+    }
+
+    // Работа с предприятиями
+    if (message.content.startsWith('/storage_description')){
+        if (mysql_load(message, mysql_cooldown)) return
+        if (uses(message, '/storage_description', ['описание'], ['none'])) return
+        const args = message.content.slice(`/storage_description`).split(/ +/);
+        connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
+            if (error) return error_mysql(message);
+            if (storage.length == 0){
+                message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
+                return message.delete();
+            }else if (storage.length == 1){
+                const description = args.slice(1).join(' ');
+                connection.query(`UPDATE \`storage\` SET description = ${description} WHERE \`id\` = '${storage[0].id}'`);
+                message.reply(`**\`описание предприятия было успешно изменено!\`**`).then(msg => msg.delete(10000));
+                return message.delete();
+            }else{
+                if (!isNumeric(args[1])){
+                    message.reply(`**\`укажите номер вашего предприятия: /storage_description [предприятие] [описание]\`**`).then(msg => msg.delete(10000));
+                    return message.delete();
+                }
+                connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id} AND \`id\` = '${args[1]}'`, async (error, storage) => {
+                    if (error) return error_mysql(message);
+                    if (storage.length == 0){
+                        message.reply(`**\`вы не являетесь владельцем данного предприятия!\`**`).then(msg => msg.delete(18000));
+                        return message.delete();
+                    }else if (storage.length == 1){
+                        const description = args.slice(2).join(' ');
+                        connection.query(`UPDATE \`storage\` SET description = ${description} WHERE \`id\` = '${storage[0].id}'`);
+                        message.reply(`**\`описание предприятия было успешно изменено!\`**`).then(msg => msg.delete(10000));
+                        return message.delete();
+                    }else{
+                        return error_mysql(message);
+                    }
+                });
+            }
+        });
     }
 
     if (message.content.startsWith('/bizinfo')){
