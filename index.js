@@ -488,7 +488,7 @@ async function nalog_biz(){
             storages.forEach(storage => {
                 console.log(storage);
                 let date = new Date().valueOf();
-                if (storage.nalog_now < date){
+                if (storage.nalog_new < date){
                     if (storage.money < storage.nalog){
                         if (storage.status == true) {
                             connection.query(`UPDATE \`storage\` SET status = '0' WHERE \`id\` = '${storage.id}'`);
@@ -497,7 +497,7 @@ async function nalog_biz(){
                     }else{
                         send_action(message.guild.id, `<@${storage.owner}> c предприятия списан налог. Предприятие - ${storage.name}`)
                         connection.query(`UPDATE \`storage\` SET money = money - ${storage.nalog} WHERE \`id\` = '${storage.id}'`);
-                        connection.query(`UPDATE \`storage\` SET nalog_now = '${+date + 60000}' WHERE \`id\` = '${storage.id}'`);
+                        connection.query(`UPDATE \`storage\` SET nalog_new = '${+date + 60000}' WHERE \`id\` = '${storage.id}'`);
                     }
                 }
             });
