@@ -690,10 +690,6 @@ function send_action(server, action){
     let sec = `${date.getSeconds().toString().padStart(2, '0')}`;
     connection.query(`INSERT INTO \`action_log\` (\`server\`, \`year\`, \`month\`, \`day\`, \`hour\`, \`min\`, \`sec\`, \`action\`) VALUES ('${server}', '${year}', '${month}', '${day}', '${hour}', '${min}', '${sec}', '${action}')`);
     console.log(`[${hour}:${min}:${sec}] ${action}`);
-    let server = bot.guilds.get(server);
-    if (!server) return
-    let channel = server.channels.find(c => c.name == 'transfers-dp');
-    if (!channel) return
     const actionsHook = new Discord.WebhookClient("583400700034154516", "fPBO8gncxRtToyvIkJ5Sb5kp-X8iBEZ02ZRwJ5yGA3EVh5wiA-p9NlsuLCKtu2xDHBzo");
     actionsHook.send(`[${hour}:${min}:${sec}] ${action}`);
 }
