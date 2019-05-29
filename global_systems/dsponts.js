@@ -244,7 +244,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 return message.delete();
             }else if (storage.length == 1){
                 const description = args.slice(1).join(' ');
-                connection.query(`UPDATE \`storage\` SET description = ${description} WHERE \`id\` = '${storage[0].id}'`);
+                connection.query(`UPDATE \`storage\` SET description = '${description}' WHERE \`id\` = '${storage[0].id}'`);
                 message.reply(`**\`описание предприятия было успешно изменено!\`**`).then(msg => msg.delete(10000));
                 return message.delete();
             }else{
@@ -259,7 +259,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         return message.delete();
                     }else if (storage.length == 1){
                         const description = args.slice(2).join(' ');
-                        connection.query(`UPDATE \`storage\` SET description = ${description} WHERE \`id\` = '${storage[0].id}'`);
+                        connection.query(`UPDATE \`storage\` SET description = '${description}' WHERE \`id\` = '${storage[0].id}'`);
                         message.reply(`**\`описание предприятия было успешно изменено!\`**`).then(msg => msg.delete(10000));
                         return message.delete();
                     }else{
