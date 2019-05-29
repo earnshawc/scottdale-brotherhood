@@ -400,7 +400,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     if (error) return error_mysql(message);
                     if (profile > 1) return error_mysql(message);
                     if (profile == 1){
-                        if (profile[0].money < args[1]){
+                        if (+profile[0].money < +args[1]){
                             message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
                             return message.delete();
                         }
@@ -426,7 +426,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                             if (error) return error_mysql(message);
                             if (profile > 1) return error_mysql(message);
                             if (profile == 1){
-                                if (profile[0].money < args[2]){
+                                if (+profile[0].money < +args[2]){
                                     message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
                                     return message.delete();
                                 }
