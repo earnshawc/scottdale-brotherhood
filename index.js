@@ -48,7 +48,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.46';
+const version = '5.0.47-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -486,16 +486,15 @@ async function nalog_biz(){
     setInterval(() => {
         connection.query(`SELECT * FROM \`storage\``, async (error, storages) => {
             storages.forEach(storage => {
-                console.log(storage);
                 let date = new Date().valueOf();
                 if (storage.nalog_new < date){
                     if (storage.money < storage.nalog){
                         if (storage.status == true) {
                             connection.query(`UPDATE \`storage\` SET status = '0' WHERE \`id\` = '${storage.id}'`);
-                            send_action(message.guild.id, `<@${storage.owner}> предприятие было закрыто за неуплату налога. Предприятие - ${storage.name}`);
+                            send_action(storage.server, `<@${storage.owner}> предприятие было закрыто за неуплату налога. Предприятие - ${storage.name}`);
                         }
                     }else{
-                        send_action(message.guild.id, `<@${storage.owner}> c предприятия списан налог. Предприятие - ${storage.name}`)
+                        send_action(storage.server, `<@${storage.owner}> c предприятия списан налог. Предприятие - ${storage.name}`)
                         connection.query(`UPDATE \`storage\` SET money = money - ${storage.nalog} WHERE \`id\` = '${storage.id}'`);
                         connection.query(`UPDATE \`storage\` SET nalog_new = '${+date + 60000}' WHERE \`id\` = '${storage.id}'`);
                     }
