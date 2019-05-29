@@ -132,10 +132,10 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
             if (result.length > 1) return console.error(`Ошибка при выполнении, результатов много, error code: [#351]`);
             if (result.length == 0){
                 connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${args[1]}', '${args[2]}', '${args[3]}')`);
-                send_action(message.guild.id, `<@${message.author.id}> добавил пользователю ${args[2]} ${args[3]} dp. (MONEY: ${args[3]})`);
+                send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) добавил пользователю ${args[2]} ${args[3]} dp. (MONEY: ${args[3]})`);
             }else{
                 connection.query(`UPDATE \`profiles\` SET money = money + ${args[3]} WHERE \`user\` = '${args[2]}' AND \`server\` = '${args[1]}'`);
-                send_action(message.guild.id, `<@${message.author.id}> добавил пользователю ${args[2]} ${args[3]} dp. (MONEY: ${+result[0].money + +args[3]})`);
+                send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) добавил пользователю ${args[2]} ${args[3]} dp. (MONEY: ${+result[0].money + +args[3]})`);
             }
             await message.reply(`**добавил пользователю <@${args[2]}> ${args[3]} ₯**`);
             return message.delete();
@@ -179,15 +179,15 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 if (answer.length != 1){
                     connection.query(`UPDATE \`profiles\` SET money = money - ${+args[2]} WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`);
                     connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${message.guild.id}', '${user.id}', '${+args[2]}')`);
-                    send_action(message.guild.id, `<@${message.author.id}> перевел ${+args[2]} dp пользователю <@${user.id}> (${+result[0].money - +args[2]}-${+args[2]})`);
-                    send_action(message.guild.id, `<@${user.id}> получил от <@${message.author.id}> | ${+args[2]} dp (0-${+answer[0].money + +args[2]})`);
+                    send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) перевел ${+args[2]} dp пользователю ${user.displayName || user.user.tag} (${user.id}) (${+result[0].money - +args[2]}-${+args[2]})`);
+                    send_action(message.guild.id, `${user.displayName || user.user.tag} (${user.id}) получил от ${message.member.displayName || message.author.tag} (${message.author.id}) | ${+args[2]} dp (0-${+answer[0].money + +args[2]})`);
                     await message.reply(`**\`вы успешно передали ${args[2]} dp пользователю\` ${user}**`);
                     return message.delete();
                 }else{
                     connection.query(`UPDATE \`profiles\` SET money = money - ${+args[2]} WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`);
                     connection.query(`UPDATE \`profiles\` SET money = money + ${+args[2]} WHERE \`user\` = '${user.id}' AND \`server\` = '${message.guild.id}'`);
-                    send_action(message.guild.id, `<@${message.author.id}> перевел ${+args[2]} dp пользователю <@${user.id}> (${+result[0].money - +args[2]}-${+answer[0].money + +args[2]})`);
-                    send_action(message.guild.id, `<@${user.id}> получил от <@${message.author.id}> | ${+args[2]} dp (${+answer[0].money}-${+answer[0].money + +args[2]})`);
+                    send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) перевел ${+args[2]} dp пользователю ${user.displayName || user.user.tag} (${user.id}) (${+result[0].money - +args[2]}-${+answer[0].money + +args[2]})`);
+                    send_action(message.guild.id, `${user.displayName || message.author.tag} (${user.id}) получил от ${message.member.displayName || message.author.tag} (${message.author.id}) | ${+args[2]} dp (${+answer[0].money}-${+answer[0].money + +args[2]})`);
                     await message.reply(`**\`вы успешно передали ${args[2]} dp пользователю\` ${user}**`);
                     return message.delete();
                 }
@@ -209,11 +209,11 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     return message.delete();
                 }
                 if (result.length == 0){
-                    send_action(message.guild.id, `<@${message.author.id}> просмотрел свой баланс (MONEY: 0)`);
+                    send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) просмотрел свой баланс (MONEY: 0)`);
                     await message.reply(`**ваш баланс составляет 0 ₯**`);
                     return message.delete();
                 }else{
-                    send_action(message.guild.id, `<@${message.author.id}> просмотрел свой баланс (MONEY: ${result[0].money})`);
+                    send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) просмотрел свой баланс (MONEY: ${result[0].money})`);
                     await message.reply(`**ваш баланс составляет ${result[0].money} ₯**`);
                     return message.delete();
                 }
@@ -233,11 +233,11 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     return message.delete();
                 }
                 if (result.length == 0){
-                    send_action(message.guild.id, `<@${message.author.id}> просмотрел баланс пользователя <@${user.id}> (MONEY: 0)`);
+                    send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) просмотрел баланс пользователя ${user.displayName || user.user.tag} (${user.id}) (MONEY: 0)`);
                     await message.reply(`**баланс пользователя ${user} составляет 0 ₯**`);
                     return message.delete();
                 }else{
-                    send_action(message.guild.id, `<@${message.author.id}> просмотрел баланс пользователя <@${user.id}> (MONEY: ${result[0].money})`);
+                    send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) просмотрел баланс пользователя ${user.displayName || user.user.tag} (${user.id}) (MONEY: ${result[0].money})`);
                     await message.reply(`**баланс пользователя ${user} составляет ${result[0].money} ₯**`);
                     return message.delete();
                 }
@@ -263,7 +263,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 const description = args.slice(1).join(' ');
                 connection.query(`UPDATE \`storage\` SET description = '${description}' WHERE \`id\` = '${storage[0].id}'`);
                 message.reply(`**\`описание предприятия было успешно изменено!\`**`).then(msg => msg.delete(10000));
-                send_action(message.guild.id, `<@${message.author.id}> изменил описание предприятию ${storage[0].name}`);
+                send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) изменил описание предприятию ${storage[0].name}`);
                 return message.delete();
             }else{
                 if (!isNumeric(args[1])){
@@ -283,7 +283,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         const description = args.slice(2).join(' ');
                         connection.query(`UPDATE \`storage\` SET description = '${description}' WHERE \`id\` = '${storage[0].id}'`);
                         message.reply(`**\`описание предприятия было успешно изменено!\`**`).then(msg => msg.delete(10000));
-                        send_action(message.guild.id, `<@${message.author.id}> изменил описание предприятию ${storage[0].name}`);
+                        send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) изменил описание предприятию ${storage[0].name}`);
                         return message.delete();
                     }else{
                         return error_mysql(message);
@@ -310,7 +310,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 }
                 connection.query(`UPDATE \`storage\` SET status = '${args[1]}' WHERE \`id\` = '${storage[0].id}'`);
                 message.reply(`**\`состояние предприятия было изменено!\`**`).then(msg => msg.delete(10000));
-                send_action(message.guild.id, `<@${message.author.id}> изменил состояние предприятию ${storage[0].name}`);
+                send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) изменил состояние предприятию ${storage[0].name}`);
                 return message.delete();
             }else{
                 if (uses(message, '/storage_status', ['предприятие', 'состояние (1/0)'], ['number', 'status'])) return
@@ -326,7 +326,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         }
                         connection.query(`UPDATE \`storage\` SET status = '${args[2]}' WHERE \`id\` = '${storage[0].id}'`);
                         message.reply(`**\`состояние предприятия было изменено!\`**`).then(msg => msg.delete(10000));
-                        send_action(message.guild.id, `<@${message.author.id}> изменил состояние предприятию ${storage[0].name}`);
+                        send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) изменил состояние предприятию ${storage[0].name}`);
                         return message.delete();
                     }else{
                         return error_mysql(message);
@@ -357,7 +357,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 }
                 connection.query(`UPDATE \`storage\` SET cost = '${args[1]}' WHERE \`id\` = '${storage[0].id}'`);
                 message.reply(`**\`стоимость продажи товара была изменена!\`**`).then(msg => msg.delete(10000));
-                send_action(message.guild.id, `<@${message.author.id}> изменил стоимость продажи c ${storage[0].cost} на ${args[1]} — предприятию ${storage[0].name}`);
+                send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) изменил стоимость продажи c ${storage[0].cost} на ${args[1]} — предприятию ${storage[0].name}`);
                 return message.delete();
             }else{
                 if (uses(message, '/storage_cost', ['предприятие', 'сумма'], ['number', 'plus_number'])) return
@@ -377,7 +377,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         }
                         connection.query(`UPDATE \`storage\` SET cost = '${args[2]}' WHERE \`id\` = '${storage[0].id}'`);
                         message.reply(`**\`стоимость продажи товара была изменена!\`**`).then(msg => msg.delete(10000));
-                        send_action(message.guild.id, `<@${message.author.id}> изменил стоимость продажи c ${storage[0].cost} на ${args[2]} — предприятию ${storage[0].name}`);
+                        send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) изменил стоимость продажи c ${storage[0].cost} на ${args[2]} — предприятию ${storage[0].name}`);
                         return message.delete();
                     }else{
                         return error_mysql(message);
@@ -409,7 +409,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         connection.query(`UPDATE \`storage\` SET money = money + ${args[1]} WHERE \`id\` = '${storage[0].id}'`);
                         connection.query(`UPDATE \`profiles\` SET money = money - ${args[1]} WHERE \`id\` = '${profile[0].id}'`);
                         message.reply(`**\`вы успешно положили на склад предприятия ${args[1]} discord points!\`**`).then(msg => msg.delete(10000));
-                        send_action(message.guild.id, `<@${message.author.id}> пополнил баланс на ${args[1]} — предприятию ${storage[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money + +args[1]}) (MONEY PR: ${profile[0].money} - ${profile[0].money - +args[1]})`);
+                        send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) пополнил баланс на ${args[1]} — предприятию ${storage[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money + +args[1]}) (MONEY PR: ${profile[0].money} - ${profile[0].money - +args[1]})`);
                         return message.delete();
                     }else{
                         message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
@@ -435,7 +435,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                                 connection.query(`UPDATE \`storage\` SET money = money + ${args[2]} WHERE \`id\` = '${storage[0].id}'`);
                                 connection.query(`UPDATE \`profiles\` SET money = money - ${args[2]} WHERE \`id\` = '${profile[0].id}'`);
                                 message.reply(`**\`вы успешно положили на склад предприятия ${args[2]} discord points!\`**`).then(msg => msg.delete(10000));
-                                send_action(message.guild.id, `<@${message.author.id}> пополнил баланс на ${args[2]} — предприятию ${storage[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money + +args[2]}) (MONEY PR: ${profile[0].money} - ${profile[0].money - +args[2]})`);
+                                send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) пополнил баланс на ${args[2]} — предприятию ${storage[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money + +args[2]}) (MONEY PR: ${profile[0].money} - ${profile[0].money - +args[2]})`);
                                 return message.delete();
                             }else{
                                 message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
@@ -472,13 +472,13 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         connection.query(`UPDATE \`storage\` SET money = money - ${args[1]} WHERE \`id\` = '${storage[0].id}'`);
                         connection.query(`UPDATE \`profiles\` SET money = money + ${args[1]} WHERE \`id\` = '${profile[0].id}'`);
                         message.reply(`**\`вы успешно сняли со склада предприятия ${args[1]} discord points!\`**`).then(msg => msg.delete(10000));
-                        send_action(message.guild.id, `<@${message.author.id}> снял со счета ${args[1]} — предприятия ${storage[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money - +args[1]}) (MONEY PR: ${profile[0].money} - ${profile[0].money + +args[1]})`);
+                        send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) снял со счета ${args[1]} — предприятия ${storage[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money - +args[1]}) (MONEY PR: ${profile[0].money} - ${profile[0].money + +args[1]})`);
                         return message.delete();
                     }else{
                         connection.query(`UPDATE \`storage\` SET money = money - ${args[1]} WHERE \`id\` = '${storage[0].id}'`);
                         connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${message.guild.id}', '${message.author.id}', '${args[1]}')`);
                         message.reply(`**\`вы успешно сняли со склада предприятия ${args[1]} discord points!\`**`).then(msg => msg.delete(10000));
-                        send_action(message.guild.id, `<@${message.author.id}> снял со счета ${args[1]} — предприятия ${storage[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money - +args[1]}) (MONEY PR: ${profile[0].money} - ${profile[0].money + +args[1]})`);
+                        send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) снял со счета ${args[1]} — предприятия ${storage[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money - +args[1]}) (MONEY PR: ${profile[0].money} - ${profile[0].money + +args[1]})`);
                         return message.delete();
                     }
                 });
@@ -501,13 +501,13 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                                 connection.query(`UPDATE \`storage\` SET money = money - ${args[2]} WHERE \`id\` = '${storage[0].id}'`);
                                 connection.query(`UPDATE \`profiles\` SET money = money + ${args[2]} WHERE \`id\` = '${profile[0].id}'`);
                                 message.reply(`**\`вы успешно сняли со склада предприятия ${args[2]} discord points!\`**`).then(msg => msg.delete(10000));
-                                send_action(message.guild.id, `<@${message.author.id}> снял со счета ${args[2]} — предприятия ${storage[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money - +args[2]}) (MONEY PR: ${profile[0].money} - ${profile[0].money + +args[2]})`);
+                                send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) снял со счета ${args[2]} — предприятия ${storage[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money - +args[2]}) (MONEY PR: ${profile[0].money} - ${profile[0].money + +args[2]})`);
                                 return message.delete();
                             }else{
                                 connection.query(`UPDATE \`storage\` SET money = money - ${args[2]} WHERE \`id\` = '${storage[0].id}'`);
                                 connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${message.guild.id}', '${message.author.id}', '${args[2]}')`);
                                 message.reply(`**\`вы успешно сняли со склада предприятия ${args[2]} discord points!\`**`).then(msg => msg.delete(10000));
-                                send_action(message.guild.id, `<@${message.author.id}> снял со счета ${args[2]} — предприятия ${storage[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money - +args[2]}) (MONEY PR: ${profile[0].money} - ${profile[0].money + +args[2]})`);
+                                send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) снял со счета ${args[2]} — предприятия ${storage[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money - +args[2]}) (MONEY PR: ${profile[0].money} - ${profile[0].money + +args[2]})`);
                                 return message.delete();
                             }
                         });
