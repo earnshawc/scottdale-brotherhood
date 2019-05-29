@@ -106,7 +106,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     if (message.content.startsWith('/setstat')){
         if (!message.member.hasPermission("ADMINISTRATOR")) return
         if (mysql_load(message, mysql_cooldown)) return
-        if (uses(message, '/setstat', ['server', 'user', 'money'], ['number', 'number', 'number'])) return
+        if (uses(message, '/setstat', ['serverid', 'userid', 'money'], ['number', 'number', 'number'])) return
         const args = message.content.slice(`/setstat`).split(/ +/);
         connection.query(`SELECT \`id\`, \`server\` \`user\`, \`money\` FROM \`profiles\` WHERE \`user\` = '${args[2]}' AND \`server\` = '${args[1]}'`, async (error, result, packets) => {
             if (error) return console.error(error);
@@ -125,7 +125,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
 
     if (message.content.startsWith('/pay')){
         if (mysql_load(message, mysql_cooldown)) return
-        if (uses(message, '/pay', ['user', 'сумма'], ['mention', 'number'])) return
+        if (uses(message, '/pay', ['user', 'сумма'], ['mention_user', 'plus_number'])) return
         const args = message.content.slice(`/pay`).split(/ +/);
         let user = message.guild.member(message.mentions.users.first());
         if (args[2] < 0.01){
@@ -177,14 +177,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     }
 
     if (message.content.startsWith('/balance')){
-        if (mysql_cooldown.has(message.author.id)){
-            message.reply(`**\`попробуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
-            return message.delete();
-        }
-        mysql_cooldown.add(message.author.id);
-        setTimeout(() => {
-            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
-        }, 8000);
+        if (mysql_load(message, mysql_cooldown)) return
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
             connection.query(`SELECT * FROM \`profiles\` WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`, async (error, result, packets) => {
@@ -197,9 +190,11 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     return message.delete();
                 }
                 if (result.length == 0){
+                    send_action(message.guild.id, `<@${message.author.id}> просмотрел свой баланс (MONEY: 0)`);
                     await message.reply(`**ваш баланс составляет 0 ₯**`);
                     return message.delete();
                 }else{
+                    send_action(message.guild.id, `<@${message.author.id}> просмотрел свой баланс (MONEY: ${result[0].money})`);
                     await message.reply(`**ваш баланс составляет ${result[0].money} ₯**`);
                     return message.delete();
                 }
@@ -219,9 +214,11 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     return message.delete();
                 }
                 if (result.length == 0){
+                    send_action(message.guild.id, `<@${message.author.id}> просмотрел баланс пользователя <@${user.id}> (MONEY: 0)`);
                     await message.reply(`**баланс пользователя ${user} составляет 0 ₯**`);
                     return message.delete();
                 }else{
+                    send_action(message.guild.id, `<@${message.author.id}> просмотрел баланс пользователя <@${user.id}> (MONEY: ${result[0].money})`);
                     await message.reply(`**баланс пользователя ${user} составляет ${result[0].money} ₯**`);
                     return message.delete();
                 }
