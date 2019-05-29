@@ -398,8 +398,8 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 if (uses(message, '/storage_add', ['сумма'], ['plus_number'])) return
                 connection.query(`SELECT * FROM \`profiles\` WHERE \`server\` = '${message.guild.id}' AND \`user\` = '${message.author.id}'`, async (error, profile) => {
                     if (error) return error_mysql(message);
-                    if (profile > 1) return error_mysql(message);
-                    if (profile == 1){
+                    if (profile.length > 1) return error_mysql(message);
+                    if (profile.length == 1){
                         if (+profile[0].money < +args[1]){
                             message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
                             return message.delete();
@@ -424,8 +424,8 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     }else if (storage.length == 1){
                         connection.query(`SELECT * FROM \`profiles\` WHERE \`server\` = '${message.guild.id}' AND \`user\` = '${message.author.id}'`, async (error, profile) => {
                             if (error) return error_mysql(message);
-                            if (profile > 1) return error_mysql(message);
-                            if (profile == 1){
+                            if (profile.length > 1) return error_mysql(message);
+                            if (profile.length == 1){
                                 if (+profile[0].money < +args[2]){
                                     message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
                                     return message.delete();
@@ -459,14 +459,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 return message.delete();
             }else if (storage.length == 1){
                 if (uses(message, '/storage_get', ['сумма'], ['plus_number'])) return
-                if (storage[0].money < args[1]){
+                if (+storage[0].money < +args[1]){
                     message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
                     return message.delete();
                 }
                 connection.query(`SELECT * FROM \`profiles\` WHERE \`server\` = '${message.guild.id}' AND \`user\` = '${message.author.id}'`, async (error, profile) => {
                     if (error) return error_mysql(message);
-                    if (profile > 1) return error_mysql(message);
-                    if (profile == 1){
+                    if (profil.length > 1) return error_mysql(message);
+                    if (profile.lengh == 1){
                         connection.query(`UPDATE \`storage\` SET money = money - ${args[1]} WHERE \`id\` = '${storage[0].id}'`);
                         connection.query(`UPDATE \`profiles\` SET money = money + ${args[1]} WHERE \`id\` = '${profile[0].id}'`);
                         message.reply(`**\`вы успешно сняли со склада предприятия ${args[1]} discord points!\`**`).then(msg => msg.delete(10000));
@@ -494,8 +494,8 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         }
                         connection.query(`SELECT * FROM \`profiles\` WHERE \`server\` = '${message.guild.id}' AND \`user\` = '${message.author.id}'`, async (error, profile) => {
                             if (error) return error_mysql(message);
-                            if (profile > 1) return error_mysql(message);
-                            if (profile == 1){
+                            if (profile.length > 1) return error_mysql(message);
+                            if (profile.length == 1){
                                 connection.query(`UPDATE \`storage\` SET money = money - ${args[2]} WHERE \`id\` = '${storage[0].id}'`);
                                 connection.query(`UPDATE \`profiles\` SET money = money + ${args[2]} WHERE \`id\` = '${profile[0].id}'`);
                                 message.reply(`**\`вы успешно сняли со склада предприятия ${args[2]} discord points!\`**`).then(msg => msg.delete(10000));
