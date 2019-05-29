@@ -80,7 +80,18 @@ function uses(message, command, uses_args, settings_args){
                 return true;
             }
             if (args[+i + 1] <= 0){
-                message.reply(`**\`использование: ${command} [${uses_args.join('] [')}]\nError: значение '${uses_args[i]}' не должно быть отрицательным.\`**`).then(msg => msg.delete(12000));
+                message.reply(`**\`использование: ${command} [${uses_args.join('] [')}]\nError: значение '${uses_args[i]}' должно быть положительным.\`**`).then(msg => msg.delete(12000));
+                message.delete();
+                return true;
+            }
+        }else if (settings_args[i] == 'status'){
+            if (!isNumeric(args[+i + 1])){
+                message.reply(`**\`использование: ${command} [${uses_args.join('] [')}]\nError: значение '${uses_args[i]}' не является числом.\`**`).then(msg => msg.delete(12000));
+                message.delete();
+                return true;
+            }
+            if (args[+i + 1] != 0 && args[+i + 1] != 1){
+                message.reply(`**\`использование: ${command} [${uses_args.join('] [')}]\nError: значение '${uses_args[i]}' должно быть или '0', или '1'.\`**`).then(msg => msg.delete(12000));
                 message.delete();
                 return true;
             }
@@ -247,7 +258,6 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     message.reply(`**\`нельзя редактировать предприятие, которое закрыто.\`**`).then(msg => msg.delete(10000));
                     return message.delete();
                 }
-                console.log(storage[0].status);
                 const description = args.slice(1).join(' ');
                 connection.query(`UPDATE \`storage\` SET description = '${description}' WHERE \`id\` = '${storage[0].id}'`);
                 message.reply(`**\`описание предприятия было успешно изменено!\`**`).then(msg => msg.delete(10000));
@@ -263,9 +273,54 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         message.reply(`**\`вы не являетесь владельцем данного предприятия!\`**`).then(msg => msg.delete(18000));
                         return message.delete();
                     }else if (storage.length == 1){
+                        if (storage[0].status == false){
+                            message.reply(`**\`нельзя редактировать предприятие, которое закрыто.\`**`).then(msg => msg.delete(10000));
+                            return message.delete();
+                        }
                         const description = args.slice(2).join(' ');
                         connection.query(`UPDATE \`storage\` SET description = '${description}' WHERE \`id\` = '${storage[0].id}'`);
                         message.reply(`**\`описание предприятия было успешно изменено!\`**`).then(msg => msg.delete(10000));
+                        return message.delete();
+                    }else{
+                        return error_mysql(message);
+                    }
+                });
+            }
+        });
+    }
+
+    if (message.content.startsWith('/storage_status')){
+        if (mysql_load(message, mysql_cooldown)) return
+        if (uses(message, '/storage_status', ['состояние (1/0)'], ['none'])) return
+        const args = message.content.slice(`/storage_status`).split(/ +/);
+        connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
+            if (error) return error_mysql(message);
+            if (storage.length == 0){
+                message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
+                return message.delete();
+            }else if (storage.length == 1){
+                if (uses(message, '/storage_status', ['состояние (1/0)'], ['status'])) return
+                if (storage[0].money < storage[0].nalog){
+                    message.reply(`**\`нельзя изменить состояние предприятия, недостаточно средств!\`**`).then(msg => msg.delete(12000));
+                    return message.delete();
+                }
+                connection.query(`UPDATE \`storage\` SET status = '${args[1]}' WHERE \`id\` = '${storage[0].id}'`);
+                message.reply(`**\`состояние предприятия было изменено!\`**`).then(msg => msg.delete(10000));
+                return message.delete();
+            }else{
+                if (uses(message, '/storage_status', ['предприятие', 'состояние (1/0)'], ['number', 'status'])) return
+                connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id} AND \`id\` = '${args[1]}'`, async (error, storage) => {
+                    if (error) return error_mysql(message);
+                    if (storage.length == 0){
+                        message.reply(`**\`вы не являетесь владельцем данного предприятия!\`**`).then(msg => msg.delete(18000));
+                        return message.delete();
+                    }else if (storage.length == 1){
+                        if (storage[0].money < storage[0].nalog){
+                            message.reply(`**\`нельзя изменить состояние предприятия, недостаточно средств!\`**`).then(msg => msg.delete(12000));
+                            return message.delete();
+                        }
+                        connection.query(`UPDATE \`storage\` SET status = '${args[2]}' WHERE \`id\` = '${storage[0].id}'`);
+                        message.reply(`**\`состояние предприятия было изменено!\`**`).then(msg => msg.delete(10000));
                         return message.delete();
                     }else{
                         return error_mysql(message);
