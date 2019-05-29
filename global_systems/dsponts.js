@@ -101,6 +101,8 @@ function uses(message, command, uses_args, settings_args){
 }
 
 exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send_action) => {
+    if (!message) return
+    if (!message.member) return
     if (!message.member.roles) return
     if (!message.member.roles.some(r => r.name == 'Проверенный 🔐')) return
 

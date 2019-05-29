@@ -48,7 +48,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.48-hide';
+const version = '5.0.49-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -690,8 +690,10 @@ function send_action(server, action){
     let sec = `${date.getSeconds().toString().padStart(2, '0')}`;
     connection.query(`INSERT INTO \`action_log\` (\`server\`, \`year\`, \`month\`, \`day\`, \`hour\`, \`min\`, \`sec\`, \`action\`) VALUES ('${server}', '${year}', '${month}', '${day}', '${hour}', '${min}', '${sec}', '${action}')`);
     console.log(`[${hour}:${min}:${sec}] ${action}`);
+    action = action.replace(' <@', '\` <@');
+    action = action.replace('> ', '> \`');
     const actionsHook = new Discord.WebhookClient("583400700034154516", "fPBO8gncxRtToyvIkJ5Sb5kp-X8iBEZ02ZRwJ5yGA3EVh5wiA-p9NlsuLCKtu2xDHBzo");
-    actionsHook.send(`[${hour}:${min}:${sec}] ${action}`);
+    actionsHook.send(`**\`[${hour}:${min}:${sec}]\` \`${action}\`**`);
 }
 
 bot.on('message', async message => {
