@@ -486,6 +486,7 @@ async function nalog_biz(){
     setInterval(() => {
         connection.query(`SELECT * FROM \`storage\``, async (error, storages) => {
             storages.forEach(storage => {
+                console.log(storage);
                 let date = new Date().valueOf();
                 if (storage.nalog_now < date){
                     if (storage.money < storage.nalog){
