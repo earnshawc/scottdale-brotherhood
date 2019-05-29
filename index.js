@@ -48,12 +48,12 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.45-hide';
+const version = '5.0.46';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
 
-const update_information = "нет информации.";
+const update_information = "Функции предприятий.";
 
 const GoogleSpreadsheet = require('./google_module/google-spreadsheet');
 const doc = new GoogleSpreadsheet(process.env.skey);
@@ -482,6 +482,28 @@ async function update_sellers(){
     }, 20000)
 }
 
+async function nalog_biz(){
+    setInterval(() => {
+        connection.query(`SELECT * FROM \`storage\``, async (error, storages) => {
+            storages.forEach(storage => {
+                let date = new Date().valueOf();
+                if (storage.nalog_now < date){
+                    if (storage.money < storage.nalog){
+                        if (storage.status == true) {
+                            connection.query(`UPDATE \`storage\` SET status = '0' WHERE \`id\` = '${storage.id}'`);
+                            send_action(message.guild.id, `<@${storage.owner}> предприятие было закрыто за неуплату налога. Предприятие - ${storage.name}`);
+                        }
+                    }else{
+                        send_action(message.guild.id, `<@${storage.owner}> c предприятия списан налог. Предприятие - ${storage.name}`)
+                        connection.query(`UPDATE \`storage\` SET money = money - ${storage.nalog} WHERE \`id\` = '${storage.id}'`);
+                        connection.query(`UPDATE \`storage\` SET nalog_now = '${+date + 60000}' WHERE \`id\` = '${storage.id}'`);
+                    }
+                }
+            });
+        });
+    }, 17000);
+}
+
 const warn_cooldown = new Set();
 const support_loop = new Set();
 const ds_cooldown = new Set();
@@ -534,6 +556,7 @@ bot.on('ready', async () => {
     bot.user.setPresence({ game: { name: 'hacker' }, status: 'dnd' })
     check_unwanted_user();
     update_sellers();
+    nalog_biz();
     started_at = now_date();
     require('./plugins/remote_access').start(bot); // Подгрузка плагина удаленного доступа.
     await bot.guilds.get(serverid).channels.get('493181639011074065').send('**\`[BOT] - Запущен. [#' + new Date().valueOf() + '-' + bot.uptime + '] [Проверка наличия обновлений...]\`**').then(msg => {
@@ -666,6 +689,7 @@ function send_action(server, action){
     let min = `${date.getMinutes().toString().padStart(2, '0')}`;
     let sec = `${date.getSeconds().toString().padStart(2, '0')}`;
     connection.query(`INSERT INTO \`action_log\` (\`server\`, \`year\`, \`month\`, \`day\`, \`hour\`, \`min\`, \`sec\`, \`action\`) VALUES ('${server}', '${year}', '${month}', '${day}', '${hour}', '${min}', '${sec}', '${action}')`);
+    console.log(`[${hour}:${min}:${sec}] ${action}`);
 }
 
 bot.on('message', async message => {

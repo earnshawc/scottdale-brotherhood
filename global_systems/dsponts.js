@@ -261,6 +261,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 const description = args.slice(1).join(' ');
                 connection.query(`UPDATE \`storage\` SET description = '${description}' WHERE \`id\` = '${storage[0].id}'`);
                 message.reply(`**\`описание предприятия было успешно изменено!\`**`).then(msg => msg.delete(10000));
+                send_action(message.guild.id, `<@${message.author.id}> изменил описание предприятию ${storge[0].name}`);
                 return message.delete();
             }else{
                 if (!isNumeric(args[1])){
@@ -280,6 +281,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         const description = args.slice(2).join(' ');
                         connection.query(`UPDATE \`storage\` SET description = '${description}' WHERE \`id\` = '${storage[0].id}'`);
                         message.reply(`**\`описание предприятия было успешно изменено!\`**`).then(msg => msg.delete(10000));
+                        send_action(message.guild.id, `<@${message.author.id}> изменил описание предприятию ${storge[0].name}`);
                         return message.delete();
                     }else{
                         return error_mysql(message);
@@ -306,6 +308,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 }
                 connection.query(`UPDATE \`storage\` SET status = '${args[1]}' WHERE \`id\` = '${storage[0].id}'`);
                 message.reply(`**\`состояние предприятия было изменено!\`**`).then(msg => msg.delete(10000));
+                send_action(message.guild.id, `<@${message.author.id}> изменил состояние предприятию ${storge[0].name}`);
                 return message.delete();
             }else{
                 if (uses(message, '/storage_status', ['предприятие', 'состояние (1/0)'], ['number', 'status'])) return
@@ -321,7 +324,191 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         }
                         connection.query(`UPDATE \`storage\` SET status = '${args[2]}' WHERE \`id\` = '${storage[0].id}'`);
                         message.reply(`**\`состояние предприятия было изменено!\`**`).then(msg => msg.delete(10000));
+                        send_action(message.guild.id, `<@${message.author.id}> изменил состояние предприятию ${storge[0].name}`);
                         return message.delete();
+                    }else{
+                        return error_mysql(message);
+                    }
+                });
+            }
+        });
+    }
+
+    if (message.content.startsWith('/storage_cost')){
+        if (mysql_load(message, mysql_cooldown)) return
+        if (uses(message, '/storage_cost', ['сумма'], ['none'])) return
+        const args = message.content.slice(`/storage_cost`).split(/ +/);
+        connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
+            if (error) return error_mysql(message);
+            if (storage.length == 0){
+                message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
+                return message.delete();
+            }else if (storage.length == 1){
+                if (uses(message, '/storage_cost', ['сумма'], ['plus_number'])) return
+                if (storage[0].money < storage[0].nalog){
+                    message.reply(`**\`нельзя изменить состояние предприятия, недостаточно средств!\`**`).then(msg => msg.delete(12000));
+                    return message.delete();
+                }
+                if (storage[0].cost < storage[0].min_cost){
+                    message.reply(`**\`разрешено устанавливать сумму от ${storage[0].min_cost} discord points!\`**`).then(msg => msg.delete(12000));
+                    return message.delete();
+                }
+                connection.query(`UPDATE \`storage\` SET cost = '${args[1]}' WHERE \`id\` = '${storage[0].id}'`);
+                message.reply(`**\`стоимость продажи товара была изменена!\`**`).then(msg => msg.delete(10000));
+                send_action(message.guild.id, `<@${message.author.id}> изменил стоимость продажи c ${storage[0].cost} на ${args[1]} — предприятию ${storge[0].name}`);
+                return message.delete();
+            }else{
+                if (uses(message, '/storage_cost', ['предприятие', 'сумма'], ['number', 'plus_number'])) return
+                connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id} AND \`id\` = '${args[1]}'`, async (error, storage) => {
+                    if (error) return error_mysql(message);
+                    if (storage.length == 0){
+                        message.reply(`**\`вы не являетесь владельцем данного предприятия!\`**`).then(msg => msg.delete(18000));
+                        return message.delete();
+                    }else if (storage.length == 1){
+                        if (storage[0].money < storage[0].nalog){
+                            message.reply(`**\`нельзя изменить сумму предприятия, недостаточно средств!\`**`).then(msg => msg.delete(12000));
+                            return message.delete();
+                        }
+                        if (storage[0].cost < storage[0].min_cost){
+                            message.reply(`**\`разрешено устанавливать сумму от ${storage[0].min_cost} discord points!\`**`).then(msg => msg.delete(12000));
+                            return message.delete();    
+                        }
+                        connection.query(`UPDATE \`storage\` SET cost = '${args[2]}' WHERE \`id\` = '${storage[0].id}'`);
+                        message.reply(`**\`стоимость продажи товара была изменена!\`**`).then(msg => msg.delete(10000));
+                        send_action(message.guild.id, `<@${message.author.id}> изменил стоимость продажи c ${storage[0].cost} на ${args[2]} — предприятию ${storge[0].name}`);
+                        return message.delete();
+                    }else{
+                        return error_mysql(message);
+                    }
+                });
+            }
+        });
+    }
+
+    if (message.content.startsWith('/storage_add')){
+        if (mysql_load(message, mysql_cooldown)) return
+        if (uses(message, '/storage_add', ['сумма'], ['none'])) return
+        const args = message.content.slice(`/storage_add`).split(/ +/);
+        connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
+            if (error) return error_mysql(message);
+            if (storage.length == 0){
+                message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
+                return message.delete();
+            }else if (storage.length == 1){
+                if (uses(message, '/storage_add', ['сумма'], ['plus_number'])) return
+                connection.query(`SELECT * FROM \`profiles\` WHERE \`server\` = '${message.guild.id}' AND \`user\` = '${message.author.id}'`, async (error, profile) => {
+                    if (error) return error_mysql(message);
+                    if (profile > 1) return error_mysql(message);
+                    if (profile == 1){
+                        if (profile[0].money < args[1]){
+                            message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
+                            return message.delete();
+                        }
+                        connection.query(`UPDATE \`storage\` SET money = money + ${args[1]} WHERE \`id\` = '${storage[0].id}'`);
+                        connection.query(`UPDATE \`profiles\` SET money = money - ${args[1]} WHERE \`id\` = '${profile[0].id}'`);
+                        message.reply(`**\`вы успешно положили на склад предприятия ${args[1]} discord points!\`**`).then(msg => msg.delete(10000));
+                        send_action(message.guild.id, `<@${message.author.id}> пополнил баланс на ${args[1]} — предприятию ${storge[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money + +args[1]}) (MONEY PR: ${profile[0].money} - ${profile[0].money - +args[1]})`);
+                        return message.delete();
+                    }else{
+                        message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
+                        return message.delete();
+                    }
+                });
+            }else{
+                if (uses(message, '/storage_add', ['предприятие', 'сумма'], ['number', 'plus_number'])) return
+                connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id} AND \`id\` = '${args[1]}'`, async (error, storage) => {
+                    if (error) return error_mysql(message);
+                    if (storage.length == 0){
+                        message.reply(`**\`вы не являетесь владельцем данного предприятия!\`**`).then(msg => msg.delete(18000));
+                        return message.delete();
+                    }else if (storage.length == 1){
+                        connection.query(`SELECT * FROM \`profiles\` WHERE \`server\` = '${message.guild.id}' AND \`user\` = '${message.author.id}'`, async (error, profile) => {
+                            if (error) return error_mysql(message);
+                            if (profile > 1) return error_mysql(message);
+                            if (profile == 1){
+                                if (profile[0].money < args[2]){
+                                    message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
+                                    return message.delete();
+                                }
+                                connection.query(`UPDATE \`storage\` SET money = money + ${args[2]} WHERE \`id\` = '${storage[0].id}'`);
+                                connection.query(`UPDATE \`profiles\` SET money = money - ${args[2]} WHERE \`id\` = '${profile[0].id}'`);
+                                message.reply(`**\`вы успешно положили на склад предприятия ${args[2]} discord points!\`**`).then(msg => msg.delete(10000));
+                                send_action(message.guild.id, `<@${message.author.id}> пополнил баланс на ${args[2]} — предприятию ${storge[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money + +args[2]}) (MONEY PR: ${profile[0].money} - ${profile[0].money - +args[2]})`);
+                                return message.delete();
+                            }else{
+                                message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
+                                return message.delete();
+                            }
+                        });
+                    }else{
+                        return error_mysql(message);
+                    }
+                });
+            }
+        });
+    }
+
+    if (message.content.startsWith('/storage_get')){
+        if (mysql_load(message, mysql_cooldown)) return
+        if (uses(message, '/storage_get', ['сумма'], ['none'])) return
+        const args = message.content.slice(`/storage_get`).split(/ +/);
+        connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
+            if (error) return error_mysql(message);
+            if (storage.length == 0){
+                message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
+                return message.delete();
+            }else if (storage.length == 1){
+                if (uses(message, '/storage_get', ['сумма'], ['plus_number'])) return
+                if (storage[0].money < args[1]){
+                    message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
+                    return message.delete();
+                }
+                connection.query(`SELECT * FROM \`profiles\` WHERE \`server\` = '${message.guild.id}' AND \`user\` = '${message.author.id}'`, async (error, profile) => {
+                    if (error) return error_mysql(message);
+                    if (profile > 1) return error_mysql(message);
+                    if (profile == 1){
+                        connection.query(`UPDATE \`storage\` SET money = money - ${args[1]} WHERE \`id\` = '${storage[0].id}'`);
+                        connection.query(`UPDATE \`profiles\` SET money = money + ${args[1]} WHERE \`id\` = '${profile[0].id}'`);
+                        message.reply(`**\`вы успешно сняли со склада предприятия ${args[1]} discord points!\`**`).then(msg => msg.delete(10000));
+                        send_action(message.guild.id, `<@${message.author.id}> снял со счета ${args[1]} — предприятия ${storge[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money - +args[1]}) (MONEY PR: ${profile[0].money} - ${profile[0].money + +args[1]})`);
+                        return message.delete();
+                    }else{
+                        connection.query(`UPDATE \`storage\` SET money = money - ${args[1]} WHERE \`id\` = '${storage[0].id}'`);
+                        connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${message.guild.id}', '${message.author.id}', '${args[1]}')`);
+                        message.reply(`**\`вы успешно сняли со склада предприятия ${args[1]} discord points!\`**`).then(msg => msg.delete(10000));
+                        send_action(message.guild.id, `<@${message.author.id}> снял со счета ${args[1]} — предприятия ${storge[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money - +args[1]}) (MONEY PR: ${profile[0].money} - ${profile[0].money + +args[1]})`);
+                        return message.delete();
+                    }
+                });
+            }else{
+                if (uses(message, '/storage_get', ['предприятие', 'сумма'], ['number', 'plus_number'])) return
+                connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id} AND \`id\` = '${args[1]}'`, async (error, storage) => {
+                    if (error) return error_mysql(message);
+                    if (storage.length == 0){
+                        message.reply(`**\`вы не являетесь владельцем данного предприятия!\`**`).then(msg => msg.delete(18000));
+                        return message.delete();
+                    }else if (storage.length == 1){
+                        if (storage[0].money < args[2]){
+                            message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
+                            return message.delete();
+                        }
+                        connection.query(`SELECT * FROM \`profiles\` WHERE \`server\` = '${message.guild.id}' AND \`user\` = '${message.author.id}'`, async (error, profile) => {
+                            if (error) return error_mysql(message);
+                            if (profile > 1) return error_mysql(message);
+                            if (profile == 1){
+                                connection.query(`UPDATE \`storage\` SET money = money - ${args[2]} WHERE \`id\` = '${storage[0].id}'`);
+                                connection.query(`UPDATE \`profiles\` SET money = money + ${args[2]} WHERE \`id\` = '${profile[0].id}'`);
+                                message.reply(`**\`вы успешно сняли со склада предприятия ${args[2]} discord points!\`**`).then(msg => msg.delete(10000));
+                                send_action(message.guild.id, `<@${message.author.id}> снял со счета ${args[2]} — предприятия ${storge[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money - +args[2]}) (MONEY PR: ${profile[0].money} - ${profile[0].money + +args[2]})`);
+                                return message.delete();
+                            }else{
+                                connection.query(`UPDATE \`storage\` SET money = money - ${args[2]} WHERE \`id\` = '${storage[0].id}'`);
+                                connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${message.guild.id}', '${message.author.id}', '${args[2]}')`);
+                                message.reply(`**\`вы успешно сняли со склада предприятия ${args[2]} discord points!\`**`).then(msg => msg.delete(10000));
+                                send_action(message.guild.id, `<@${message.author.id}> снял со счета ${args[2]} — предприятия ${storge[0].name} (MONEY ST: ${storage[0].money} - ${storage[0].money - +args[2]}) (MONEY PR: ${profile[0].money} - ${profile[0].money + +args[2]})`);
+                                return message.delete();
+                            }
+                        });
                     }else{
                         return error_mysql(message);
                     }
