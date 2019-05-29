@@ -491,12 +491,14 @@ async function nalog_biz(){
                     if (storage.money < storage.nalog){
                         if (storage.status == true) {
                             connection.query(`UPDATE \`storage\` SET status = '0' WHERE \`id\` = '${storage.id}'`);
-                            send_action(storage.server, `<@${storage.owner}> предприятие было закрыто за неуплату налога. Предприятие - ${storage.name}`);
+                            let member = bot.guilds.get(storage.server).members.get(storage.owner);
+                            send_action(storage.server, `${member.displayName || member.user.tag} (${storage.owner}) предприятие было закрыто за неуплату налога. Предприятие - ${storage.name}`);
                         }
                     }else{
-                        send_action(storage.server, `<@${storage.owner}> c предприятия списан налог. Предприятие - ${storage.name}`)
                         connection.query(`UPDATE \`storage\` SET money = money - ${storage.nalog} WHERE \`id\` = '${storage.id}'`);
                         connection.query(`UPDATE \`storage\` SET nalog_new = '${+date + 60000}' WHERE \`id\` = '${storage.id}'`);
+                        let member = bot.guilds.get(storage.server).members.get(storage.owner);
+                        send_action(storage.server, `${member.displayName || member.user.tag} (${storage.owner}) c предприятия списан налог. Предприятие - ${storage.name}`);
                     }
                 }
             });
