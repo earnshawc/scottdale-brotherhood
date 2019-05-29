@@ -47,22 +47,39 @@ function uses(message, command, uses_args, settings_args){
                 message.delete();
                 return true;
             }
+        }else if (settings_args[i] == 'mention'){
+            let user = message.guild.member(message.mentions.users.first());
+            if (!user){
+                message.reply(`**\`использование: ${command} [${uses_args.join('] [')}]\nError: '${uses_args[i]}' не является упоминанием пользователя.\`**`).then(msg => msg.delete(12000));
+                message.delete();
+                return true;
+            }
+        }else if (settings_args[i] == 'mention_user'){
+            let user = message.guild.member(message.mentions.users.first());
+            if (!user){
+                message.reply(`**\`использование: ${command} [${uses_args.join('] [')}]\nError: '${uses_args[i]}' не является упоминанием пользователя.\`**`).then(msg => msg.delete(12000));
+                message.delete();
+                return true;
+            }else if (user.id == message.author.id){
+                message.reply(`**\`использование: ${command} [${uses_args.join('] [')}]\nError: на себя нельзя!\`**`).then(msg => msg.delete(12000));
+                message.delete();
+                return true;
+            }
+        }else if (settings_args[i] == 'plus_number'){
+            if (!isNumeric(args[+i + 1])){
+                message.reply(`**\`использование: ${command} [${uses_args.join('] [')}]\nError: значение '${uses_args[i]}' не является числом.\`**`).then(msg => msg.delete(12000));
+                message.delete();
+                return true;
+            }
+            if (args[+i + 1] <= 0){
+                message.reply(`**\`использование: ${command} [${uses_args.join('] [')}]\nError: значение '${uses_args[i]}' не должно быть отрицательным.\`**`).then(msg => msg.delete(12000));
+                message.delete();
+                return true;
+            }
         }
     }
     return false;
 }
-
-// Структура
-// STORAGE: [id, name, description, owner, cost, amount, money, code]
-// ITEMS: [id, storage_id, date_end]
-// BUY_DASHBOARD: [id, name, description, status, cost, money, amount, owner, code]
-// ACTION: [id, date_valueOf(), '[user="id"] купил транспорт у [user="id_two"]']
-
-// Пример
-// STORAGE: [1, Роли, Тут вы сможете запустить создание роли, 336207279412215809, 12.7, 0, 25.4, return 1]
-// ITEMS: [1, 1, 1558155451169]
-//        [2, 1, 1558155451297]
-// BUY_DASHBOARD: [1, Покупка роли, Тут вы сможете купить роль, открыто, 13, 0, 0, 336207279412215809, return 1]
 
 exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send_action) => {
     if (!message.member.roles) return
@@ -107,36 +124,10 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     }
 
     if (message.content.startsWith('/pay')){
-        if (mysql_cooldown.has(message.author.id)){
-            message.reply(`**\`попробуйте через 8 секунд!\`**`).then(msg => msg.delete(7000));
-            return message.delete();
-        }
-        mysql_cooldown.add(message.author.id);
-        setTimeout(() => {
-            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
-        }, 8000);
+        if (mysql_load(message, mysql_cooldown)) return
+        if (uses(message, '/pay', ['user', 'сумма'], ['mention', 'number'])) return
         const args = message.content.slice(`/pay`).split(/ +/);
         let user = message.guild.member(message.mentions.users.first());
-        if (!user){
-            await message.reply(`\`пользователь не указан! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
-            return message.delete();
-        }
-        if (message.author.id == user.id){
-            await message.reply(`\`самому себе нельзя! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
-            return message.delete();
-        }
-        if (!args[2]){
-            await message.reply(`\`сумма не указана! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
-            return message.delete();
-        }
-        if (!isNumeric(args[2])){
-            await message.reply(`\`сумма не является числом! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
-            return message.delete();
-        }
-        if (args[2] < 0){
-            await message.reply(`\`сумма не может быть отрицательной! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
-            return message.delete();
-        }
         if (args[2] < 0.01){
             await message.reply(`\`нельзя переводить менее 0.01 dp! Использование: /pay [user] [сумма]\``).then(msg => msg.delete(12000));
             return message.delete();
