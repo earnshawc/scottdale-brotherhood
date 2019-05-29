@@ -48,7 +48,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.0.50-hide';
+const version = '5.1.0-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -496,14 +496,14 @@ async function nalog_biz(){
                         }
                     }else{
                         connection.query(`UPDATE \`storage\` SET money = money - ${storage.nalog} WHERE \`id\` = '${storage.id}'`);
-                        connection.query(`UPDATE \`storage\` SET nalog_new = '${+date + 60000}' WHERE \`id\` = '${storage.id}'`);
+                        connection.query(`UPDATE \`storage\` SET nalog_new = '${+date + 3600000}' WHERE \`id\` = '${storage.id}'`);
                         let member = bot.guilds.get(storage.server).members.get(storage.owner);
-                        send_action(storage.server, `${member.displayName || member.user.tag} (${storage.owner}) c предприятия списан налог (NEED: ${storage.nalog} - NOW: ${+storage.money - +storage.nalog}). Предприятие - ${storage.name}`);
+                        send_action(storage.server, `${member.displayName || member.user.tag} (${storage.owner}) c предприятия списан налог (NEED: ${storage.nalog} - NOW: ${storage.money - storage.nalog}). Предприятие - ${storage.name}`);
                     }
                 }
             });
         });
-    }, 17000);
+    }, 27000);
 }
 
 const warn_cooldown = new Set();
