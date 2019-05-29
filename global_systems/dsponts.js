@@ -243,6 +243,11 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
                 return message.delete();
             }else if (storage.length == 1){
+                if (storage[0].status == false){
+                    message.reply(`**\`нельзя редактировать предприятие, которое закрыто.\`**`).then(msg => msg.delete(10000));
+                    return message.delete();
+                }
+                console.log(storage[0].status);
                 const description = args.slice(1).join(' ');
                 connection.query(`UPDATE \`storage\` SET description = '${description}' WHERE \`id\` = '${storage[0].id}'`);
                 message.reply(`**\`описание предприятия было успешно изменено!\`**`).then(msg => msg.delete(10000));
