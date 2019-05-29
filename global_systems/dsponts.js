@@ -9,7 +9,8 @@ function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-function error_mysql(message){
+function error_mysql(error, message){
+    console.error(error);
     message.reply(`**\`произошла критическая ошибка. Подробности отправлены в личные сообщения.\`**`).then(msg => msg.delete(20000));
     const embed = new Discord.RichEmbed();
     embed.setDescription(`**${message.member}, для устранения ошибки пожалуйста составьте жалобу в нашем [техническом разделе](https://robo-hamster.ru/index.php?forums/%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB.5/). Код ошибки: #752**`);
@@ -251,7 +252,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         if (uses(message, '/storage_description', ['описание'], ['none'])) return
         const args = message.content.slice(`/storage_description`).split(/ +/);
         connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
-            if (error) return error_mysql(message);
+            if (error) return error_mysql(error, message);
             if (storage.length == 0){
                 message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
                 return message.delete();
@@ -271,7 +272,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     return message.delete();
                 }
                 connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id} AND \`id\` = '${args[1]}'`, async (error, storage) => {
-                    if (error) return error_mysql(message);
+                    if (error) return error_mysql(error, message);
                     if (storage.length == 0){
                         message.reply(`**\`вы не являетесь владельцем данного предприятия!\`**`).then(msg => msg.delete(18000));
                         return message.delete();
@@ -286,7 +287,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) изменил описание предприятию ${storage[0].name}`);
                         return message.delete();
                     }else{
-                        return error_mysql(message);
+                        return error_mysql(error, message);
                     }
                 });
             }
@@ -298,7 +299,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         if (uses(message, '/storage_status', ['состояние (1/0)'], ['none'])) return
         const args = message.content.slice(`/storage_status`).split(/ +/);
         connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
-            if (error) return error_mysql(message);
+            if (error) return error_mysql(error, message);
             if (storage.length == 0){
                 message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
                 return message.delete();
@@ -315,7 +316,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
             }else{
                 if (uses(message, '/storage_status', ['предприятие', 'состояние (1/0)'], ['number', 'status'])) return
                 connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id} AND \`id\` = '${args[1]}'`, async (error, storage) => {
-                    if (error) return error_mysql(message);
+                    if (error) return error_mysql(error, message);
                     if (storage.length == 0){
                         message.reply(`**\`вы не являетесь владельцем данного предприятия!\`**`).then(msg => msg.delete(18000));
                         return message.delete();
@@ -329,7 +330,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) изменил состояние предприятию ${storage[0].name}`);
                         return message.delete();
                     }else{
-                        return error_mysql(message);
+                        return error_mysql(error, message);
                     }
                 });
             }
@@ -341,7 +342,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         if (uses(message, '/storage_cost', ['сумма'], ['none'])) return
         const args = message.content.slice(`/storage_cost`).split(/ +/);
         connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
-            if (error) return error_mysql(message);
+            if (error) return error_mysql(error, message);
             if (storage.length == 0){
                 message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
                 return message.delete();
@@ -362,7 +363,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
             }else{
                 if (uses(message, '/storage_cost', ['предприятие', 'сумма'], ['number', 'plus_number'])) return
                 connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id} AND \`id\` = '${args[1]}'`, async (error, storage) => {
-                    if (error) return error_mysql(message);
+                    if (error) return error_mysql(error, message);
                     if (storage.length == 0){
                         message.reply(`**\`вы не являетесь владельцем данного предприятия!\`**`).then(msg => msg.delete(18000));
                         return message.delete();
@@ -380,7 +381,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) изменил стоимость продажи c ${storage[0].cost} на ${args[2]} — предприятию ${storage[0].name}`);
                         return message.delete();
                     }else{
-                        return error_mysql(message);
+                        return error_mysql(error, message);
                     }
                 });
             }
@@ -392,15 +393,15 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         if (uses(message, '/storage_add', ['сумма'], ['none'])) return
         const args = message.content.slice(`/storage_add`).split(/ +/);
         connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
-            if (error) return error_mysql(message);
+            if (error) return error_mysql(error, message);
             if (storage.length == 0){
                 message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
                 return message.delete();
             }else if (storage.length == 1){
                 if (uses(message, '/storage_add', ['сумма'], ['plus_number'])) return
                 connection.query(`SELECT * FROM \`profiles\` WHERE \`server\` = '${message.guild.id}' AND \`user\` = '${message.author.id}'`, async (error, profile) => {
-                    if (error) return error_mysql(message);
-                    if (profile.length > 1) return error_mysql(message);
+                    if (error) return error_mysql(error, message);
+                    if (profile.length > 1) return error_mysql(error, message);
                     if (profile.length == 1){
                         if (+profile[0].money < +args[1]){
                             message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
@@ -419,14 +420,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
             }else{
                 if (uses(message, '/storage_add', ['предприятие', 'сумма'], ['number', 'plus_number'])) return
                 connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id} AND \`id\` = '${args[1]}'`, async (error, storage) => {
-                    if (error) return error_mysql(message);
+                    if (error) return error_mysql(error, message);
                     if (storage.length == 0){
                         message.reply(`**\`вы не являетесь владельцем данного предприятия!\`**`).then(msg => msg.delete(18000));
                         return message.delete();
                     }else if (storage.length == 1){
                         connection.query(`SELECT * FROM \`profiles\` WHERE \`server\` = '${message.guild.id}' AND \`user\` = '${message.author.id}'`, async (error, profile) => {
-                            if (error) return error_mysql(message);
-                            if (profile.length > 1) return error_mysql(message);
+                            if (error) return error_mysql(error, message);
+                            if (profile.length > 1) return error_mysql(error, message);
                             if (profile.length == 1){
                                 if (+profile[0].money < +args[2]){
                                     message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
@@ -443,7 +444,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                             }
                         });
                     }else{
-                        return error_mysql(message);
+                        return error_mysql(error, message);
                     }
                 });
             }
@@ -455,7 +456,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         if (uses(message, '/storage_get', ['сумма'], ['none'])) return
         const args = message.content.slice(`/storage_get`).split(/ +/);
         connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
-            if (error) return error_mysql(message);
+            if (error) return error_mysql(error, message);
             if (storage.length == 0){
                 message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
                 return message.delete();
@@ -466,8 +467,8 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     return message.delete();
                 }
                 connection.query(`SELECT * FROM \`profiles\` WHERE \`server\` = '${message.guild.id}' AND \`user\` = '${message.author.id}'`, async (error, profile) => {
-                    if (error) return error_mysql(message);
-                    if (profile.length > 1) return error_mysql(message);
+                    if (error) return error_mysql(error, message);
+                    if (profile.length > 1) return error_mysql(error, message);
                     if (profile.lengh == 1){
                         connection.query(`UPDATE \`storage\` SET money = money - ${args[1]} WHERE \`id\` = '${storage[0].id}'`);
                         connection.query(`UPDATE \`profiles\` SET money = money + ${args[1]} WHERE \`id\` = '${profile[0].id}'`);
@@ -485,7 +486,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
             }else{
                 if (uses(message, '/storage_get', ['предприятие', 'сумма'], ['number', 'plus_number'])) return
                 connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id} AND \`id\` = '${args[1]}'`, async (error, storage) => {
-                    if (error) return error_mysql(message);
+                    if (error) return error_mysql(error, message);
                     if (storage.length == 0){
                         message.reply(`**\`вы не являетесь владельцем данного предприятия!\`**`).then(msg => msg.delete(18000));
                         return message.delete();
@@ -495,8 +496,8 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                             return message.delete();
                         }
                         connection.query(`SELECT * FROM \`profiles\` WHERE \`server\` = '${message.guild.id}' AND \`user\` = '${message.author.id}'`, async (error, profile) => {
-                            if (error) return error_mysql(message);
-                            if (profile.length > 1) return error_mysql(message);
+                            if (error) return error_mysql(error, message);
+                            if (profile.length > 1) return error_mysql(error, message);
                             if (profile.length == 1){
                                 connection.query(`UPDATE \`storage\` SET money = money - ${args[2]} WHERE \`id\` = '${storage[0].id}'`);
                                 connection.query(`UPDATE \`profiles\` SET money = money + ${args[2]} WHERE \`id\` = '${profile[0].id}'`);
@@ -512,7 +513,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                             }
                         });
                     }else{
-                        return error_mysql(message);
+                        return error_mysql(error, message);
                     }
                 });
             }
