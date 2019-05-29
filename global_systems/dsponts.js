@@ -469,7 +469,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 connection.query(`SELECT * FROM \`profiles\` WHERE \`server\` = '${message.guild.id}' AND \`user\` = '${message.author.id}'`, async (error, profile) => {
                     if (error) return error_mysql(error, message);
                     if (profile.length > 1) return error_mysql(error, message);
-                    if (profile.lengh == 1){
+                    if (profile.length == 1){
                         connection.query(`UPDATE \`storage\` SET money = money - ${args[1]} WHERE \`id\` = '${storage[0].id}'`);
                         connection.query(`UPDATE \`profiles\` SET money = money + ${args[1]} WHERE \`id\` = '${profile[0].id}'`);
                         message.reply(`**\`вы успешно сняли со склада предприятия ${args[1]} discord points!\`**`).then(msg => msg.delete(10000));
