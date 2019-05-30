@@ -569,6 +569,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 const embed = new Discord.RichEmbed();
                 embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
                 embed.setDescription(`Название предприятия: ${storage[0].name}\n` +
+                `На данный момент предприятие ${storage[0].status}\n` +
                 `Описание: ${storage[0].description}\n` +
                 `Владелец: ${message.member}\n` +
                 `Стоимость одного товара: ${storage[0].cost}\n` +
@@ -599,6 +600,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         const embed = new Discord.RichEmbed();
                         embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
                         embed.setDescription(`Название предприятия: ${storage[0].name}\n` +
+                        `На данный момент предприятие ${storage[0].status}\n` +
                         `Описание: ${storage[0].description}\n` +
                         `Владелец: ${message.member}\n` +
                         `Стоимость одного товара: ${storage[0].cost}\n` +
