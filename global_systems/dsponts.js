@@ -609,7 +609,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 `Статус предприятия: ${storage[0].status}\n` +
                 `Описание: ${storage[0].description}\n` +
                 `Владелец: ${message.member}\n` +
-                `Стоимость одного товара: ${storage[0].cost}\n` +
+                `Стоимость: ${storage[0].cost}\n` +
                 `Денег: ${storage[0].money}\n` +
                 `Время производства: ${time(storage[0].date)}**`);
                 message.member.send(embed).then(() => {
@@ -640,7 +640,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         `**Статус предприятия: ${storage[0].status}\n` +
                         `Описание: ${storage[0].description}\n` +
                         `Владелец: ${message.member}\n` +
-                        `Стоимость одного товара: ${storage[0].cost}\n` +
+                        `Стоимость: ${storage[0].cost}\n` +
                         `Денег: ${storage[0].money}\n` +
                         `Время производства: ${time(storage[0].date)}**`);
                         message.member.send(embed).then(() => {
