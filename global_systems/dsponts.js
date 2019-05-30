@@ -18,8 +18,18 @@ function error_mysql(error, message){
     return message.delete();
 }
 
-function time(ms) {
-    return new Date(ms).toISOString().slice(11, -1);
+function time(s) {
+    function pad(n, z) {
+      z = z || 2;
+      return ('00' + n).slice(-z);
+    }
+    var ms = s % 1000;
+    s = (s - ms) / 1000;
+    var secs = s % 60;
+    s = (s - secs) / 60;
+    var mins = s % 60;
+    var hrs = (s - mins) / 60;
+    return pad(hrs) + ':' + pad(mins) + ':' + pad(secs) + '.' + pad(ms, 3);
 }
 
 function mysql_load(message, mysql_cooldown){
@@ -563,7 +573,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
                 embed.setDescription(`Название предприятия: ${storage[0].name}\n` +
                 `Описание: ${storage[0].description}\n` +
-                `Владелец: ${message.author.id}\n` +
+                `Владелец: ${message.member}\n` +
                 `Стоимость одного товара: ${storage[0].cost}\n` +
                 `Денег: ${storage[0].money}\n` +
                 `Производства товара за ${time(storage[0].date)}`);
