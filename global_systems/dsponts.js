@@ -19,22 +19,45 @@ function error_mysql(error, message){
 }
 
 function time(s) {
-    var ms = s % 1000;
+    let ms = s % 1000;
     s = (s - ms) / 1000;
-    var secs = s % 60;
+    let secs = s % 60;
     s = (s - secs) / 60;
-    var mins = s % 60;
-    var hrs = (s - mins) / 60;
-    
+    let mins = s % 60;
+    let hrs = (s - mins) / 60;
+    let output = '';
+
     if (hrs != 0){
-        return hrs + ' часов ' + mins + ' минут ' + secs + ' секунд';
-    }else if (mins != 0){
-        return mins + ' минут ' + secs + ' секунд';
-    }else if (secs != 0){
-        return secs + ' секунд';
-    }else{
-        return mins + ' милисекунд'
+        if (hrs.toString().endsWith('1') && !hrs.toString().endsWith(['11'])){
+            output += hrs + ' час ';
+        }else if (hrs.toString().endsWith(['2', '3', '4']) && !hrs.toString().endsWith(['12', '13', '14'])){
+            output += hrs + ' часа ';
+        }else{
+            output += hrs + ' часов ';
+        }
     }
+    if (mins != 0){
+        if (mins.toString().endsWith('1') && !mins.toString().endsWith(['11'])){
+            output += mins + ' минута ';
+        }else if (mins.toString().endsWith(['2', '3', '4']) && !mins.toString().endsWith(['12', '13', '14'])){
+            output += mins + ' минуты ';
+        }else{
+            output += mins + ' минут ';
+        }
+    }
+    if (secs != 0){
+        if (secs.toString().endsWith('1') && !secs.toString().endsWith(['11'])){
+            output += secs + ' секунда ';
+        }else if (secs.toString().endsWith(['2', '3', '4'] && !secs.toString().endsWith(['12', '13', '14']))){
+            output += secs + ' секунды ';
+        }else{
+            output += secs + ' секунд ';
+        }
+    }
+    if (ms != 0){
+        output += ms + ' милисекунд';
+    }
+    return output;
 }
 
 function mysql_load(message, mysql_cooldown){
