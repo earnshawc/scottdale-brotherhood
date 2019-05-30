@@ -25,8 +25,16 @@ function time(s) {
     s = (s - secs) / 60;
     var mins = s % 60;
     var hrs = (s - mins) / 60;
-  
-    return hrs + ' часов ' + mins + ' минут ' + secs + '.' + ms + ' секунд';
+    
+    if (hrs != 0){
+        return hrs + ' часов ' + mins + ' минут ' + secs + ' секунд';
+    }else if (mins != 0){
+        return mins + ' минут ' + secs + ' секунд';
+    }else if (secs != 0){
+        return secs + ' секунд';
+    }else{
+        return mins + ' милисекунд'
+    }
 }
 
 function mysql_load(message, mysql_cooldown){
@@ -569,7 +577,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 const embed = new Discord.RichEmbed();
                 embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
                 embed.setDescription(`Название предприятия: ${storage[0].name}\n` +
-                `На данный момент предприятие ${storage[0].status}\n` +
+                `Статус предприятия: ${storage[0].status}\n` +
                 `Описание: ${storage[0].description}\n` +
                 `Владелец: ${message.member}\n` +
                 `Стоимость одного товара: ${storage[0].cost}\n` +
@@ -600,7 +608,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         const embed = new Discord.RichEmbed();
                         embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
                         embed.setDescription(`Название предприятия: ${storage[0].name}\n` +
-                        `На данный момент предприятие ${storage[0].status}\n` +
+                        `Статус предприятия: ${storage[0].status}\n` +
                         `Описание: ${storage[0].description}\n` +
                         `Владелец: ${message.member}\n` +
                         `Стоимость одного товара: ${storage[0].cost}\n` +
