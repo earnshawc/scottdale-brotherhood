@@ -613,11 +613,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 `Стоимость: ${storage[0].cost}\n` +
                 `Денег: ${storage[0].money}\n` +
                 `Время производства: ${time(storage[0].date)}**`);
-                message.member.send(embed).then(() => {
-                    message.reply(`**\`информация была отправлена в личные сообщения.\`**`).then(msg => msg.delete(10000));
-                }).catch((err) => {
-                    message.reply(embed);
-                });
+                message.reply(embed);
                 return message.delete();
             }else{
                 if (!isNumeric(args[1])){
@@ -645,11 +641,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         `Стоимость: ${storage[0].cost}\n` +
                         `Денег: ${storage[0].money}\n` +
                         `Время производства: ${time(storage[0].date)}**`);
-                        message.member.send(embed).then(() => {
-                            message.reply(`**\`информация была отправлена в личные сообщения.\`**`).then(msg => msg.delete(10000));
-                        }).catch((err) => {
-                            message.reply(embed);
-                        });
+                        message.reply(embed);
                         return message.delete();
                     }else{
                         return error_mysql(error, message);
