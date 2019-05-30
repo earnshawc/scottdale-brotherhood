@@ -573,8 +573,8 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         if (mysql_load(message, mysql_cooldown)) return
         const embed = new Discord.RichEmbed();
         embed.setTitle('Команды для взоимодействия с предприятием');
-        embed.addField(`Список команд`, `/storage_help - получить справку по командам\n` +
-        `/storage - получить информацию о текущем предприятии\n` +
+        embed.addField(`Список команд`, `/storage - получить информацию о текущем предприятии\n` +
+        `/storage_help - получить справку по командам\n` +
         `/storage_description - поменять описание предприятия\n` +
         `/storage_status - открыть или закрыть предприятие\n` +
         `/storage_cost - поменять цену товара на предприятии\n` +
