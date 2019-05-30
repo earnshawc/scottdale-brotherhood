@@ -401,7 +401,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     message.reply(`**\`нельзя изменить состояние предприятия, недостаточно средств!\`**`).then(msg => msg.delete(12000));
                     return message.delete();
                 }
-                if (storage[0].cost < storage[0].min_cost){
+                if (args[1] < storage[0].min_cost){
                     message.reply(`**\`разрешено устанавливать сумму от ${storage[0].min_cost} discord points!\`**`).then(msg => msg.delete(12000));
                     return message.delete();
                 }
@@ -421,7 +421,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                             message.reply(`**\`нельзя изменить сумму предприятия, недостаточно средств!\`**`).then(msg => msg.delete(12000));
                             return message.delete();
                         }
-                        if (storage[0].cost < storage[0].min_cost){
+                        if (args[2] < storage[0].min_cost){
                             message.reply(`**\`разрешено устанавливать сумму от ${storage[0].min_cost} discord points!\`**`).then(msg => msg.delete(12000));
                             return message.delete();    
                         }
@@ -580,7 +580,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         `/storage_cost - поменять цену товара на предприятии\n` +
         `/storage_add - положить деньги на предприятие\n` +
         `/storage_get - снять деньги с предприятия**`);
-        embed.addField(`Краткое описание`, `Ваше предприятие теряет в час определённую сумму, для поддержания работы предприятия требуется положить деньги на склад (/storage_add), после этого вы сможете восстановить работу предприятия командой (/storage_status).`);
+        embed.addField(`Краткое описание`, `**Ваше предприятие теряет в час определённую сумму, для поддержания работы предприятия требуется положить деньги на склад (/storage_add), после этого вы сможете восстановить работу предприятия командой (/storage_status).**`);
         message.member.send(embed).then(() => {
             message.reply(`**\`документация была отправлена вам в личные сообщения.\`**`).then(msg => msg.delete(12000));
         }).catch(() => {
@@ -607,6 +607,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
                 embed.setDescription(`**Название предприятия: ${storage[0].name}\n` +
                 `Статус предприятия: ${storage[0].status}\n` +
+                `Уровень предприятия: ${storage[0].level} [${storage[0].level * storage[0].min_cost * 3}]\n` +
                 `Описание: ${storage[0].description}\n` +
                 `Владелец: ${message.member}\n` +
                 `Стоимость: ${storage[0].cost}\n` +
@@ -638,6 +639,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
                         embed.setDescription(`Название предприятия: ${storage[0].name}\n` +
                         `**Статус предприятия: ${storage[0].status}\n` +
+                        `Уровень предприятия: ${storage[0].level}\n` +
                         `Описание: ${storage[0].description}\n` +
                         `Владелец: ${message.member}\n` +
                         `Стоимость: ${storage[0].cost}\n` +
