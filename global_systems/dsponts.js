@@ -18,6 +18,10 @@ function error_mysql(error, message){
     return message.delete();
 }
 
+function time(ms) {
+    return new Date(ms).toISOString().slice(11, -1);
+}
+
 function mysql_load(message, mysql_cooldown){
     if (mysql_cooldown.has(message.author.id)){
         message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
@@ -123,6 +127,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         });
     }
 
+    // Profile actions
     if (message.content.startsWith('/setstat')){
         if (!message.member.hasPermission("ADMINISTRATOR")) return
         if (mysql_load(message, mysql_cooldown)) return
@@ -512,6 +517,89 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                                 return message.delete();
                             }
                         });
+                    }else{
+                        return error_mysql(error, message);
+                    }
+                });
+            }
+        });
+    }
+
+    if (message.content == '/storage_help'){
+        if (mysql_load(message, mysql_cooldown)) return
+        const embed = new Discord.RichEmbed();
+        embed.setTitle('Команды для взоимодействия с предприятием');
+        embed.addField(`Список команд`, `/storage_help - получить справку по командам\n` +
+        `/storage - получить информацию о текущем предприятии` +
+        `/storage_description - поменять описание предприятия` +
+        `/storage_status - открыть или закрыть предприятие` +
+        `/storage_cost - поменять цену товара на предприятии` +
+        `/storage_add - положить деньги на предприятие` +
+        `/storage_get - снять деньги с предприятия`);
+        embed.addField(`Краткое описание`, `Ваше предприятие теряет в час определённую сумму, для поддержания работы предприятия требуется положить деньги на склад (/storage_add), после этого вы сможете восстановить работу предприятия командой (/storage_status).`);
+        message.member.send(embed);
+        message.reply(`**\`документация была отправлена вам в личные сообщения.\`**`).then(msg => msg.delete(12000));
+        return message.delete();
+    }
+
+    if (message.content.startsWith('/storage')){
+        if (mysql_load(message, mysql_cooldown)) return
+        const args = message.content.slice(`/storage`).split(/ +/);
+        connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
+            if (error) return error_mysql(error, message);
+            if (storage.length == 0){
+                message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
+                return message.delete();
+            }else if (storage.length == 1){
+                if (storage[0].status == true){
+                    storage[0].status = 'открыто';
+                }else{
+                    storage[0].status = 'закрыто';
+                }
+                const embed = new Discord.RichEmbed();
+                embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
+                embed.addField(`Название предприятия: ${storage[0].name}\n` +
+                `Описание: ${storage[0].description}\n` +
+                `Владелец: ${message.member}\n` +
+                `Стоимость одного товара: ${storage[0].cost}\n` +
+                `Денег: ${storage[0].money}\n` +
+                `Производства товара за ${time(storage[0].date)}`);
+                message.member.send(embed).then(() => {
+                    message.reply(`**\`информация была отправлена в личные сообщения.\`**`).then(msg => msg.delete(10000));
+                }).catch((err) => {
+                    message.reply(embed);
+                });
+                return message.delete();
+            }else{
+                if (!isNumeric(args[1])){
+                    message.reply(`**\`укажите номер вашего предприятия: /storage_description [предприятие] [описание]\`**`).then(msg => msg.delete(10000));
+                    return message.delete();
+                }
+                connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id} AND \`id\` = '${args[1]}'`, async (error, storage) => {
+                    if (error) return error_mysql(error, message);
+                    if (storage.length == 0){
+                        message.reply(`**\`вы не являетесь владельцем данного предприятия!\`**`).then(msg => msg.delete(18000));
+                        return message.delete();
+                    }else if (storage.length == 1){
+                        if (storage[0].status == true){
+                            storage[0].status = 'открыто';
+                        }else{
+                            storage[0].status = 'закрыто';
+                        }
+                        const embed = new Discord.RichEmbed();
+                        embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
+                        embed.addField(`Название предприятия: ${storage[0].name}\n` +
+                        `Описание: ${storage[0].description}\n` +
+                        `Владелец: ${message.member}\n` +
+                        `Стоимость одного товара: ${storage[0].cost}\n` +
+                        `Денег: ${storage[0].money}\n` +
+                        `Производства товара за ${time(storage[0].date)}`);
+                        message.member.send(embed).then(() => {
+                            message.reply(`**\`информация была отправлена в личные сообщения.\`**`).then(msg => msg.delete(10000));
+                        }).catch((err) => {
+                            message.reply(embed);
+                        });
+                        return message.delete();
                     }else{
                         return error_mysql(error, message);
                     }
