@@ -573,18 +573,18 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         if (mysql_load(message, mysql_cooldown)) return
         const embed = new Discord.RichEmbed();
         embed.setTitle('Команды для взоимодействия с предприятием');
-        embed.addField(`Список команд`, `/storage - получить информацию о текущем предприятии\n` +
+        embed.addField(`Список команд`, `**/storage - получить информацию о текущем предприятии\n` +
         `/storage_help - получить справку по командам\n` +
         `/storage_description - поменять описание предприятия\n` +
         `/storage_status - открыть или закрыть предприятие\n` +
         `/storage_cost - поменять цену товара на предприятии\n` +
         `/storage_add - положить деньги на предприятие\n` +
-        `/storage_get - снять деньги с предприятия\n`);
+        `/storage_get - снять деньги с предприятия**`);
         embed.addField(`Краткое описание`, `Ваше предприятие теряет в час определённую сумму, для поддержания работы предприятия требуется положить деньги на склад (/storage_add), после этого вы сможете восстановить работу предприятия командой (/storage_status).`);
         message.member.send(embed).then(() => {
             message.reply(`**\`документация была отправлена вам в личные сообщения.\`**`).then(msg => msg.delete(12000));
         }).catch(() => {
-            message.reply(`**\`ошибка отправки. err: access denied for user\`**`).then(msg => msg.delete(12000));
+            message.reply(`**\`ошибка отправки в личные сообщения. err: access denied for user\`**`).then(msg => msg.delete(12000));
         });
         return message.delete();
     }
@@ -605,13 +605,13 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 }
                 const embed = new Discord.RichEmbed();
                 embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
-                embed.setDescription(`Название предприятия: ${storage[0].name}\n` +
+                embed.setDescription(`**Название предприятия: ${storage[0].name}\n` +
                 `Статус предприятия: ${storage[0].status}\n` +
                 `Описание: ${storage[0].description}\n` +
                 `Владелец: ${message.member}\n` +
                 `Стоимость одного товара: ${storage[0].cost}\n` +
                 `Денег: ${storage[0].money}\n` +
-                `Время производства: ${time(storage[0].date)}`);
+                `Время производства: ${time(storage[0].date)}**`);
                 message.member.send(embed).then(() => {
                     message.reply(`**\`информация была отправлена в личные сообщения.\`**`).then(msg => msg.delete(10000));
                 }).catch((err) => {
@@ -637,12 +637,12 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         const embed = new Discord.RichEmbed();
                         embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
                         embed.setDescription(`Название предприятия: ${storage[0].name}\n` +
-                        `Статус предприятия: ${storage[0].status}\n` +
+                        `**Статус предприятия: ${storage[0].status}\n` +
                         `Описание: ${storage[0].description}\n` +
                         `Владелец: ${message.member}\n` +
                         `Стоимость одного товара: ${storage[0].cost}\n` +
                         `Денег: ${storage[0].money}\n` +
-                        `Время производства: ${time(storage[0].date)}`);
+                        `Время производства: ${time(storage[0].date)}**`);
                         message.member.send(embed).then(() => {
                             message.reply(`**\`информация была отправлена в личные сообщения.\`**`).then(msg => msg.delete(10000));
                         }).catch((err) => {
