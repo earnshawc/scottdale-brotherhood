@@ -530,15 +530,18 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         const embed = new Discord.RichEmbed();
         embed.setTitle('Команды для взоимодействия с предприятием');
         embed.addField(`Список команд`, `/storage_help - получить справку по командам\n` +
-        `/storage - получить информацию о текущем предприятии` +
-        `/storage_description - поменять описание предприятия` +
-        `/storage_status - открыть или закрыть предприятие` +
-        `/storage_cost - поменять цену товара на предприятии` +
-        `/storage_add - положить деньги на предприятие` +
-        `/storage_get - снять деньги с предприятия`);
+        `/storage - получить информацию о текущем предприятии\n` +
+        `/storage_description - поменять описание предприятия\n` +
+        `/storage_status - открыть или закрыть предприятие\n` +
+        `/storage_cost - поменять цену товара на предприятии\n` +
+        `/storage_add - положить деньги на предприятие\n` +
+        `/storage_get - снять деньги с предприятия\n`);
         embed.addField(`Краткое описание`, `Ваше предприятие теряет в час определённую сумму, для поддержания работы предприятия требуется положить деньги на склад (/storage_add), после этого вы сможете восстановить работу предприятия командой (/storage_status).`);
-        message.member.send(embed);
-        message.reply(`**\`документация была отправлена вам в личные сообщения.\`**`).then(msg => msg.delete(12000));
+        message.member.send(embed).then(() => {
+            message.reply(`**\`документация была отправлена вам в личные сообщения.\`**`).then(msg => msg.delete(12000));
+        }).catch(() => {
+            message.reply(`**\`ошибка отправки. err: access denied for user\`**`).then(msg => msg.delete(12000));
+        });
         return message.delete();
     }
 
