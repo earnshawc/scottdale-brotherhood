@@ -394,6 +394,60 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         });
     }
 
+    if (message.content.startsWith('/storage_up')){
+        if (mysql_load(message, mysql_cooldown)) return
+        const args = message.content.slice(`/storage_up`).split(/ +/);
+        connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
+            if (error) return error_mysql(error, message);
+            if (storage.length == 0){
+                message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
+                return message.delete();
+            }else if (storage.length == 1){
+                if (uses(message, '/storage_up', [], [])) return
+                if (storage[0].status == false){
+                    message.reply(`**\`нельзя редактировать предприятие, которое закрыто.\`**`).then(msg => msg.delete(10000));
+                    return message.delete();
+                }
+                let need = Number((storage[0].level * storage[0].min_cost * 30).toFixed(2));
+                if (storage[0].money < need){
+                    message.reply(`**\`нельзя изменить уровень предприятия, недостаточно средств!\`**`).then(msg => msg.delete(12000));
+                    return message.delete();
+                }
+                connection.query(`UPDATE \`storage\` SET money = money - ${need} WHERE \`id\` = '${storage[0].id}'`);
+                connection.query(`UPDATE \`storage\` SET level = level + 1 WHERE \`id\` = '${storage[0].id}'`)
+                message.reply(`**\`уровень предприятия был увеличен!\`**`).then(msg => msg.delete(10000));
+                send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) повысил уровень предприятию ${storage[0].name} до ${+storage[0].level + 1}`);
+                return message.delete();
+            }else{
+                if (uses(message, '/storage_status', ['предприятие'], ['number'])) return
+                connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id} AND \`id\` = '${args[1]}'`, async (error, storage) => {
+                    if (error) return error_mysql(error, message);
+                    if (storage.length == 0){
+                        message.reply(`**\`вы не являетесь владельцем данного предприятия!\`**`).then(msg => msg.delete(18000));
+                        return message.delete();
+                    }else if (storage.length == 1){
+                        if (storage[0].status == false){
+                            message.reply(`**\`нельзя редактировать предприятие, которое закрыто.\`**`).then(msg => msg.delete(10000));
+                            return message.delete();
+                        }
+                        let need = Number((storage[0].level * storage[0].min_cost * 30).toFixed(2));
+                        if (storage[0].money < need){
+                            message.reply(`**\`нельзя изменить уровень предприятия, недостаточно средств!\`**`).then(msg => msg.delete(12000));
+                            return message.delete();
+                        }
+                        connection.query(`UPDATE \`storage\` SET money = money - ${need} WHERE \`id\` = '${storage[0].id}'`);
+                        connection.query(`UPDATE \`storage\` SET level = level + 1 WHERE \`id\` = '${storage[0].id}'`)
+                        message.reply(`**\`уровень предприятия был увеличен!\`**`).then(msg => msg.delete(10000));
+                        send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) повысил уровень предприятию ${storage[0].name} до ${+storage[0].level + 1}`);
+                        return message.delete();
+                    }else{
+                        return error_mysql(error, message);
+                    }
+                });
+            }
+        });
+    }
+
     if (message.content.startsWith('/storage_cost')){
         if (mysql_load(message, mysql_cooldown)) return
         if (uses(message, '/storage_cost', ['сумма'], ['none'])) return
@@ -406,8 +460,8 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
             }else if (storage.length == 1){
                 args[1] = Number((args[1]).toFixed(2));
                 if (uses(message, '/storage_cost', ['сумма'], ['plus_number'])) return
-                if (storage[0].money < storage[0].nalog){
-                    message.reply(`**\`нельзя изменить состояние предприятия, недостаточно средств!\`**`).then(msg => msg.delete(12000));
+                if (storage[0].status == false){
+                    message.reply(`**\`нельзя редактировать предприятие, которое закрыто.\`**`).then(msg => msg.delete(10000));
                     return message.delete();
                 }
                 if (args[1] < storage[0].min_cost){
@@ -427,8 +481,8 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         message.reply(`**\`вы не являетесь владельцем данного предприятия!\`**`).then(msg => msg.delete(18000));
                         return message.delete();
                     }else if (storage.length == 1){
-                        if (storage[0].money < storage[0].nalog){
-                            message.reply(`**\`нельзя изменить сумму предприятия, недостаточно средств!\`**`).then(msg => msg.delete(12000));
+                        if (storage[0].status == false){
+                            message.reply(`**\`нельзя редактировать предприятие, которое закрыто.\`**`).then(msg => msg.delete(10000));
                             return message.delete();
                         }
                         if (args[2] < storage[0].min_cost){
@@ -591,6 +645,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
         `/storage_help - получить справку по командам\n` +
         `/storage_description - поменять описание предприятия\n` +
         `/storage_status - открыть или закрыть предприятие\n` +
+        `/storage_up - повысить уровень предприятия\n` +
         `/storage_cost - поменять цену товара на предприятии\n` +
         `/storage_add - положить деньги на предприятие\n` +
         `/storage_get - снять деньги с предприятия**`);
