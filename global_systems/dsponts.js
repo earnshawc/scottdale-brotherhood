@@ -573,7 +573,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 `Владелец: ${message.member}\n` +
                 `Стоимость одного товара: ${storage[0].cost}\n` +
                 `Денег: ${storage[0].money}\n` +
-                `Производства товара за ${time(storage[0].date)}`);
+                `Время производства: ${time(storage[0].date)}`);
                 message.member.send(embed).then(() => {
                     message.reply(`**\`информация была отправлена в личные сообщения.\`**`).then(msg => msg.delete(10000));
                 }).catch((err) => {
@@ -603,7 +603,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         `Владелец: ${message.member}\n` +
                         `Стоимость одного товара: ${storage[0].cost}\n` +
                         `Денег: ${storage[0].money}\n` +
-                        `Производства товара за ${time(storage[0].date)}`);
+                        `Время производства: ${time(storage[0].date)}`);
                         message.member.send(embed).then(() => {
                             message.reply(`**\`информация была отправлена в личные сообщения.\`**`).then(msg => msg.delete(10000));
                         }).catch((err) => {
