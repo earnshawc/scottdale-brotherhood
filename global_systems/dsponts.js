@@ -18,6 +18,12 @@ function error_mysql(error, message){
     return message.delete();
 }
 
+function endsWithAny(suffixes, string) {
+    return suffixes.some(function (suffix) {
+        return string.endsWith(suffix);
+    });
+}
+
 function time(s) {
     let ms = s % 1000;
     s = (s - ms) / 1000;
@@ -28,27 +34,27 @@ function time(s) {
     let output = '';
 
     if (hrs != 0){
-        if (hrs.toString().endsWith('1') && !hrs.toString().endsWith(['11'])){
+        if (hrs.toString().endsWith('1') && !hrs.toString().endsWith('11')){
             output += hrs + ' час ';
-        }else if (hrs.toString().endsWith(['2', '3', '4']) && !hrs.toString().endsWith(['12', '13', '14'])){
+        }else if (endsWithAny(['2', '3', '4'], hrs.toString()) && !endsWithAny(['12', '13', '14'], hrs.toString())){
             output += hrs + ' часа ';
         }else{
             output += hrs + ' часов ';
         }
     }
     if (mins != 0){
-        if (mins.toString().endsWith('1') && !mins.toString().endsWith(['11'])){
+        if (mins.toString().endsWith('1') && !mins.toString().endsWith('11')){
             output += mins + ' минута ';
-        }else if (mins.toString().endsWith(['2', '3', '4']) && !mins.toString().endsWith(['12', '13', '14'])){
+        }else if (endsWithAny(['2', '3', '4'], mins.toString()) && !endsWithAny(['12', '13', '14'], mins.toString())){
             output += mins + ' минуты ';
         }else{
             output += mins + ' минут ';
         }
     }
     if (secs != 0){
-        if (secs.toString().endsWith('1') && !secs.toString().endsWith(['11'])){
+        if (secs.toString().endsWith('1') && !secs.toString().endsWith('11')){
             output += secs + ' секунда ';
-        }else if (secs.toString().endsWith(['2', '3', '4'] && !secs.toString().endsWith(['12', '13', '14']))){
+        }else if (endsWithAny(['2', '3', '4'], secs.toString()) && !endsWithAny(['12', '13', '14'], secs.toString())){
             output += secs + ' секунды ';
         }else{
             output += secs + ' секунд ';
