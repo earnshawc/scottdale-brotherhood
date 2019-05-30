@@ -66,7 +66,7 @@ function time(s) {
     return output;
 }
 
-function mysql_load(message, mysql_cooldown){
+async function mysql_load(message, mysql_cooldown){
     if (mysql_cooldown.has(message.author.id)){
         message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
         message.delete();
