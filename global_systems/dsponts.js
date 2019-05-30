@@ -561,9 +561,9 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 }
                 const embed = new Discord.RichEmbed();
                 embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
-                embed.addField(`Название предприятия: ${storage[0].name}\n` +
+                embed.setDescription(`Название предприятия: ${storage[0].name}\n` +
                 `Описание: ${storage[0].description}\n` +
-                `Владелец: ${message.member}\n` +
+                `Владелец: ${message.author.id}\n` +
                 `Стоимость одного товара: ${storage[0].cost}\n` +
                 `Денег: ${storage[0].money}\n` +
                 `Производства товара за ${time(storage[0].date)}`);
@@ -591,7 +591,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         }
                         const embed = new Discord.RichEmbed();
                         embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
-                        embed.addField(`Название предприятия: ${storage[0].name}\n` +
+                        embed.setDescription(`Название предприятия: ${storage[0].name}\n` +
                         `Описание: ${storage[0].description}\n` +
                         `Владелец: ${message.member}\n` +
                         `Стоимость одного товара: ${storage[0].cost}\n` +
