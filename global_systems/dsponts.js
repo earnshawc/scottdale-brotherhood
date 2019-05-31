@@ -66,19 +66,6 @@ function time(s) {
     return output;
 }
 
-function mysql_load(message, mysql_cooldown){
-    if (mysql_cooldown.has(message.author.id)){
-        message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
-        message.delete();
-        return true;
-    }
-    mysql_cooldown.add(message.author.id);
-    setTimeout(() => {
-        if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
-    }, 4000);
-    return false;
-}
-
 function uses(message, command, uses_args, settings_args){
     const args = message.content.slice(`${command}`).split(/ +/);
     if (+args.length - 1 != uses_args.length){
@@ -150,6 +137,19 @@ function uses(message, command, uses_args, settings_args){
 }
 
 exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send_action) => {
+    function mysql_load(message, mysql_cooldown){
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
+            message.delete();
+            return true;
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 4000);
+        return false;
+    }
+    
     if (!message) return
     if (!message.member) return
     if (!message.member.roles) return
