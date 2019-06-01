@@ -684,14 +684,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 }
                 const embed = new Discord.RichEmbed();
                 embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
-                embed.setDescription(`**Название предприятия: ${storage[0].name}\n` +
-                `Статус предприятия: ${storage[0].status}\n` +
-                `Уровень предприятия: ${storage[0].level} [${Number((storage[0].level * storage[0].min_cost * 30).toFixed(2))}]\n` +
-                `Описание: ${storage[0].description}\n` +
+                embed.setDescription(`**Название предприятия: \`${storage[0].name}\`\n` +
+                `Статус предприятия: \`${storage[0].status}\`\n` +
+                `Уровень предприятия: \`${storage[0].level} [${Number((storage[0].level * storage[0].min_cost * 30).toFixed(2))}]\`\n` +
+                `Описание: \`${storage[0].description}\`\n` +
                 `Владелец: ${message.member}\n` +
-                `Стоимость: ${Number((storage[0].cost).toFixed(2))}\n` +
-                `Денег: ${Number((storage[0].money).toFixed(2))}\n` +
-                `Время производства: ${time(storage[0].date)}**`);
+                `Стоимость: \`${Number((storage[0].cost).toFixed(2))}\`\n` +
+                `Денег: \`${Number((storage[0].money).toFixed(2))}\`\n` +
+                `Время производства: \`${time(storage[0].date)}\`**`);
                 message.reply(embed);
                 return message.delete();
             }else{
@@ -712,14 +712,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         }
                         const embed = new Discord.RichEmbed();
                         embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
-                        embed.setDescription(`**Название предприятия: ${storage[0].name}\n` +
-                        `Статус предприятия: ${storage[0].status}\n` +
-                        `Уровень предприятия: ${storage[0].level} [${Number((storage[0].level * storage[0].min_cost * 30).toFixed(2))}]\n` +
-                        `Описание: ${storage[0].description}\n` +
+                        embed.setDescription(`**Название предприятия: \`${storage[0].name}\`\n` +
+                        `Статус предприятия: \`${storage[0].status}\`\n` +
+                        `Уровень предприятия: \`${storage[0].level} [${Number((storage[0].level * storage[0].min_cost * 30).toFixed(2))}]\`\n` +
+                        `Описание: \`${storage[0].description}\`\n` +
                         `Владелец: ${message.member}\n` +
-                        `Стоимость: ${Number((storage[0].cost).toFixed(2))}\n` +
-                        `Денег: ${Number((storage[0].money).toFixed(2))}\n` +
-                        `Время производства: ${time(storage[0].date)}**`);
+                        `Стоимость: \`${Number((storage[0].cost).toFixed(2))}\`\n` +
+                        `Денег: \`${Number((storage[0].money).toFixed(2))}\`\n` +
+                        `Время производства: \`${time(storage[0].date)}\`**`);
                         message.reply(embed);
                         return message.delete();
                     }else{
