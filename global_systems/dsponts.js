@@ -691,6 +691,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 `Владелец: ${message.member}\n` +
                 `Стоимость: \`${Number((storage[0].cost)).toFixed(2)}\` ₯\n` +
                 `Денег: \`${Number((storage[0].money)).toFixed(2)}\` ₯\n` +
+                `Налог: \`${Number((storage[0].nalog)).toFixed(2)}\` ₯\n` +
                 `Время производства: \`${time(storage[0].date)}\`**`);
                 message.reply(embed);
                 return message.delete();
@@ -719,6 +720,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         `Владелец: ${message.member}\n` +
                         `Стоимость: \`${Number((storage[0].cost)).toFixed(2)}\` ₯\n` +
                         `Денег: \`${Number((storage[0].money)).toFixed(2)}\` ₯\n` +
+                        `Налог: \`${Number((storage[0].nalog)).toFixed(2)}\` ₯\n` +
                         `Время производства: \`${time(storage[0].date)}\`**`);
                         message.reply(embed);
                         return message.delete();
