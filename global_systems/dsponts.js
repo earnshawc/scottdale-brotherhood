@@ -414,7 +414,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     message.reply(`**\`нельзя редактировать предприятие, которое закрыто.\`**`).then(msg => msg.delete(10000));
                     return message.delete();
                 }
-                let need = Number((storage[0].level * storage[0].min_cost * 30).toFixed(2));
+                let need = Number((storage[0].level * storage[0].min_cost * 30)).toFixed(2);
                 if (storage[0].money < need){
                     message.reply(`**\`нельзя изменить уровень предприятия, недостаточно средств!\`**`).then(msg => msg.delete(12000));
                     return message.delete();
@@ -436,7 +436,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                             message.reply(`**\`нельзя редактировать предприятие, которое закрыто.\`**`).then(msg => msg.delete(10000));
                             return message.delete();
                         }
-                        let need = Number((storage[0].level * storage[0].min_cost * 30).toFixed(2));
+                        let need = Number((storage[0].level * storage[0].min_cost * 30)).toFixed(2);
                         if (storage[0].money < need){
                             message.reply(`**\`нельзя изменить уровень предприятия, недостаточно средств!\`**`).then(msg => msg.delete(12000));
                             return message.delete();
@@ -532,7 +532,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         connection.query(`UPDATE \`storage\` SET money = money + ${args[1]} WHERE \`id\` = '${storage[0].id}'`);
                         connection.query(`UPDATE \`profiles\` SET money = money - ${args[1]} WHERE \`id\` = '${profile[0].id}'`);
                         message.reply(`**\`вы успешно положили на склад предприятия ${args[1]} discord points!\`**`).then(msg => msg.delete(10000));
-                        send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) пополнил баланс на ${args[1]} — предприятию ${storage[0].name} [MONEY ST: было: ${storage[0].money}, стало: ${Number((storage[0].money + +args[1]).toFixed(2))}] [MONEY PR: было: ${profile[0].money}, стало: ${Number((profile[0].money - +args[1]).toFixed(2))}]`);
+                        send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) пополнил баланс на ${args[1]} — предприятию ${storage[0].name} [MONEY ST: было: ${storage[0].money}, стало: ${Number((storage[0].money + +args[1])).toFixed(2)}] [MONEY PR: было: ${profile[0].money}, стало: ${Number((profile[0].money - +args[1])).toFixed(2)}]`);
                         return message.delete();
                     }else{
                         message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
@@ -559,7 +559,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                                 connection.query(`UPDATE \`storage\` SET money = money + ${args[2]} WHERE \`id\` = '${storage[0].id}'`);
                                 connection.query(`UPDATE \`profiles\` SET money = money - ${args[2]} WHERE \`id\` = '${profile[0].id}'`);
                                 message.reply(`**\`вы успешно положили на склад предприятия ${args[2]} discord points!\`**`).then(msg => msg.delete(10000));
-                                send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) пополнил баланс на ${args[1]} — предприятию ${storage[0].name} [MONEY ST: было: ${storage[0].money}, стало: ${Number((storage[0].money + +args[2]).toFixed(2))}] [MONEY PR: было: ${profile[0].money}, стало: ${Number((profile[0].money - +args[2]).toFixed(2))}]`);
+                                send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) пополнил баланс на ${args[1]} — предприятию ${storage[0].name} [MONEY ST: было: ${storage[0].money}, стало: ${Number((storage[0].money + +args[2])).toFixed(2)}] [MONEY PR: было: ${profile[0].money}, стало: ${Number((profile[0].money - +args[2])).toFixed(2)}]`);
                                 return message.delete();
                             }else{
                                 message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
@@ -598,13 +598,13 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         connection.query(`UPDATE \`storage\` SET money = money - ${args[1]} WHERE \`id\` = '${storage[0].id}'`);
                         connection.query(`UPDATE \`profiles\` SET money = money + ${args[1]} WHERE \`id\` = '${profile[0].id}'`);
                         message.reply(`**\`вы успешно сняли со склада предприятия ${args[1]} discord points!\`**`).then(msg => msg.delete(10000));
-                        send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) снял со счета ${args[1]} — предприятия ${storage[0].name} (MONEY ST: ${storage[0].money} - ${Number((storage[0].money - +args[1]).toFixed(2))}) (MONEY PR: ${profile[0].money} - ${Number((profile[0].money + +args[1]).toFixed(2))})`);
+                        send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) снял со счета ${args[1]} — предприятия ${storage[0].name} (MONEY ST: ${storage[0].money} - ${Number((storage[0].money - +args[1])).toFixed(2)}) (MONEY PR: ${profile[0].money} - ${Number((profile[0].money + +args[1])).toFixed(2)})`);
                         return message.delete();
                     }else{
                         connection.query(`UPDATE \`storage\` SET money = money - ${args[1]} WHERE \`id\` = '${storage[0].id}'`);
                         connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${message.guild.id}', '${message.author.id}', '${args[1]}')`);
                         message.reply(`**\`вы успешно сняли со склада предприятия ${args[1]} discord points!\`**`).then(msg => msg.delete(10000));
-                        send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) снял со счета ${args[1]} — предприятия ${storage[0].name} (MONEY ST: ${storage[0].money} - ${Number((storage[0].money - +args[1]).toFixed(2))}) (MONEY PR: ${profile[0].money} - ${Number((profile[0].money + +args[1]).toFixed(2))})`);
+                        send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) снял со счета ${args[1]} — предприятия ${storage[0].name} (MONEY ST: ${storage[0].money} - ${Number((storage[0].money - +args[1])).toFixed(2)}) (MONEY PR: ${profile[0].money} - ${Number((profile[0].money + +args[1])).toFixed(2)})`);
                         return message.delete();
                     }
                 });
@@ -634,7 +634,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                                 connection.query(`UPDATE \`storage\` SET money = money - ${args[2]} WHERE \`id\` = '${storage[0].id}'`);
                                 connection.query(`INSERT INTO \`profiles\` (\`server\`, \`user\`, \`money\`) VALUES ('${message.guild.id}', '${message.author.id}', '${args[2]}')`);
                                 message.reply(`**\`вы успешно сняли со склада предприятия ${args[2]} discord points!\`**`).then(msg => msg.delete(10000));
-                                send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) снял со счета ${args[1]} — предприятия ${storage[0].name} (MONEY ST: ${storage[0].money} - ${Number((storage[0].money - +args[2]).toFixed(2))}) (MONEY PR: ${profile[0].money} - ${Number((profile[0].money + +args[2]).toFixed(2))})`);
+                                send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) снял со счета ${args[1]} — предприятия ${storage[0].name} (MONEY ST: ${storage[0].money} - ${Number((storage[0].money - +args[2])).toFixed(2)}) (MONEY PR: ${profile[0].money} - ${Number((profile[0].money + +args[2])).toFixed(2)})`);
                                 return message.delete();
                             }
                         });
@@ -686,11 +686,11 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
                 embed.setDescription(`**Название предприятия: \`${storage[0].name}\`\n` +
                 `Статус предприятия: \`${storage[0].status}\`\n` +
-                `Уровень предприятия: \`${storage[0].level} [${Number((storage[0].level * storage[0].min_cost * 30).toFixed(2))}]\`\n` +
+                `Уровень предприятия: \`${storage[0].level} [${Number((storage[0].level * storage[0].min_cost * 30)).toFixed(2)}]\`\n` +
                 `Описание: \`${storage[0].description}\`\n` +
                 `Владелец: ${message.member}\n` +
-                `Стоимость: \`${Number((storage[0].cost).toFixed(2))}\` ₯\n` +
-                `Денег: \`${Number((storage[0].money).toFixed(2))}\` ₯\n` +
+                `Стоимость: \`${Number((storage[0].cost)).toFixed(2)}\` ₯\n` +
+                `Денег: \`${Number((storage[0].money)).toFixed(2)}\` ₯\n` +
                 `Время производства: \`${time(storage[0].date)}\`**`);
                 message.reply(embed);
                 return message.delete();
@@ -714,11 +714,11 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
                         embed.setDescription(`**Название предприятия: \`${storage[0].name}\`\n` +
                         `Статус предприятия: \`${storage[0].status}\`\n` +
-                        `Уровень предприятия: \`${storage[0].level} [${Number((storage[0].level * storage[0].min_cost * 30).toFixed(2))}]\`\n` +
+                        `Уровень предприятия: \`${storage[0].level} [${Number((storage[0].level * storage[0].min_cost * 30)).toFixed(2)}]\`\n` +
                         `Описание: \`${storage[0].description}\`\n` +
                         `Владелец: ${message.member}\n` +
-                        `Стоимость: \`${Number((storage[0].cost).toFixed(2))}\` ₯\n` +
-                        `Денег: \`${Number((storage[0].money).toFixed(2))}\` ₯\n` +
+                        `Стоимость: \`${Number((storage[0].cost)).toFixed(2)}\` ₯\n` +
+                        `Денег: \`${Number((storage[0].money)).toFixed(2)}\` ₯\n` +
                         `Время производства: \`${time(storage[0].date)}\`**`);
                         message.reply(embed);
                         return message.delete();
