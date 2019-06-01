@@ -353,6 +353,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 });
             }
         });
+        return
     }
 
     if (message.content.startsWith('/storage_status')){
@@ -396,6 +397,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 });
             }
         });
+        return
     }
 
     if (message.content.startsWith('/storage_up')){
@@ -450,6 +452,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 });
             }
         });
+        return
     }
 
     if (message.content.startsWith('/storage_cost')){
@@ -503,6 +506,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 });
             }
         });
+        return
     }
 
     if (message.content.startsWith('/storage_add')){
@@ -568,6 +572,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 });
             }
         });
+        return
     }
 
     if (message.content.startsWith('/storage_get')){
@@ -639,6 +644,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 });
             }
         });
+        return
     }
 
     if (message.content == '/storage_help'){
@@ -722,6 +728,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 });
             }
         });
+        return
     }
     // Конец работы с предприятиями
 
