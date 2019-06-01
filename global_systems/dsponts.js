@@ -689,8 +689,8 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 `Уровень предприятия: \`${storage[0].level} [${Number((storage[0].level * storage[0].min_cost * 30).toFixed(2))}]\`\n` +
                 `Описание: \`${storage[0].description}\`\n` +
                 `Владелец: ${message.member}\n` +
-                `Стоимость: \`${Number((storage[0].cost).toFixed(2))}\`\n` +
-                `Денег: \`${Number((storage[0].money).toFixed(2))}\`\n` +
+                `Стоимость: \`${Number((storage[0].cost).toFixed(2))}\` ₯\n` +
+                `Денег: \`${Number((storage[0].money).toFixed(2))}\` ₯\n` +
                 `Время производства: \`${time(storage[0].date)}\`**`);
                 message.reply(embed);
                 return message.delete();
@@ -717,8 +717,8 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         `Уровень предприятия: \`${storage[0].level} [${Number((storage[0].level * storage[0].min_cost * 30).toFixed(2))}]\`\n` +
                         `Описание: \`${storage[0].description}\`\n` +
                         `Владелец: ${message.member}\n` +
-                        `Стоимость: \`${Number((storage[0].cost).toFixed(2))}\`\n` +
-                        `Денег: \`${Number((storage[0].money).toFixed(2))}\`\n` +
+                        `Стоимость: \`${Number((storage[0].cost).toFixed(2))}\` ₯\n` +
+                        `Денег: \`${Number((storage[0].money).toFixed(2))}\` ₯\n` +
                         `Время производства: \`${time(storage[0].date)}\`**`);
                         message.reply(embed);
                         return message.delete();
