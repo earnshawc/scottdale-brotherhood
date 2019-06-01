@@ -465,7 +465,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
                 return message.delete();
             }else if (storage.length == 1){
-                args[1] = Number((args[1]).toFixed(2));
+                args[1] = Number((args[1])).toFixed(2);
                 if (uses(message, '/storage_cost', ['сумма'], ['plus_number'])) return
                 if (storage[0].status == false){
                     message.reply(`**\`нельзя редактировать предприятие, которое закрыто.\`**`).then(msg => msg.delete(10000));
@@ -480,7 +480,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 send_action(message.guild.id, `${message.member.displayName || message.author.tag} (${message.author.id}) изменил стоимость продажи c ${storage[0].cost} на ${args[1]} — предприятию ${storage[0].name}`);
                 return message.delete();
             }else{
-                args[2] = Number((args[2]).toFixed(2));
+                args[2] = Number((args[2])).toFixed(2);
                 if (uses(message, '/storage_cost', ['предприятие', 'сумма'], ['number', 'plus_number'])) return
                 connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id} AND \`id\` = '${args[1]}'`, async (error, storage) => {
                     if (error) return error_mysql(error, message);
@@ -519,7 +519,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
                 return message.delete();
             }else if (storage.length == 1){
-                args[1] = Number((args[1]).toFixed(2));
+                args[1] = Number((args[1])).toFixed(2);
                 if (uses(message, '/storage_add', ['сумма'], ['plus_number'])) return
                 connection.query(`SELECT * FROM \`profiles\` WHERE \`server\` = '${message.guild.id}' AND \`user\` = '${message.author.id}'`, async (error, profile) => {
                     if (error) return error_mysql(error, message);
@@ -540,7 +540,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     }
                 });
             }else{
-                args[2] = Number((args[2]).toFixed(2));
+                args[2] = Number((args[2])).toFixed(2);
                 if (uses(message, '/storage_add', ['предприятие', 'сумма'], ['number', 'plus_number'])) return
                 connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id} AND \`id\` = '${args[1]}'`, async (error, storage) => {
                     if (error) return error_mysql(error, message);
@@ -585,7 +585,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
                 return message.delete();
             }else if (storage.length == 1){
-                args[1] = Number((args[1]).toFixed(2));
+                args[1] = Number((args[1])).toFixed(2);
                 if (uses(message, '/storage_get', ['сумма'], ['plus_number'])) return
                 if (+storage[0].money < +args[1]){
                     message.reply(`**\`недостаточно средств!\`**`).then(msg => msg.delete(10000));
@@ -609,7 +609,7 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                     }
                 });
             }else{
-                args[2] = Number((args[2]).toFixed(2));
+                args[2] = Number((args[2])).toFixed(2);
                 if (uses(message, '/storage_get', ['предприятие', 'сумма'], ['number', 'plus_number'])) return
                 connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id} AND \`id\` = '${args[1]}'`, async (error, storage) => {
                     if (error) return error_mysql(error, message);
