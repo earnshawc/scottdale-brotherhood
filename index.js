@@ -48,7 +48,7 @@ connection.on('error', function(err) {
     }
 });
 
-const version = '5.1.0-hide';
+const version = '5.1.1-hide';
 // Первая цифра означает глобальное обновление. (global_systems)
 // Вторая цифра обозначет обновление одной из подсистем. (команда к примеру)
 // Третяя цифра обозначает количество мелких фиксов. (например опечатка)
@@ -1953,7 +1953,9 @@ bot.on('message', async (message) => {
                 if (!channel) return message.react('❌');
                 let role = await serv.roles.find(r => r.name == 'Проверенный 🔐');
                 if (!role) return message.react('❌');
-                await member.addRole(role);
+                await member.addRole(role).then(() => {
+                    send_action(serv.id, `${member.displayName || member.user.tag} (${member.id}) получил роль проверенного. Назначение: авторизация`);
+                });
                 await channel.send(`${member}, \`вам была выдана роль ${role.name}!\``);
                 return message.react('✔');
             }
@@ -1983,8 +1985,10 @@ bot.on('message', async (message) => {
                 const embed = new Discord.RichEmbed();
                 embed.setDescription(`**${message.member}, для авторизации нажмите на [выделенный текст](https://discordapp.com/oauth2/authorize?response_type=code&client_id=488717818829996034&scope=identify+guilds+email&state=scottdale_${password}).**`);
                 message.member.send(embed).then(() => {
-		    message.reply(`**\`код авторизации был отправлен в личные сообщения!\`**`).then(msg => msg.delete(12000));
-		}).catch(err => {
+                    send_action(serv.id, `${member.displayName || member.user.tag} (${member.id}) отправлен код авторизации в личные сообщения. Назначение: authme`);
+		            message.reply(`**\`код авторизации был отправлен в личные сообщения!\`**`).then(msg => msg.delete(12000));
+		        }).catch(err => {
+                    send_action(serv.id, `${member.displayName || member.user.tag} (${member.id}) отправлен код авторизации в канал ${message.channel.name}. Назначение: authme`);
                     message.reply(`**\`ошибка при отправке в личные сообщения, оставлю код тут!\`**`, embed);
                 });
                 return message.delete();
@@ -1992,8 +1996,10 @@ bot.on('message', async (message) => {
                 const embed = new Discord.RichEmbed();
                 embed.setDescription(`**${message.member}, для авторизации нажмите на [выделенный текст](https://discordapp.com/oauth2/authorize?response_type=code&client_id=488717818829996034&scope=identify+guilds+email&state=scottdale_${result[0].state}).**`);
                 message.member.send(embed).then(() => {
+                    send_action(serv.id, `${member.displayName || member.user.tag} (${member.id}) отправлен код авторизации в личные сообщения. Назначение: authme`);
 		            message.reply(`**\`код авторизации был отправлен в личные сообщения!\`**`).then(msg => msg.delete(12000));
 		        }).catch(err => {
+                    send_action(serv.id, `${member.displayName || member.user.tag} (${member.id}) отправлен код авторизации в канал ${message.channel.name}. Назначение: authme`);
                     message.reply(`**\`ошибка при отправке в личные сообщения, оставлю код тут!\`**`, embed);
                 });
                 return message.delete();
