@@ -139,14 +139,12 @@ function uses(message, command, uses_args, settings_args){
 function mysql_load(message, mysql_cooldown){
     if (mysql_cooldown.has(message.author.id)){
         message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
-        message.delete();
-        return false;
+        return message.delete();
     }
     mysql_cooldown.add(message.author.id);
     setTimeout(() => {
         if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
     }, 4000);
-    return true;
 }
 
 exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send_action) => {
@@ -175,7 +173,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     // Profile actions
     if (message.content.startsWith('/setstat')){
         if (!message.member.hasPermission("ADMINISTRATOR")) return
-        if (!mysql_load(message, mysql_cooldown)) return
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 4000);
         if (uses(message, '/setstat', ['serverid', 'userid', 'money'], ['number', 'number', 'number'])) return
         const args = message.content.slice(`/setstat`).split(/ +/);
         connection.query(`SELECT \`id\`, \`server\` \`user\`, \`money\` FROM \`profiles\` WHERE \`user\` = '${args[2]}' AND \`server\` = '${args[1]}'`, async (error, result, packets) => {
@@ -194,7 +199,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     }
 
     if (message.content.startsWith('/pay')){
-        if (!mysql_load(message, mysql_cooldown)) return
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 4000);
         if (uses(message, '/pay', ['user', 'сумма'], ['mention_user', 'plus_number'])) return
         const args = message.content.slice(`/pay`).split(/ +/);
         let user = message.guild.member(message.mentions.users.first());
@@ -247,7 +259,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     }
 
     if (message.content.startsWith('/balance')){
-        if (!mysql_load(message, mysql_cooldown)) return
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 4000);
         let user = message.guild.member(message.mentions.users.first());
         if (!user){
             connection.query(`SELECT * FROM \`profiles\` WHERE \`user\` = '${message.author.id}' AND \`server\` = '${message.guild.id}'`, async (error, result, packets) => {
@@ -298,7 +317,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
 
     // Работа с предприятиями
     if (message.content.startsWith('/storage_description')){
-        if (!mysql_load(message, mysql_cooldown)) return
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 4000);
         if (uses(message, '/storage_description', ['описание'], ['none'])) return
         const args = message.content.slice(`/storage_description`).split(/ +/);
         connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
@@ -353,7 +379,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     }
 
     if (message.content.startsWith('/storage_status')){
-        if (!mysql_load(message, mysql_cooldown)) return
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 4000);
         if (uses(message, '/storage_status', ['состояние (1/0)'], ['none'])) return
         const args = message.content.slice(`/storage_status`).split(/ +/);
         connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
@@ -396,7 +429,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     }
 
     if (message.content.startsWith('/storage_up')){
-        if (!mysql_load(message, mysql_cooldown)) return
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 4000);
         const args = message.content.slice(`/storage_up`).split(/ +/);
         connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
             if (error) return error_mysql(error, message);
@@ -450,7 +490,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     }
 
     if (message.content.startsWith('/storage_cost')){
-        if (!mysql_load(message, mysql_cooldown)) return
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 4000);
         if (uses(message, '/storage_cost', ['сумма'], ['none'])) return
         const args = message.content.slice(`/storage_cost`).split(/ +/);
         connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
@@ -503,7 +550,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     }
 
     if (message.content.startsWith('/storage_add')){
-        if (!mysql_load(message, mysql_cooldown)) return
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 4000);
         if (uses(message, '/storage_add', ['сумма'], ['none'])) return
         const args = message.content.slice(`/storage_add`).split(/ +/);
         connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
@@ -568,7 +622,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     }
 
     if (message.content.startsWith('/storage_get')){
-        if (!mysql_load(message, mysql_cooldown)) return
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 4000);
         if (uses(message, '/storage_get', ['сумма'], ['none'])) return
         const args = message.content.slice(`/storage_get`).split(/ +/);
         connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
@@ -639,7 +700,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     }
 
     if (message.content == '/storage_help'){
-        if (!mysql_load(message, mysql_cooldown)) return
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 4000);
         const embed = new Discord.RichEmbed();
         embed.setTitle('Команды для взоимодействия с предприятием');
         embed.addField(`Список команд`, `**/storage - получить информацию о текущем предприятии\n` +
@@ -660,7 +728,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
     }
 
     if (message.content.startsWith('/storage')){
-        if (!mysql_load(message, mysql_cooldown)) return
+        if (mysql_cooldown.has(message.author.id)){
+            message.reply(`**\`повторите попытку через 4 секунды.\`**`).then(msg => msg.delete(3000));
+            return message.delete();
+        }
+        mysql_cooldown.add(message.author.id);
+        setTimeout(() => {
+            if (mysql_cooldown.has(message.author.id)) mysql_cooldown.delete(message.author.id)
+        }, 4000);
         const args = message.content.slice(`/storage`).split(/ +/);
         connection.query(`SELECT * FROM \`storage\` WHERE \`server\` = '${message.guild.id}' AND \`owner\` = '${message.author.id}'`, async (error, storage) => {
             if (error) return error_mysql(error, message);
