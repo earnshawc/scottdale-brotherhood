@@ -677,12 +677,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                 message.reply(`**\`вы не являетесь владельцем одного из предприятий на данном сервере!\`**`).then(msg => msg.delete(18000));
                 return message.delete();
             }else if (storage.length == 1){
+                const embed = new Discord.RichEmbed();
                 if (storage[0].status == true){
                     storage[0].status = 'открыто';
+                    embed.setColor('#008000');
                 }else{
                     storage[0].status = 'закрыто';
+                    embed.setColor('#FF0000');
                 }
-                const embed = new Discord.RichEmbed();
                 embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
                 embed.setDescription(`**Название предприятия: \`${storage[0].name}\`\n` +
                 `Статус предприятия: \`${storage[0].status}\`\n` +
@@ -706,12 +708,14 @@ exports.run = async (bot, message, ds_cooldown, connection, mysql_cooldown, send
                         message.reply(`**\`вы не являетесь владельцем данного предприятия!\`**`).then(msg => msg.delete(18000));
                         return message.delete();
                     }else if (storage.length == 1){
+                        const embed = new Discord.RichEmbed();
                         if (storage[0].status == true){
                             storage[0].status = 'открыто';
+                            embed.setColor('#008000');
                         }else{
                             storage[0].status = 'закрыто';
+                            embed.setColor('#FF0000');
                         }
-                        const embed = new Discord.RichEmbed();
                         embed.setTitle(`Информация о предприятии ${storage[0].name} [№${storage[0].id}]`);
                         embed.setDescription(`**Название предприятия: \`${storage[0].name}\`\n` +
                         `Статус предприятия: \`${storage[0].status}\`\n` +
